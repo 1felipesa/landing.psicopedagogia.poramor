@@ -26,5 +26,5 @@ Será adotado um design limpo e de alto padrão (Luxury/Professional). O tom foc
     - [x] UX/UI: Header Pill, Cards Flutuantes, WhatsApp Stability
     - [x] SEO: Meta-tags, Canonical, Alt-texts, JSON-LD (Schema.org)
     - [x] Performance: Lazy-loading, DNS Prefetch, Fetch Priority (LCP)
-    - [ ] Security: Deployment Readiness Check (Pendente finalização de chaves)
+    - [x] Security: Deployment Readiness Check (Comando de build ajustado para Hostinger)
 - [ ] Fase 6: Lançamento & Entrega Final (Aguardando Deploy)

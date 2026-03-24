@@ -4,7 +4,8 @@
   "description": "Landing page profissional - Psicopedagogia Por Amor",
   "scripts": {
     "dev": "npx --yes serve . -p 3000",
-    "preview": "npx --yes serve . -p 3000"
+    "preview": "npx --yes serve . -p 3000",
+    "build": "echo 'Static build complete'"
   },
   "private": true
 }
