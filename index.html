@@ -1,31 +1,536 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicopedagogia Por Amor | Raiane - Avaliação e Intervenção Clínica</title>
     
-    <!-- SEO & Metadata -->
-    <title>Psicopedagogia por Amor - Raiane E. Ferreira</title>
-    <meta name="description" content="Atendimento psicopedagógico especializado para crianças e adolescentes. Raiane E. Ferreira - Transformando dificuldades em superpoderes através da Psicopedagogia Clínica." />
-    <meta name="keywords" content="psicopedagogia, aprendizagem, ribeirão preto, psicopedagoga, raiane ferreira, educação" />
-    <meta name="author" content="Raiane E. Ferreira" />
+    <!-- SEO Master Tags -->
+    <meta name="description" content="Raiane - Especialista em Psicopedagogia. Avaliação, diagnóstico preciso e intervenção clínica. Transformamos a relação do paciente com a aprendizagem, com amor e método científico.">
+    <link rel="canonical" href="https://seusite.com.br/">
+    <meta name="keywords" content="psicopedagogia, avaliação psicopedagógica, intervenção clínica, TDAH, TEA, dificuldade de aprendizagem, Raiane psicopedagoga, apoio escolar">
+    <meta name="author" content="Raiane - Psicopedagogia Por Amor">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#8c27db">
+    <link rel="icon" href="public/favicon.png" type="image/png">
     
-    <!-- Open Graph / Social Media -->
-    <meta property="og:title" content="Psicopedagogia por Amor - Raiane E. Ferreira" />
-    <meta property="og:description" content="Atendimento psicopedagógico especializado. Transformando dificuldades em superpoderes." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/og-image.jpg" />
+    <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://seusite.com.br/">
+    <meta property="og:title" content="Psicopedagogia Por Amor | Raiane">
+    <meta property="og:description" content="Avaliação, diagnóstico e intervenção com acolhimento, respeito e amor pelo processo de aprendizagem. Agende sua avaliação clínica.">
+    <meta property="og:image" content="https://seusite.com.br/og-image.jpg">
+    <meta property="og:locale" content="pt_BR">
     
-    <!-- External Assets -->
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://seusite.com.br/">
+    <meta name="twitter:title" content="Psicopedagogia Por Amor | Raiane">
+    <meta name="twitter:description" content="Transforme a relação do seu filho com a escola. Especialista em dificuldades de aprendizagem, TDAH e TEA.">
+    <meta name="twitter:image" content="https://seusite.com.br/og-image.jpg">
+    
+    <!-- JSON-LD (Schema.org) para Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MedicalBusiness",
+      "@id": "https://seusite.com.br/#business",
+      "name": "Psicopedagogia Por Amor - Raiane",
+      "alternateName": "Raiane Psicopedagoga",
+      "image": [
+        "https://seusite.com.br/public/raiane-hero.jpeg"
+      ],
+      "description": "Especialista em Psicopedagogia Clínica. Avaliação, diagnóstico e intervenção para TDAH, TEA e dificuldades de aprendizagem.",
+      "url": "https://seusite.com.br",
+      "telephone": "+5516991864393",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Ribeirão Preto",
+        "addressRegion": "SP",
+        "addressCountry": "BR"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -21.1767,
+        "longitude": -47.8208
+      },
+      "founder": {
+        "@type": "Person",
+        "name": "Raiane"
+      },
+      "sameAs": [
+        "https://www.youtube.com/@psicopedagogia.poramor"
+      ]
+    }
+    </script>
+    
+    <!-- Performance: DNS Prefetch & Preconnect -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bubblegum+Sans&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-  </head>
-  <body class="bg-[#F0F9FF] text-slate-900 overflow-x-hidden selection:bg-finn-blue/30">
-    <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-surface text-text font-sans antialiased overflow-x-hidden">
+    
+    <!-- Header / Nav (Floating Pill) -->
+    <header class="fixed w-full top-4 md:top-8 left-0 z-50 transition-all duration-300 pointer-events-none" id="main-header">
+        <div class="container-wide px-6 md:px-12">
+            <div class="glass-nav rounded-full flex justify-between items-center gap-4 shadow-lg border border-brand-primary/10 pointer-events-auto transition-all duration-300">
+                <div class="flex items-center gap-2 relative z-10 shrink-0">
+                    <i data-lucide="heart" class="text-brand-primary" fill="currentColor"></i>
+                    <span class="font-bold text-lg lg:text-xl tracking-tight">Psicopedagogia <span class="text-brand-primary">Por Amor</span></span>
+                </div>
+                
+                <nav class="hidden md:flex gap-6 lg:gap-8 items-center text-sm font-medium">
+                    <a href="#sobre" class="nav-link">Sobre</a>
+                    <a href="#servicos" class="nav-link">Especialidades</a>
+                    <a href="#metodologia" class="nav-link">Método</a>
+                    <a href="#youtube" class="nav-link">Conteúdo</a>
+                    <a href="#faq" class="nav-link">Dúvidas</a>
+                </nav>
+                
+                <div class="flex items-center gap-4">
+                    <a href="https://wa.me/5516991864393" target="_blank" class="btn-primary hidden md:inline-flex items-center gap-2 px-6 py-2.5 text-xs lg:text-sm shrink-0 uppercase tracking-wider">
+                        Área do Cliente
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                    </a>
+                    
+                    <!-- Mobile Menu Btn -->
+                    <button class="md:hidden text-text p-2" id="mobile-menu-btn" aria-label="Menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Secção Hero -->
+        <section class="relative min-h-[90vh] flex items-center pt-40 pb-20 overflow-x-hidden">
+            <div class="absolute top-0 right-0 w-full md:w-[60%] h-full bg-brand-primary/5 clip-hero-bg z-0 pointer-events-none"></div>
+            <div class="absolute top-10 -right-20 w-96 h-96 bg-brand-primary/10 rounded-full blur-[100px] z-0"></div>
+            
+            <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12 md:gap-8">
+                
+                <!-- Hero Content -->
+                <div class="w-full md:w-[55%] opacity-0 fade-in-up element-stagger-1 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-sm font-semibold mb-8 border border-brand-primary/20">
+                        <span class="w-2 h-2 rounded-full bg-brand-primary animate-pulse"></span>
+                        Acolhimento. Respeito. Evolução.
+                    </div>
+                    
+                    <h1 class="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6 text-balance">
+                        Descubra o potencial que existe além das <span class="text-brand-primary underline decoration-4 underline-offset-8">dificuldades</span>
+                    </h1>
+                    
+                    <p class="text-lg md:text-xl text-text-muted mb-14 max-w-2xl text-balance leading-relaxed">
+                        Olá, sou a Raiane. Ofereço um espaço seguro para avaliar, diagnosticar e intervir nos processos de aprendizagem, olhando para cada pessoa com amor e método clínico.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                        <a href="https://wa.me/5516991864393" target="_blank" class="btn-primary flex items-center gap-2 group w-full sm:w-auto justify-center">
+                            Iniciar a Jornada
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                        <a href="#sobre" class="btn-secondary flex items-center gap-2 w-full sm:w-auto justify-center">
+                            Conhecer Raiane
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Hero Visual -->
+                <div id="hero-visual" class="w-full md:w-[45%] relative opacity-0 fade-in-up element-stagger-2 mt-16 md:mt-0">
+                    <div class="relative w-full aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl group">
+                        <!-- Hero Image Optimized for LCP -->
+                        <img src="public/raiane-hero.jpeg" alt="Raiane - Profissional de Psicopedagogia" fetchpriority="high" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                    </div>
+                    
+                    <div class="absolute -bottom-8 -left-4 md:-left-12 floating-card animate-float z-20">
+                        <div class="icon-box">
+                            <i data-lucide="brain"></i>
+                        </div>
+                        <div>
+                            <h3>Metodologia</h3>
+                            <p>Análise Cognitiva Múltipla</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+        
+        <!-- SECTION: SOBRE A RAIANE -->
+        <section id="sobre" class="py-24 bg-surface-alt relative overflow-hidden">
+            <div class="absolute top-40 -left-20 w-72 h-72 bg-brand-primary/5 rounded-full blur-[80px] z-0 pointer-events-none"></div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row items-center gap-16">
+                    <div class="w-full md:w-[45%] relative sobre-visual">
+                        <div class="w-full aspect-[4/5] rounded-[2rem] overflow-hidden bg-brand-primary/5 shadow-lg border border-brand-primary/10">
+                            <img src="public/raiane-sobre.jpeg" alt="Raiane em seu consultório atendendo com materiais lúdicos" class="w-full h-full object-cover" loading="lazy">
+                        </div>
+                        
+                        <!-- Especialista Certificada Card -->
+                        <div class="absolute floating-card animate-float z-20" style="top: 2rem; right: -2rem; animation-delay: 1s;">
+                            <div class="icon-box">
+                                <i data-lucide="badge-check"></i>
+                            </div>
+                            <div>
+                                <h3>Especialista</h3>
+                                <p>Certificada & Treinada</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="w-full md:w-[55%]">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface border border-brand-primary/10 text-brand-primary text-sm font-medium mb-6">
+                            <i data-lucide="book-open" class="w-4 h-4"></i>
+                            Sobre a Profissional
+                        </div>
+                        
+                        <h2 class="text-4xl md:text-5xl font-bold mb-8 tracking-tight">
+                            Muito prazer, <span class="text-brand-primary">Raiane!</span>
+                        </h2>
+                        
+                        <div class="space-y-6 text-lg text-text-muted leading-relaxed">
+                            <p>
+                                A psicopedagogia entrou na minha vida não apenas como uma escolha profissional, mas como um chamado para <strong>transformar a relação das pessoas com a aprendizagem</strong>. Acredito que todos podem aprender, desde que o ensino fale a mesma língua de suas mentes.
+                            </p>
+                            <p>
+                                Minha abordagem alia o rigor científico com um olhar genuinamente humano. Seja investigando por que a escola virou um peso ou ajudando um cérebro neurodivergente a encontrar seu ritmo, minha missão é a mesma: resgatar a autonomia e a alegria de aprender.
+                            </p>
+                        </div>
+                        
+                        <div class="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-primary shrink-0 mt-0.5"></i>
+                                <span class="text-text-muted">Apoio para <strong>TDAH</strong> e <strong>TEA</strong></span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-primary shrink-0 mt-0.5"></i>
+                                <span class="text-text-muted">Diagnóstico Clínico Preciso</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-primary shrink-0 mt-0.5"></i>
+                                <span class="text-text-muted">Intervenção Lúdica e Ativa</span>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i data-lucide="check-circle-2" class="w-6 h-6 text-brand-primary shrink-0 mt-0.5"></i>
+                                <span class="text-text-muted">Orientação a Pais e Escolas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION: ESPECIALIDADES -->
+        <section id="servicos" class="py-24 bg-surface text-center">
+            <div class="container mx-auto px-6">
+                
+                <div class="max-w-3xl mx-auto mb-24 fade-in-up">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+                        Como eu posso te <span class="text-brand-primary border-b-4 border-brand-primary/20 pb-1">ajudar?</span>
+                    </h2>
+                    <p class="text-lg text-text-muted">
+                        Do diagnóstico à intervenção, ofereço um espectro completo de cuidados psicopedagógicos focados na individualidade do paciente.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    
+                    <div class="glass-card p-10 rounded-[2rem] hover-lift md:translate-y-6">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mb-6">
+                            <i data-lucide="search" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Avaliação Psicopedagógica</h3>
+                        <p class="text-text-muted mb-6">
+                            Investigação aprofundada das causas das dificuldades escolares, estilos de aprendizagem e funções cognitivas básicas.
+                        </p>
+                    </div>
+                    
+                    <div class="p-10 rounded-[2rem] bg-brand-primary text-white hover-lift shadow-2xl">
+                        <div class="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-white mb-6">
+                            <i data-lucide="puzzle" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Intervenção Clínica</h3>
+                        <p class="text-primary-100 mb-6">
+                            Trabalho focado e lúdico para superar barreiras de aprendizagem, estimular funções executivas e resgatar a autoestima escolar.
+                        </p>
+                        <a href="https://wa.me/5516991864393" target="_blank" class="inline-flex items-center gap-2 font-bold hover:text-primary-100 transition-colors">
+                            Saber mais <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="glass-card p-10 rounded-[2rem] hover-lift md:mt-12">
+                        <div class="w-14 h-14 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mb-6">
+                            <i data-lucide="graduation-cap" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Assessoria Escolar</h3>
+                        <p class="text-text-muted mb-6">
+                            Parceria direta com professores e escolas para adaptar materiais, avaliações e criar um currículo inclusivo e eficaz.
+                        </p>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+        
+        <!-- SECTION: METODOLOGIA -->
+        <section id="metodologia" class="py-24 bg-primary-dark text-white relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-primary-dark to-[#491470] opacity-90"></div>
+            <div class="absolute -right-32 -bottom-32 w-96 h-96 border-8 border-brand-primary/30 rounded-full blur-sm opacity-50"></div>
+            
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white leading-[1.1]">
+                            A Ciência do Aprender, a Arte do Cuidar.
+                        </h2>
+                        <p class="text-lg text-primary-100 mb-10 leading-relaxed">
+                            Minha metodologia não se baseia em "testar por testar". Cada protocolo aplicado visa desenhar um mapa único de como o paciente funciona, para então construir uma ponte até o seu potencial máximo.
+                        </p>
+                        
+                        <ul class="space-y-6">
+                            <li class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">1</div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">Entrevista e Anamnese</h4>
+                                    <p class="text-primary-100 text-sm">Escuta ativa dos pais para mapear o histórico completo de desenvolvimento.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">2</div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">Mapeamento Clínico</h4>
+                                    <p class="text-primary-100 text-sm">Aplicação de testes padronizados e observações projetivas exclusivas.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white shrink-0">3</div>
+                                <div>
+                                    <h4 class="font-bold text-xl mb-1">Plano de Intervenção</h4>
+                                    <p class="text-primary-100 text-sm">Devolução do diagnóstico com rotas claras para avanço em casa e na escola.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-surface p-10 rounded-[2rem] text-text shadow-2xl relative mt-4 md:mt-0 md:ml-8 border border-brand-primary/10">
+                        <h3 class="font-bold text-2xl md:text-3xl mb-4 leading-tight">Pronto para dar o primeiro passo?</h3>
+                        <p class="text-text-muted mb-12">
+                            A dificuldade de aprendizagem não define uma criança. É apenas um sinal de que precisamos ensinar de um jeito novo. Vamos descobrir essa rota juntos?
+                        </p>
+                        <a href="https://wa.me/5516991864393" target="_blank" class="btn-primary w-full flex items-center justify-center gap-2 text-lg">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i> Agendar pelo WhatsApp
+                        </a>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: YOUTUBE CAROUSEL -->
+        <section id="youtube" class="py-24 bg-surface-alt">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto text-center mb-20">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-sm font-semibold mb-6 border border-brand-primary/20">
+                        <i data-lucide="youtube" class="w-4 h-4"></i>
+                        Canal no YouTube
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                        Conteúdo gratuito para <span class="text-brand-primary">transformar</span> vidas
+                    </h2>
+                    <p class="text-lg text-text-muted">
+                        Toda semana, novos vídeos sobre aprendizagem, desenvolvimento e educação inclusiva.
+                    </p>
+                </div>
+
+                <!-- Carousel Container -->
+                <div class="relative" id="yt-carousel-wrapper">
+                    <!-- Loading State -->
+                    <div id="yt-loading" class="flex items-center justify-center py-20 gap-3 text-brand-primary">
+                        <i data-lucide="loader-2" class="w-6 h-6 animate-spin-slow"></i>
+                        <span class="font-medium text-text-muted">Carregando vídeos...</span>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="yt-error" class="hidden text-center py-16">
+                        <i data-lucide="wifi-off" class="w-12 h-12 text-brand-primary/30 mx-auto mb-4"></i>
+                        <p class="text-text-muted font-medium">Não foi possível carregar os vídeos.</p>
+                        <p class="text-sm text-text-muted/70 mt-1">Configure a API key do YouTube no arquivo <code>script.js</code>.</p>
+                    </div>
+
+                    <!-- Slides Track -->
+                    <div id="yt-track" class="hidden">
+                        <div id="yt-player-container" class="hidden mb-8 rounded-[2rem] overflow-hidden shadow-2xl aspect-video max-w-4xl mx-auto">
+                            <iframe id="yt-player" class="w-full h-full" frameborder="0" title="Player de Vídeo YouTube - Raiane Psicopedagogia" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        </div>
+
+                        <div class="relative">
+                            <div id="yt-slides" class="flex gap-6 overflow-hidden">
+                                <!-- Cards injected via JS -->
+                            </div>
+
+                            <button id="yt-prev" class="yt-nav-btn absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-surface rounded-full shadow-xl flex items-center justify-center text-brand-primary hover:bg-brand-primary hover:text-white transition-all z-10 border border-brand-primary/10" aria-label="Anterior">
+                                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                            </button>
+                            <button id="yt-next" class="yt-nav-btn absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-surface rounded-full shadow-xl flex items-center justify-center text-brand-primary hover:bg-brand-primary hover:text-white transition-all z-10 border border-brand-primary/10" aria-label="Próximo">
+                                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div id="yt-dots" class="flex justify-center gap-2 mt-8"></div>
+                    </div>
+                </div>
+
+                <!-- CTA Channel -->
+                <div class="text-center mt-12">
+                    <a href="https://www.youtube.com/@psicopedagogia.poramor" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-full border-2 border-brand-primary/20 text-brand-primary font-semibold hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300">
+                        <i data-lucide="youtube" class="w-5 h-5"></i>
+                        Ver todos os vídeos no canal
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: FAQ -->
+        <section id="faq" class="py-24 bg-surface">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-20">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-sm font-semibold mb-6 border border-brand-primary/20">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i>
+                            Dúvidas Frequentes
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+                            Antes de agendar, <span class="text-brand-primary">tire suas dúvidas</span>
+                        </h2>
+                        <p class="text-lg text-text-muted">Respostas honestas para as perguntas mais comuns de pais e pacientes.</p>
+                    </div>
+
+                    <!-- FAQ Accordion -->
+                    <div class="faq-list space-y-4" id="faq-accordion">
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>O que é a Psicopedagogia e para quem é indicada?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>A Psicopedagogia é a ciência que investiga e intervem nos processos de aprendizagem humana. É indicada para crianças, adolescentes e adultos que apresentam dificuldades para aprender — seja por dislexia, TDAH, TEA, ansiedade escolar ou outras causas. Também auxilia pais e escolas a entender e apoiar melhor esses processos.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>Qual a diferença entre avaliação e intervenção psicopedagógica?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>A <strong>avaliação</strong> é o processo diagnóstico: um mapeamento completo do perfil de aprendizagem do paciente, com testes padronizados e observações clínicas. A <strong>intervenção</strong> é o trabalho continuado após o diagnóstico, com sessões focadas em superar as barreiras identificadas e desenvolver autonomia no aprender.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>A partir de qual idade meu filho pode ser atendido?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>O atendimento pode começar a partir dos 4 anos de idade, quando já é possível observar padrões de atenção, linguagem e processamento. Quanto antes identificado, maiores são as chances de intervenção eficaz. Não existe "cedo demais" para cuidar do desenvolvimento.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>Quantas sessões são necessárias para ter resultados?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Cada caso é único. A avaliação dura em média de 4 a 6 sessões. Após o diagnóstico, o plano de intervenção é personalizado — alguns pacientes evoluem rápido, outros exigem um acompanhamento mais prolongado. O que posso garantir é que cada sessão é planejada com propósito clínico e afeto.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>O atendimento é presencial ou online?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Ofereço atendimento nas duas modalidades. O atendimento presencial é recomendado especialmente para a fase de avaliação, pois permite a aplicação de testes padronizados com materiais lúdicos. A intervenção pode ser online com excelentes resultados. Entre em contato pelo WhatsApp para conversarmos sobre o formato ideal para o seu caso.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-trigger" aria-expanded="false">
+                                <span>A Psicopedagogia substitui o psicólogo ou neurologista?</span>
+                                <i data-lucide="plus" class="faq-icon w-5 h-5 shrink-0"></i>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Não substitui — complementa. Em muitos casos, atuo em parceria com psicólogos, neuropsicólogos e médicos para oferecer ao paciente um olhar multidisciplinar completo. A Psicopedagogia foca especificamente no processo de aprendizagem, enquanto outras especialidades atuam em outras dimensões do desenvolvimento.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CTA after FAQ -->
+                    <div class="mt-16 p-8 rounded-[2rem] bg-brand-primary/5 border border-brand-primary/10 text-center">
+                        <p class="text-lg font-semibold text-text mb-2">Ainda ficou com alguma dúvida?</p>
+                        <p class="text-text-muted mb-6">Me manda uma mensagem! É rápido, sem compromisso e sem jargões complicados.</p>
+                        <a href="https://wa.me/5516991864393" target="_blank" class="btn-primary inline-flex items-center gap-2">
+                            <i data-lucide="message-circle" class="w-5 h-5"></i>
+                            Perguntar pelo WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-surface border-t border-brand-primary/10 py-10">
+            <div class="container mx-auto px-6 text-center text-text-muted text-sm flex flex-col items-center justify-center gap-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="heart" class="w-4 h-4 text-brand-primary" fill="currentColor"></i>
+                    <span class="font-bold text-text">Psicopedagogia Por Amor</span>
+                </div>
+                <p>&copy; 2026 Raiane Psicopedagoga. Todos os direitos reservados.</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- Floating WhatsApp Button (Official) -->
+    <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 group">
+        <!-- Tooltip -->
+        <div class="wa-tooltip bg-white text-text px-4 py-2 rounded-xl shadow-xl border border-brand-primary/10 text-sm font-medium mb-1 opacity-0 translate-y-2 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+            💜 Fale com a Raiane!
+        </div>
+        <!-- Button -->
+        <a href="https://wa.me/5516991864393"
+           target="_blank"
+           aria-label="Falar com Raiane no WhatsApp"
+           id="wa-fab"
+           class="w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 animate-pulse-whatsapp hover:scale-110 active:scale-95"
+           style="background-color: #25D366;">
+            <!-- Official WhatsApp SVG Logo -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="white">
+                <path d="M16.003 2.667C8.639 2.667 2.667 8.638 2.667 16c0 2.35.637 4.648 1.846 6.661L2.667 29.333l6.84-1.797A13.28 13.28 0 0 0 16.003 29.333C23.364 29.333 29.333 23.362 29.333 16S23.364 2.667 16.003 2.667zm0 24.267a11.068 11.068 0 0 1-5.647-1.549l-.404-.24-4.062 1.066 1.083-3.952-.264-.417A11.033 11.033 0 0 1 4.934 16c0-6.108 4.965-11.067 11.069-11.067 6.108 0 11.067 4.96 11.067 11.067 0 6.105-4.959 11.067-11.067 11.067zm6.074-8.29c-.334-.167-1.974-.974-2.281-1.086-.307-.111-.53-.167-.754.167-.223.333-.863 1.086-1.058 1.308-.195.223-.39.25-.723.084-.334-.167-1.409-.52-2.683-1.656-.992-.885-1.662-1.977-1.856-2.311-.194-.333-.021-.514.146-.68.15-.148.333-.39.5-.584.167-.194.223-.334.333-.557.112-.223.056-.417-.028-.584-.084-.167-.754-1.817-1.033-2.488-.272-.654-.548-.565-.754-.575l-.641-.011c-.223 0-.584.083-.89.417-.307.333-1.169 1.142-1.169 2.784s1.197 3.229 1.364 3.452c.167.222 2.355 3.596 5.707 5.045.798.344 1.42.55 1.904.704.8.255 1.529.22 2.105.133.641-.096 1.974-.807 2.253-1.587.277-.779.277-1.448.194-1.587-.083-.14-.307-.223-.641-.39z"/>
+            </svg>
+        </a>
+    </div>
+
+    <!-- Initial Scripts -->
+    <script src="script.js"></script>
+</body>
 </html>
