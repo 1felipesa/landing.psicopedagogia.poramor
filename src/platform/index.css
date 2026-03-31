@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-surface text-slate-900 font-sans;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background: #cac4d0; 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #938f99; 
+}
+
+.md3-ripple {
+  @apply transition-colors duration-700;
+  background-position: center;
+}
+.md3-ripple:hover {
+  background: #f3e8ff radial-gradient(circle, transparent 1%, #f3e8ff 1%) center/15000%;
+}
+.md3-ripple:active {
+  @apply bg-primary-200 bg-cover duration-0;
+}

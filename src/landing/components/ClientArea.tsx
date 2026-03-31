@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ClientArea: React.FC = () => {
     const features = [
@@ -118,15 +119,13 @@ const ClientArea: React.FC = () => {
                             ))}
                         </div>
 
-                        <a
-                            href="https://psicopedagogiaporamor.vercel.app"
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <Link
+                            to="/area-cliente"
                             className="inline-flex items-center justify-center gap-3 w-full sm:w-auto bg-lsp-purple hover:bg-lsp-purple/90 text-white font-black py-3.5 px-6 sm:py-4 sm:px-8 rounded-full shadow-[0_6px_0_0_#7B1FA2] active:shadow-none active:translate-y-1.5 transition-all text-base sm:text-lg group"
                         >
                             Acessar minha área
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform sm:w-5 sm:h-5"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
-                        </a>
+                        </Link>
                     </div>
 
                 </div>

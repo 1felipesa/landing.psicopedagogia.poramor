@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+
+# Scripts
+download_platform.ps1
 
 # Editor directories and files
 .vscode/*

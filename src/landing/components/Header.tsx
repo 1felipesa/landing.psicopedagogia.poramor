@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const scrollToSection = (id: string) => {
@@ -85,10 +86,8 @@ const Header: React.FC = () => {
         </div>
 
         <div className="flex items-center justify-end shrink-0 pl-4">
-          <a
-            href="https://psicopedagogiaporamor.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/area-cliente"
             className="bg-lsp-purple hover:bg-lsp-purple/90 text-white font-black py-2 px-4 sm:py-3 sm:px-7 rounded-full shadow-lg shadow-lsp-purple/20 hover:shadow-lsp-purple/40 active:scale-95 transition-all flex items-center gap-2 text-[11px] sm:text-sm uppercase tracking-wider shrink-0"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5" aria-hidden="true">
@@ -97,7 +96,7 @@ const Header: React.FC = () => {
             </svg>
             <span className="hidden sm:inline">Área do Cliente</span>
             <span className="sm:hidden">Entrar</span>
-          </a>
+          </Link>
         </div>
       </nav>
     </header>

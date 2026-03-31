@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   const scrollToSection = (id: string) => {
@@ -97,7 +98,7 @@ const Footer: React.FC = () => {
                 <li><button onClick={() => scrollToSection('metodologia')} className="text-sm font-bold text-slate-500 hover:text-finn-blue transition-colors uppercase tracking-widest">Sinais</button></li>
                 <li><button onClick={() => scrollToSection('conteudo')} className="text-sm font-bold text-slate-500 hover:text-finn-blue transition-colors uppercase tracking-widest">Conteúdo</button></li>
                 <li><button onClick={() => scrollToSection('faq')} className="text-sm font-bold text-slate-500 hover:text-finn-blue transition-colors uppercase tracking-widest">Dúvidas</button></li>
-                <li><a href="https://psicopedagogiaporamor.vercel.app" className="text-sm font-bold text-lsp-purple hover:underline transition-colors uppercase tracking-widest">Acessar Área Cliente</a></li>
+                <li><Link to="/area-cliente" className="text-sm font-bold text-lsp-purple hover:underline transition-colors uppercase tracking-widest">Acessar Área Cliente</Link></li>
               </ul>
             </div>
           </div>
