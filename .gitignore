@@ -27,3 +27,6 @@ download_platform.ps1
 *.njsproj
 *.sln
 *.sw?
+
+# Antigravity assistents
+.agent
