@@ -20,10 +20,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <div className={`space-y-1 ${className}`}>
                 <div className="relative group">
                     {Icon && (
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
                             <Icon
-                                className={`h-5 w-5 transition-colors duration-200 ${isFocused || props.value ? 'text-primary-600 dark:text-primary-400' : 'text-slate-500 dark:text-slate-500'
-                                    }`}
+                                className={`h-5 w-5 transition-colors duration-200 ${isFocused || props.value ? 'text-[#5a2e8c]' : 'text-slate-400'}`}
                             />
                         </div>
                     )}
@@ -32,15 +31,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         ref={ref}
                         type={inputType}
                         className={`
-              block w-full text-slate-900 dark:text-white bg-surface-variant/30 dark:bg-slate-800 rounded-t-lg border-b-2 
-              appearance-none focus:outline-none focus:ring-0 peer transition-all
-              pt-6 pb-2 placeholder:text-slate-400 dark:placeholder:text-slate-500
-              ${Icon ? 'pl-12' : 'px-4'}
+              block w-full text-slate-800 bg-slate-50/50 border border-slate-200 rounded-2xl
+              focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#5a2e8c]/10 focus:border-[#5a2e8c] transition-all shadow-sm
+              pt-6 pb-2 placeholder:text-transparent
+              ${Icon ? 'pl-11' : 'px-4'}
               ${isPassword ? 'pr-12' : 'pr-4'}
-              ${error
-                                ? 'border-red-500 focus:border-red-600'
-                                : 'border-slate-400 dark:border-slate-700 focus:border-primary-600 dark:focus:border-primary-500'
-                            }
+              ${error ? 'border-red-500 focus:border-red-600' : ''}
             `}
                         onFocus={(e) => {
                             setIsFocused(true);
@@ -55,10 +51,12 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
                     <label
                         className={`
-              absolute duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] 
-              cursor-text transition-all
-              ${Icon ? 'left-12' : 'left-4'}
-              ${error ? 'text-red-500 peer-focus:text-red-600' : 'text-slate-500 dark:text-slate-400 peer-focus:text-primary-600 dark:peer-focus:text-primary-400'}
+              absolute transition-all duration-300 pointer-events-none
+              ${Icon ? 'left-11' : 'left-4'}
+              ${isFocused || props.value 
+                  ? 'top-1.5 text-[10px] uppercase tracking-widest font-bold text-[#5a2e8c]' 
+                  : 'top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400'}
+              ${error && (isFocused || props.value) ? 'text-red-500' : ''}
             `}
                     >
                         {label}
@@ -68,7 +66,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 p-1 transition-colors"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 transition-colors"
                         >
                             {showPassword ? (
                                 // EyeOff Icon

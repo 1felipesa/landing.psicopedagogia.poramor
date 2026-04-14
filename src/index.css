@@ -1,26 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-jake-yellow: #FFD52E;
-  --color-finn-blue: #258CF4;
-  --color-lsp-purple: #9C27B0;
-  --color-grass-green: #79C142;
+  --color-primary: #4e0078;
+  --color-primary-container: #6a1b9a;
+  --color-secondary: #835400;
+  --color-secondary-container: #fcab28;
+  --color-tertiary: #00363d;
+  --color-surface: #fff7ff;
+  --color-on-surface: #1f1926;
+  --color-outline-variant: rgba(208, 194, 211, 0.15);
   
-  /* Platform Colors */
-  --color-surface: #F8F9FE;
-  --color-primary-50: #f5f3ff;
-  --color-primary-100: #ede9fe;
-  --color-primary-200: #ddd6fe;
-  --color-primary-300: #c4b5fd;
-  --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
-  --color-primary-700: #6d28d9;
-  --color-primary-800: #5b21b6;
-  --color-primary-900: #4c1d95;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Manrope", sans-serif;
 
-  --font-brand: "Montserrat", sans-serif;
-  --font-adventure: "Bubblegum Sans", cursive;
+  --shadow-premium: 0 12px 32px -8px rgba(78, 0, 120, 0.08);
+  --shadow-ambient: 48px 48px 64px -12px rgba(78, 0, 120, 0.04);
 }
 
 /* Material Design 3 Ripples (from Platform) */
@@ -33,29 +27,40 @@
 
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #F0F9FF;
-  color: #0f172a;
-  /* equivalent to slate-900 */
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  overflow-x: hidden;
 }
 
-.font-adventure {
-  font-family: 'Bubblegum Sans', cursive;
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
 }
 
-.font-brand {
-  font-family: 'Montserrat', sans-serif;
+.glass-premium {
+  background: rgba(255, 247, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-.adventure-border {
-  border-width: 4px;
-  border-style: solid;
-  border-color: white;
-  border-radius: 2rem;
+.text-editorial {
+  letter-spacing: -0.02em;
+}
+
+.felt-texture {
+  position: relative;
+}
+
+.felt-texture::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0);

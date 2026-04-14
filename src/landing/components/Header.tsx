@@ -1,9 +1,19 @@
-
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { User, Heart, MessageCircle, Menu, X } from 'lucide-react';
 
 const Header: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const scrollToSection = (id: string) => {
+    setIsMobileMenuOpen(false); // Close menu on navigation
+    if (location.pathname !== '/') {
+      navigate(`/#${id}`);
+      return;
+    }
+
     const element = document.getElementById(id);
     const lenis = (window as any).lenis;
 
@@ -28,77 +38,138 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
-      <nav className="bg-white/94 backdrop-blur-md w-full max-w-7xl rounded-full shadow-xl border border-slate-200/60 py-2.5 px-4 sm:px-8 flex items-center transition-all duration-300">
+    <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex flex-col items-center px-4 sm:px-6 w-full pointer-events-none">
+      <nav className="glass-premium w-full max-w-7xl rounded-full shadow-premium border border-outline-variant py-2 sm:py-2.5 px-4 sm:px-8 flex items-center justify-between transition-all duration-300 pointer-events-auto relative z-50">
         <div className="flex items-center shrink-0">
           <div
             role="button"
             tabIndex={0}
             aria-label="Voltar ao início"
-            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-lsp-purple rounded-xl"
+            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
             onClick={() => {
-              if ((window as any).lenis) {
+              setIsMobileMenuOpen(false);
+              if (location.pathname !== '/') {
+                navigate('/');
+              } else if ((window as any).lenis) {
                 (window as any).lenis.scrollTo(0, { duration: 1.5 });
               } else {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                if ((window as any).lenis) {
-                  (window as any).lenis.scrollTo(0, { duration: 1.5 });
-                } else {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }
-            }}
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-lsp-purple/10 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-lsp-purple/20 group-hover:scale-110 shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-lsp-purple sm:w-[24px] sm:h-[24px]" aria-hidden="true">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-              </svg>
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/5 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary/10 group-hover:scale-110 shrink-0">
+              <Heart size={20} className="text-primary sm:w-[24px] sm:h-[24px] fill-primary/20" />
             </div>
-            <div className="flex flex-col leading-tight font-brand pr-4">
-              <span className="text-lg sm:text-[22px] text-lsp-purple font-black tracking-tight">Psicopedagogia</span>
-              <span className="font-black text-[9px] sm:text-[13px] text-slate-800 -mt-1 uppercase tracking-[0.2em]">por Amor</span>
+            <div className="flex flex-col leading-tight pr-4">
+              <span className="text-lg sm:text-[22px] text-primary font-display font-black tracking-tight text-editorial">Psicopedagogia</span>
+              <span className="font-body font-black text-[9px] sm:text-[11px] text-on-surface/60 -mt-1 uppercase tracking-[0.2em]">por Amor</span>
             </div>
           </div>
         </div>
 
-        {/* Desktop Navigation - Centered in available space */}
+        {/* Desktop Navigation */}
         <div className="hidden lg:flex flex-1 items-center justify-center gap-6 xl:gap-8 px-4">
           {[
-            { label: 'A Guia', id: 'sobre' },
-            { label: 'Expedições', id: 'servicos' },
-            { label: 'Plataforma', id: 'area-cliente' },
-            { label: 'Sinais', id: 'metodologia' },
-            { label: 'Conteúdo', id: 'conteudo' },
+            { label: 'Sobre', id: 'sobre' },
+            { label: 'Metodologia', id: 'metodologia' },
+            { label: 'Serviços', id: 'servicos' },
+            { label: 'Biblioteca', id: 'biblioteca' },
             { label: 'Dúvidas', id: 'faq' }
           ].map((link) => (
             <button
               key={link.id}
               onClick={() => scrollToSection(link.id)}
-              className="text-[13px] font-bold text-slate-500 hover:text-lsp-purple transition-all hover:scale-105 uppercase tracking-widest whitespace-nowrap"
+              className="text-[12px] font-body font-bold text-on-surface/70 hover:text-primary transition-all uppercase tracking-widest whitespace-nowrap"
             >
               {link.label}
             </button>
           ))}
         </div>
 
-        <div className="flex items-center justify-end shrink-0 pl-4">
-          <Link
-            to="/area-cliente"
-            className="bg-lsp-purple hover:bg-lsp-purple/90 text-white font-black py-2 px-4 sm:py-3 sm:px-7 rounded-full shadow-lg shadow-lsp-purple/20 hover:shadow-lsp-purple/40 active:scale-95 transition-all flex items-center gap-2 text-[11px] sm:text-sm uppercase tracking-wider shrink-0"
+        <div className="flex items-center justify-end shrink-0 pl-4 gap-2 sm:gap-4">
+          <a
+            href="/area-cliente"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:bg-primary/5 font-bold py-2 px-3 sm:px-4 rounded-full transition-all flex items-center gap-2 text-[11px] sm:text-sm uppercase tracking-wider shrink-0"
+            aria-label="Portal do Cliente"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5" aria-hidden="true">
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span className="hidden sm:inline">Área do Cliente</span>
-            <span className="sm:hidden">Entrar</span>
-          </Link>
+            <User size={18} strokeWidth={2.5} />
+            <span className="hidden md:inline">Portal do Cliente</span>
+          </a>
+          
+          <button
+            onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-6 rounded-full shadow-premium transition-all text-[11px] sm:text-sm uppercase tracking-wider hidden lg:flex items-center gap-2 shrink-0"
+          >
+            <MessageCircle size={18} />
+            Agendar Consulta
+          </button>
+
+          {/* Hamburger Menu Toggle (Mobile) */}
+          <button 
+            className="lg:hidden p-2 text-primary hover:bg-primary/5 rounded-full transition-colors flex items-center justify-center"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Abrir menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </nav>
+
+      {/* Mobile Menu Overlay */}
+      <div 
+        className={`fixed inset-0 top-0 bg-surface/95 backdrop-blur-xl transition-all duration-300 lg:hidden flex flex-col pt-24 px-6 pb-12 overflow-y-auto pointer-events-auto z-40 ${
+            isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
+        }`}
+      >
+          <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
+            {/* Links */}
+            <div className="flex flex-col gap-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-2">Navegação Principal</span>
+                {[
+                  { label: 'Sobre a Especialista', id: 'sobre' },
+                  { label: 'Nossa Metodologia', id: 'metodologia' },
+                  { label: 'Serviços Oferecidos', id: 'servicos' },
+                  { label: 'Biblioteca Gratuita', id: 'biblioteca' },
+                  { label: 'Dúvidas Frequentes', id: 'faq' }
+                ].map((link) => (
+                  <button
+                    key={link.id}
+                    onClick={() => scrollToSection(link.id)}
+                    className="text-left font-display font-black text-2xl text-on-surface py-4 border-b border-outline-variant/30 hover:text-primary transition-colors flex items-center justify-between"
+                  >
+                    {link.label}
+                  </button>
+                ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col gap-4 mt-8">
+                <a
+                  href="/area-cliente"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="bg-primary/5 text-primary border border-primary/20 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 w-full"
+                >
+                  <User size={20} className="text-primary"/>
+                  Portal do Cliente Exclusivo
+                </a>
+
+                <button
+                  onClick={() => {
+                      window.open('https://wa.me/5516991864393', '_blank');
+                      setIsMobileMenuOpen(false);
+                  }}
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-premium w-full"
+                >
+                  <MessageCircle size={20}/>
+                  Agendar Consulta via WhatsApp
+                </button>
+            </div>
+          </div>
+      </div>
     </header>
   );
 };

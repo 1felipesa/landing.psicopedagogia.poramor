@@ -1,31 +1,36 @@
-
 import React from 'react';
+import { MessageCircle, ArrowRight } from 'lucide-react';
+import { trackConversion } from '../../utils/analytics';
 
 const CTA: React.FC = () => {
   return (
-    <section className="py-16 sm:py-24 px-4 bg-white">
-      <div className="w-full max-w-5xl mx-auto bg-finn-blue rounded-[2.5rem] sm:rounded-[3.5rem] p-8 sm:p-24 text-center relative overflow-hidden shadow-2xl group/cta">
-        {/* Decorative Grid */}
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#fff 2px, transparent 2px)', backgroundSize: '24px 24px' }}></div>
-
-        {/* Animated Orbs */}
-        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl group-hover/cta:scale-125 transition-transform duration-700"></div>
-        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-lsp-purple/20 rounded-full blur-2xl group-hover/cta:scale-125 transition-transform duration-700"></div>
+    <section className="py-24 px-4 bg-white">
+      <div className="w-full max-w-7xl mx-auto bg-primary rounded-[3rem] sm:rounded-[4rem] p-10 sm:p-24 text-center relative overflow-hidden shadow-ambient group/cta">
+        {/* Subtle Ambient Background */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] -z-0"></div>
+        <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[80px] -z-0"></div>
 
         <div className="relative z-10 flex flex-col items-center">
-          <h2 className="text-4xl sm:text-6xl font-black text-white mb-8 leading-tight">Pronto para começar <br />a aventura?</h2>
-          <p className="text-white/90 text-lg sm:text-2xl font-medium mb-12 max-w-3xl leading-relaxed">
-            Agende uma conversa e vamos descobrir juntos como potenciar o aprendizado e transformar dificuldades em superpoderes.
+          <span className="text-white/60 font-bold uppercase tracking-[0.3em] text-[10px] sm:text-[11px] mb-6 block">Vamos Conversar?</span>
+          
+          <h2 className="text-4xl sm:text-6xl xl:text-7xl font-display font-black text-white mb-10 leading-[1.1] max-w-4xl">
+            Pronto para ver seu filho <span className="text-secondary">florescer?</span>
+          </h2>
+          
+          <p className="text-white/80 text-lg sm:text-xl font-body mb-14 max-w-2xl leading-relaxed">
+            Agende uma conversa inicial e vamos descobrir juntos como destravar o potencial que já existe aí.
           </p>
 
           <a
             href="https://wa.me/5516991864393"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto bg-[#25D366] hover:bg-white hover:text-[#25D366] text-white font-black py-4 px-8 sm:py-6 sm:px-14 rounded-full shadow-[0_8px_0_0_#128c7e] hover:shadow-[0_8px_0_0_#e5e7eb] active:shadow-none active:translate-y-2 transition-all flex items-center justify-center gap-3 sm:gap-4 text-lg sm:text-2xl group"
+            onClick={() => trackConversion('Contact', 'CTAFooterPrincipal')}
+            className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-6 px-12 rounded-full shadow-premium transition-all flex items-center justify-center gap-4 text-xl group"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:scale-110 transition-transform sm:w-8 sm:h-8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+            <MessageCircle size={24} strokeWidth={2.5} />
             Agendar no WhatsApp
+            <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </a>
         </div>
       </div>

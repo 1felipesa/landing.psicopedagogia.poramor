@@ -1,70 +1,85 @@
-
 import React from 'react';
+import { ClipboardCheck, Zap, Globe, ArrowRight } from 'lucide-react';
 
 const services = [
   {
-    title: 'Diagnóstico',
-    subtitle: '(O Mapa)',
-    description: 'Uma investigação profunda e técnica para identificar onde a jornada travou. O mapa necessário para entender as barreiras de aprendizagem e traçar a melhor rota de superação.',
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-finn-blue"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" /><line x1="9" x2="9" y1="3" y2="18" /><line x1="15" x2="15" y1="6" y2="21" /></svg>,
-    color: 'bg-blue-50',
-    accent: 'text-finn-blue'
+    title: 'Avaliação Psicopedagógica',
+    subtitle: 'O Primeiro Passo',
+    description: 'Processo investigativo profundo para entender o funcionamento cognitivo e emocional do aprendiz. É aqui que descobrimos o mapa neural do seu filho.',
+    icon: <ClipboardCheck size={36} strokeWidth={1} />,
+    color: 'bg-primary/5 text-primary',
+    btn: 'text-primary border-primary/20 hover:bg-primary hover:text-white'
   },
   {
-    title: 'Intervenção',
-    subtitle: '(A Jornada)',
-    description: 'O momento da ação! Sessões que unem ciência e ludicidade para estimular as funções executivas, a leitura, a escrita e o prazer de descobrir o novo.',
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-jake-yellow"><circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" /></svg>,
-    color: 'bg-yellow-50',
-    accent: 'text-jake-yellow'
+    title: 'Intervenção Clínica',
+    subtitle: 'Neuroplasticidade Ativa',
+    description: 'Sessões dinâmicas onde, através de jogos e do vínculo, criamos novas conexões cerebrais para sanar as dificuldades de leitura, escrita e matemática.',
+    icon: <Zap size={36} strokeWidth={1} />,
+    color: 'bg-secondary/5 text-secondary',
+    btn: 'text-secondary border-secondary/20 hover:bg-secondary hover:text-white'
   },
   {
-    title: 'Atendimento Itinerante',
-    subtitle: '(Suporte no Campo)',
-    description: 'Flexibilidade para sua aventura. Atendimentos presenciais em salas de coworking confortáveis em Ribeirão Preto/SP ou região, também em escolas e suporte online pra atender para qualquer lugar do mundo.',
-    icon: <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-grass-green"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>,
-    color: 'bg-green-50',
-    accent: 'text-grass-green'
+    title: 'Atendimento Híbrido',
+    subtitle: 'Ribeirão Preto & Online',
+    description: 'Acolhimento presencial na clínica em Ribeirão Preto, e atendimento online seguro para brasileiros em qualquer lugar do mundo.',
+    icon: <Globe size={36} strokeWidth={1} />,
+    color: 'bg-tertiary/5 text-tertiary',
+    btn: 'text-tertiary border-tertiary/20 hover:bg-tertiary hover:text-white'
   }
 ];
 
 const Services: React.FC = () => {
   return (
-    <section id="servicos" className="py-16 sm:py-24 px-4 bg-[#F0F9FF] flex flex-col items-center">
-      <div className="w-full max-w-4xl text-center mb-10 sm:mb-16">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-jake-yellow/20 text-yellow-700 rounded-full text-xs font-black uppercase tracking-widest mb-4">
-          Nossos Serviços
+    <section id="servicos" className="py-32 px-4 bg-white relative overflow-hidden">
+      
+      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-outline-variant/10 to-transparent -z-10"></div>
+
+      <div className="w-full max-w-7xl mx-auto">
+        <div className="text-center mb-24 relative">
+          <span className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] sm:text-[11px] mb-4 block">Nossa Expertise</span>
+          <h2 className="text-4xl sm:text-6xl font-display font-black text-on-surface mb-6 text-editorial">
+            Como destravamos a <span className="text-primary">aprendizagem?</span>
+          </h2>
+          <p className="text-on-surface/60 font-body text-lg max-w-2xl mx-auto">
+            Abordagens baseadas em evidências para acolher a dor de quem tem medo da escola e transformar isso em potência.
+          </p>
         </div>
-        <h2 className="text-3xl sm:text-5xl font-black text-slate-900 mb-4 px-4">
-          Nossas <span className="text-jake-yellow underline decoration-jake-yellow/30 decoration-8 underline-offset-4">Expedições</span>
-        </h2>
-        <p className="text-slate-600 font-medium text-base sm:text-lg max-w-2xl mx-auto px-4">
-          Escolha o equipamento certo para a jornada do aprendizado. Cada serviço é um item essencial no seu inventário de evolução.
-        </p>
-      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-        {services.map((service, index) => (
-          <div
-            key={index}
-            className="group bg-white rounded-[2.5rem] p-4 flex flex-col border-2 border-slate-100 shadow-xl hover:-translate-y-2 transition-all duration-300"
-          >
-            <div className={`w-full aspect-[2/1] ${service.color} rounded-[2rem] flex items-center justify-center mb-4 group-hover:scale-[0.98] transition-transform overflow-hidden relative`}>
-              <div className="transform group-hover:scale-110 transition-transform duration-500 z-10 scale-75 sm:scale-100">
-                {service.icon}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 lg:gap-24 relative z-10">
+          {services.map((service, index) => (
+            <div
+              key={index}
+              className="group flex flex-col"
+            >
+              <div className={`w-24 h-24 sm:w-28 sm:h-28 mx-auto md:mx-0 ${service.color} rounded-[2.5rem] flex items-center justify-center mb-8 shadow-sm group-hover:shadow-premium transition-all duration-500 group-hover:-translate-y-2 border border-outline-variant/5`}>
+                <div className="group-hover:scale-110 transition-transform duration-500">
+                   {service.icon}
+                </div>
               </div>
-              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors"></div>
-            </div>
 
-            <div className="px-4 pb-4 flex-1 flex flex-col items-center text-center">
-              <h3 className="text-xl font-black text-slate-900 mb-1">{service.title}</h3>
-              <p className={`font-black uppercase tracking-widest text-[10px] mb-3 ${service.accent}`}>{service.subtitle}</p>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                {service.description}
-              </p>
+              <div>
+                <span className={`font-black uppercase tracking-widest text-[9px] mb-4 block ${service.color.split(' ')[1]}`}>
+                   {service.subtitle}
+                </span>
+                <h3 className="text-2xl lg:text-3xl font-display font-black text-on-surface mb-4 leading-tight">
+                   {service.title}
+                </h3>
+                <p className="text-on-surface/60 font-body text-base leading-relaxed mb-8">
+                  {service.description}
+                </p>
+              </div>
+
+              <div className="mt-auto">
+                <button 
+                  onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
+                  className={`inline-flex items-center justify-center gap-3 font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-full border transition-all duration-300 w-full hover:shadow-ambient ${service.btn}`}
+                >
+                  Saiba como funciona <ArrowRight size={16} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

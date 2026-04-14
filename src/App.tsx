@@ -2,6 +2,8 @@
 import React, { useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import LandingPage from './landing/LandingPage';
+import EbooksPage from './landing/EbooksPage';
+import PrivacyPage from './landing/PrivacyPage';
 import PlatformApp from './platform/App';
 
 const App: React.FC = () => {
@@ -23,6 +25,8 @@ const App: React.FC = () => {
         O "/*" é importante para que o PlatformApp gerencie suas próprias sub-rotas (/admin, /patient, etc).
       */}
       <Route path="/area-cliente/*" element={<PlatformApp />} />
+      <Route path="/ebooks" element={<EbooksPage />} />
+      <Route path="/privacidade" element={<PrivacyPage />} />
       
       {/* 
         Qualquer outra rota cai na Landing Page. 

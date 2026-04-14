@@ -1,71 +1,74 @@
-
 import React from 'react';
+import { Download, MessageCircle, ChevronRight, Heart } from 'lucide-react';
 import heroImg from '../../assets/images/hero.png';
+import { trackConversion } from '../../utils/analytics';
 
 const Hero: React.FC = () => {
   return (
-    <section id="inicio" className="pt-28 pb-12 px-4 flex flex-col items-center">
-      <div className="w-full max-w-6xl bg-white adventure-border shadow-2xl p-6 sm:p-16 relative overflow-hidden flex flex-col lg:flex-row items-center gap-10 sm:gap-12">
-        {/* Background Blobs */}
-        <div className="absolute -top-24 -right-24 w-80 h-80 bg-jake-yellow/20 rounded-full blur-3xl animate-float pointer-events-none"></div>
-        <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-finn-blue/10 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '2s' }}></div>
+    <section id="inicio" className="pt-32 pb-20 px-4 flex flex-col items-center">
+      <div className="w-full max-w-7xl relative">
+        {/* Subtle Ambient Background */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-secondary/5 rounded-full blur-[100px] -z-10"></div>
 
-        <div className="flex-1 text-center lg:text-left z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100/80 text-slate-900 rounded-full text-xs font-black uppercase tracking-widest mb-6 border border-slate-200 shadow-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#258CF4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z" />
-              <path d="m9 12 2 2 4-4" stroke="#fff" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-            Psicopedagogia Clínica
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 leading-[1.1] mb-6">
-            Aprender é a <br />
-            maior <span className="text-finn-blue">aventura</span> <br />
-            da vida!
-          </h1>
-
-          <p className="text-lg sm:text-xl text-slate-600 font-medium leading-relaxed max-w-xl mb-10 mx-auto lg:mx-0">
-            Transformando dificuldades em superpoderes através da <span className="text-lsp-purple font-bold">Psicopedagogia</span> Clínica. <br />
-            Atendimento especializado presencial em Ribeirão Preto ou online para todo o mundo.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-            <a
-              href="https://wa.me/5516991864393"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto bg-[#25D366] hover:bg-[#20bd5a] text-white font-black py-3.5 px-6 sm:py-4 sm:px-8 rounded-full shadow-[0_6px_0_0_#128c7e] active:shadow-none active:translate-y-1.5 transition-all flex items-center justify-center gap-3 text-base sm:text-lg group"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-12 transition-transform sm:w-6 sm:h-6" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-              Agendar no WhatsApp
-            </a>
-          </div>
-        </div>
-
-        <div className="flex-1 relative z-10 w-full max-w-md group/image">
-          <div className="relative aspect-square">
-            <div className="absolute inset-0 bg-jake-yellow rounded-[3rem] rotate-6 transform translate-y-4 translate-x-4 shadow-xl transition-transform group-hover/image:rotate-2"></div>
-            <div className="absolute inset-0 bg-finn-blue rounded-[3rem] -rotate-3 opacity-20 shadow-xl transition-transform group-hover/image:rotate-2"></div>
-            <div className="relative w-full h-full bg-[#E5E5E5] rounded-[3rem] border-8 border-white overflow-hidden shadow-xl flex items-center justify-center">
-              <img
-                src={heroImg}
-                alt="Retrato profissional de Raiane E. Ferreira - Psicopedagoga Clínica"
-                className="w-full h-full object-cover grayscale-[20%] group-hover/image:grayscale-0 transition-all duration-500"
-                loading="eager"
-              />
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+          <div className="flex-1 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-full text-[11px] font-black uppercase tracking-[0.2em] mb-8 border border-primary/10">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+              Psicopedagogia Clínica & Institucional
             </div>
 
-            {/* Achievement Badge */}
-            <div className="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 bg-white p-3 sm:p-4 rounded-2xl shadow-xl border-b-4 border-slate-100 flex items-center gap-2 sm:gap-3 animate-float whitespace-nowrap">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:w-5 sm:h-5" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>
+            <h1 className="text-4xl sm:text-6xl xl:text-7xl font-display font-black text-on-surface leading-[1.05] mb-8 text-editorial">
+              Guiando a jornada de quem <span className="text-primary">aprende</span> com afeto e ciência.
+            </h1>
+
+            <p className="text-lg sm:text-xl text-on-surface/70 font-body leading-relaxed max-w-2xl mb-12 mx-auto lg:mx-0">
+              Transformando dificuldades de aprendizagem em caminhos de descoberta. 
+              Atendimento especializado para crianças e adolescentes com olhar humanizado em Ribeirão Preto e Online.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
+              <a
+                href="https://wa.me/5516991864393"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackConversion('Contact', 'HeroPrincipalAgendar')}
+                className="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-5 px-10 rounded-full shadow-premium transition-all flex items-center justify-center gap-3 text-lg group"
+              >
+                <MessageCircle size={22} strokeWidth={2.5} />
+                Agendar Consulta
+              </a>
+              
+              <button
+                onClick={() => {
+                  const element = document.getElementById('biblioteca');
+                  if ((window as any).lenis) (window as any).lenis.scrollTo(element);
+                  else element?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-bold py-5 px-10 rounded-full shadow-premium transition-all flex items-center justify-center gap-3 text-lg group"
+              >
+                <Download size={20} />
+                Materiais Gratuitos
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 relative w-full max-w-xl group/image">
+            <div className="relative aspect-[4/5] sm:aspect-square">
+              {/* Tonal Stacking Layers */}
+              <div className="absolute inset-4 bg-primary/10 rounded-[3rem] -rotate-3 transition-transform group-hover/image:-rotate-1"></div>
+              <div className="absolute inset-0 bg-white rounded-[3rem] shadow-ambient"></div>
+              
+              <div className="relative w-full h-full rounded-[3rem] overflow-hidden border-8 border-white shadow-premium">
+                <img
+                  src={heroImg}
+                  alt="Raiane E. Ferreira - Psicopedagoga"
+                  className="w-full h-full object-cover grayscale-[15%] group-hover/image:grayscale-0 transition-all duration-700 scale-105 group-hover/image:scale-100"
+                  loading="eager"
+                />
               </div>
-              <div>
-                <span className="block text-[8px] sm:text-[10px] font-black uppercase text-slate-400 leading-none">Especialista em</span>
-                <span className="block text-xs sm:text-sm font-black text-slate-900">Aprendizagem</span>
-              </div>
+
+
             </div>
           </div>
         </div>

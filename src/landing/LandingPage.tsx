@@ -3,10 +3,12 @@ import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import Header from './components/Header';
 import Hero from './components/Hero';
+import IssoSoaFamiliar from './components/IssoSoaFamiliar';
 import About from './components/About';
 import Services from './components/Services';
 import ClientArea from './components/ClientArea';
 import Methodology from './components/Methodology';
+import EbooksSection from './components/EbooksSection';
 import YouTubeSection from './components/YouTubeSection';
 import CTA from './components/CTA';
 import FAQ from './components/FAQ';
@@ -42,15 +44,32 @@ const App: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    // Handle scroll if redirected from another page with a hash
+    const hash = window.location.hash;
+    if (hash) {
+      const id = hash.replace('#', '');
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        const lenis = (window as any).lenis;
+        if (element && lenis) {
+          lenis.scrollTo(element, { offset: -100, duration: 1.5 });
+        }
+      }, 500);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen selection:bg-finn-blue/30 overflow-x-hidden">
+    <div className="min-h-screen selection:bg-primary/20 selection:text-primary overflow-x-hidden font-body">
       <Header />
       <main>
         <Hero />
-        <About />
-        <Services />
-        <ClientArea />
+        <IssoSoaFamiliar />
         <Methodology />
+        <Services />
+        <About />
+        <ClientArea />
+        <EbooksSection />
         <YouTubeSection />
         <CTA />
         <FAQ />

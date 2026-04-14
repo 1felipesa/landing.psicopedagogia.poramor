@@ -1,195 +1,247 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Search, Sparkles, Map, Laptop, GraduationCap } from 'lucide-react';
 
 const steps = [
   {
     id: '01',
-    title: 'Diagnóstico',
-    phase: 'Descoberta do terreno',
-    description: 'Investigação detalhada das habilidades e desafios para traçar a melhor rota.',
-    icon: '🔍',
-    color: 'bg-finn-blue/10 text-finn-blue'
+    title: 'Mapeamento e Diagóstico',
+    description: 'Investigamos não apenas o que a criança "não sabe", mas como ela processa a informação utilizando instrumentos lúdicos e testes neuropsicopedagógicos.',
+    icon: <Search size={28} strokeWidth={1.5} />,
+    color: 'bg-primary/5',
+    accent: 'text-primary border-primary/20'
   },
   {
     id: '02',
-    title: 'Mediação',
-    phase: 'A ponte do aprendizado',
-    description: 'Intervenção guiada onde a Psicopedagogia atua como facilitadora da construção do saber.',
-    icon: '🤝',
-    color: 'bg-jake-yellow/20 text-yellow-700'
+    title: 'Ação com Cogni e Afetina',
+    description: 'A intervenção acontece. Nossos companheiros lúdicos (Cogni para a inteligência, Afetina para o acolhimento) ajudam a criança a criar novas conexões neurais sem medo de errar.',
+    icon: (
+      <div className="flex -space-x-3 group-hover:scale-110 transition-transform duration-500">
+        <img src="/cogni.png" alt="Cogni" className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover bg-primary/10" />
+        <img src="/afetina.png" alt="Afetina" className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover bg-secondary/10 z-10" />
+      </div>
+    ),
+    color: 'bg-secondary/5',
+    accent: 'text-secondary border-secondary/20'
   },
   {
     id: '03',
-    title: 'Autonomia',
-    phase: 'O tesouro da independência',
-    description: 'O momento da alta, onde a criança conquista suas ferramentas para seguir aprendendo sozinha.',
-    icon: '🏆',
-    color: 'bg-lsp-purple/10 text-lsp-purple'
-  }
-];
-
-const categories = [
-  {
-    title: 'No Território da Leitura e Escrita',
-    icon: '📚',
-    color: 'bg-blue-50 border-finn-blue/20',
-    accent: 'bg-finn-blue',
-    items: [
-      'Dificuldade em juntar as letras ou entender o que lê.',
-      'Troca de letras na escrita ou fala (mesmo após os 7 anos).',
-      'Recusa em ler em voz alta ou escrever textos curtos.'
-    ]
-  },
-  {
-    title: 'Nas Montanhas do Foco e Organização',
-    icon: '🏔️',
-    color: 'bg-yellow-50 border-jake-yellow/30',
-    accent: 'bg-jake-yellow',
-    items: [
-      'Parece estar sempre "nas nuvens" durante as tarefas.',
-      'Não consegue organizar a mochila ou os materiais.',
-      'Esquece datas de provas ou o que o professor explicou no dia.'
-    ]
-  },
-  {
-    title: 'No Vale das Emoções',
-    icon: '🌈',
-    color: 'bg-purple-50 border-lsp-purple/20',
-    accent: 'bg-lsp-purple',
-    items: [
-      'Desmotivação e frases como "eu não sou inteligente".',
-      'Choro ou ansiedade excessiva na hora da lição de casa.',
-      'Baixa tolerância à frustração ao aprender algo novo.'
-    ]
-  },
-  {
-    title: 'Na Floresta do Raciocínio',
-    icon: '🌲',
-    color: 'bg-green-50 border-grass-green/20',
-    accent: 'bg-grass-green',
-    items: [
-      'Dificuldade extrema com números ou noção de tempo.',
-      'Lentidão excessiva para concluir atividades escolares.'
-    ]
+    title: 'Autonomia para Voar',
+    description: 'O verdadeiro sucesso não é depender da terapeuta para sempre, mas sim conquistar o protagonismo da própria aprendizagem com ferramentas práticas.',
+    icon: <Map size={28} strokeWidth={1.5} />,
+    color: 'bg-tertiary/5',
+    accent: 'text-tertiary border-tertiary/20'
   }
 ];
 
 const Methodology: React.FC = () => {
-  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
-
-  const toggleItem = (categoryIndex: number, itemIndex: number) => {
-    const key = `${categoryIndex}-${itemIndex}`;
-    setCheckedItems(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-  };
-
-  const clearAll = () => {
-    setCheckedItems({});
-  };
-
-  const hasAnyChecked = Object.values(checkedItems).some(val => val);
-
   return (
-    <section id="metodologia" className="py-24 px-4 bg-white relative overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#9C27B0 2px, transparent 2px)', backgroundSize: '40px 40px' }}></div>
+    <section id="metodologia" className="py-24 px-4 bg-surface relative overflow-hidden">
+      {/* Decorative Blobs */}
+      <div className="absolute top-40 right-[-10%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* --- SECTION: O que é Psicopedagogia (Versus Reforço) --- */}
+        <div className="bg-white rounded-[3.5rem] p-8 sm:p-16 mb-24 lg:mb-32 flex flex-col lg:flex-row items-center gap-16 shadow-premium border border-outline-variant/10 relative overflow-hidden">
+          {/* Subtle Background Pattern */}
+          <div className="absolute inset-0 bg-primary/5 opacity-50 felt-texture"></div>
 
-        {/* --- CHECKLIST SECTION --- */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-100 text-slate-500 rounded-full text-xs font-black uppercase tracking-widest mb-4">
-            Sinais de que a Jornada precisa de uma Guia
+          <div className="flex-1 relative z-10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 text-secondary rounded-full text-[10px] font-black uppercase tracking-[0.2em] mb-8">
+              A Diferença Real
+            </span>
+            <h2 className="text-3xl sm:text-5xl font-display font-black text-on-surface mb-8 leading-tight text-editorial">
+              Psicopedagogia <span className="text-secondary">não é</span> Reforço Escolar.
+            </h2>
+            
+            <div className="space-y-6">
+              <p className="text-on-surface/70 font-body text-lg leading-relaxed">
+                O reforço escolar foca no <strong>o quê</strong>: ensinar um conteúdo de matemática ou português que ficou para trás. 
+              </p>
+              <p className="text-on-surface/70 font-body text-lg leading-relaxed shadow-sm bg-surface p-6 rounded-3xl border border-outline-variant/10">
+                A Psicopedagogia foca no <strong>como</strong>: investigar por que a matemática não entra, trabalhando atenção, memória funcional, bloqueios emocionais e as funções executivas do cérebro.
+              </p>
+            </div>
+            
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
+               <button 
+                  onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
+                  className="w-full sm:w-auto bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 px-8 rounded-full transition-all text-sm uppercase tracking-widest text-center"
+                >
+                  Entender o Caso do Meu Filho
+                </button>
+            </div>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight max-w-3xl mx-auto">
-            O seu pequeno herói travou em algum desses <span className="text-lsp-purple underline decoration-lsp-purple/20 decoration-8 underline-offset-4">desafios?</span>
+          
+          {/* Visual Divider / Icon Column */}
+          <div className="w-full lg:w-5/12 flex flex-col gap-6 relative z-10">
+             <div className="bg-surface p-8 rounded-[2.5rem] border border-outline-variant/10 text-center hover:-translate-y-2 transition-transform duration-500 shadow-sm">
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-on-surface/40">
+                   <GraduationCap size={28} />
+                </div>
+                <h4 className="font-display font-black text-on-surface mb-2">Reforço Escolar</h4>
+                <p className="text-sm font-body text-on-surface/60">Ajuda pontual para a próxima prova. Trata o sintoma acadêmico.</p>
+             </div>
+
+             <div className="bg-primary p-8 rounded-[2.5rem] text-center hover:-translate-y-2 transition-transform duration-500 shadow-premium relative">
+                <div className="absolute -top-4 -right-4 w-12 h-12 bg-secondary text-white flex items-center justify-center rounded-full animate-bounce-subtle shadow-lg">
+                   <Sparkles size={20} />
+                </div>
+                <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4 text-white">
+                   <Search size={28} />
+                </div>
+                <h4 className="font-display font-black text-white mb-2">Psicopedagogia</h4>
+                <p className="text-sm font-body text-white/80">Reconstrução da rota de aprendizagem. Trata a raiz neurológica e emocional.</p>
+             </div>
+          </div>
+        </div>
+
+        {/* --- SECTION: Passos da Metodologia --- */}
+        <div className="text-center mb-16 lg:mb-24">
+          <span className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] sm:text-[12px] mb-4 block">A Jornada Clínica</span>
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black text-on-surface text-editorial">
+            Como construímos a <span className="text-primary">autonomia.</span>
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {categories.map((cat, catIdx) => (
-            <div key={catIdx} className={`${cat.color} border-2 rounded-[2.5rem] p-6 sm:p-8 shadow-sm transition-all hover:shadow-md`}>
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl sm:text-4xl" role="img" aria-label="icon">{cat.icon}</span>
-                <h3 className="text-lg sm:text-xl font-black text-slate-900">{cat.title}</h3>
-              </div>
-
-              <div className="space-y-4">
-                {cat.items.map((item, itemIdx) => {
-                  const isChecked = !!checkedItems[`${catIdx}-${itemIdx}`];
-                  return (
-                    <div
-                      key={itemIdx}
-                      onClick={() => toggleItem(catIdx, itemIdx)}
-                      className="flex items-start gap-3 cursor-pointer group"
-                    >
-                      <div className={`mt-1 w-5 h-5 sm:w-6 sm:h-6 rounded-lg border-2 shrink-0 flex items-center justify-center transition-all ${isChecked ? `${cat.accent} border-transparent shadow-lg scale-110` : 'border-slate-300 bg-white group-hover:border-slate-400'}`}>
-                        {isChecked && (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="sm:w-4 sm:h-4"><polyline points="20 6 9 17 4 12" /></svg>
-                        )}
-                      </div>
-                      <span className={`text-sm sm:text-base font-medium transition-colors ${isChecked ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
-                        {item}
-                      </span>
-                    </div>
-                  );
-                })}
+        <div className="space-y-8 mb-24">
+          
+          {/* FASE 1: Diagnóstico */}
+          <div className="bg-white rounded-[3.5rem] p-8 md:p-12 lg:p-16 shadow-premium border border-outline-variant/10 flex flex-col md:flex-row items-center gap-10 md:gap-16 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[80px] -z-0 opacity-50 transition-opacity group-hover:opacity-100"></div>
+            
+            <div className="md:w-1/3 shrink-0 relative z-10">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 bg-primary/10 rounded-[2.5rem] flex items-center justify-center border border-primary/20 rotate-3 group-hover:-rotate-3 transition-transform duration-700 mx-auto md:mx-0">
+                <Search size={48} className="text-primary" strokeWidth={1} />
               </div>
             </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col items-center mb-24">
-          {hasAnyChecked && (
-            <button
-              onClick={clearAll}
-              className="mb-8 text-sm font-black text-slate-400 uppercase tracking-widest hover:text-red-500 transition-colors flex items-center gap-2"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-              Limpar Seleções
-            </button>
-          )}
-
-          <div className={`max-w-3xl w-full text-center p-6 sm:p-10 rounded-[2.5rem] sm:rounded-[3rem] border-4 border-dashed border-lsp-purple/20 transition-all duration-500 ${hasAnyChecked ? 'bg-lsp-purple/5 scale-105' : 'bg-transparent'}`}>
-            <p className="text-lg sm:text-2xl text-slate-700 font-medium leading-relaxed italic">
-              "Se você marcou 'sim' em um ou mais desses itens, não significa que há algo errado com o seu filho, apenas que o mapa dele precisa ser recalibrado por uma especialista. Vamos juntos?"
-            </p>
-          </div>
-        </div>
-
-        {/* --- METHODOLOGY STEPS SECTION --- */}
-        <div className="pt-12 border-t border-slate-100">
-          <div className="text-center mb-16 px-4">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-grass-green/10 text-grass-green rounded-full text-xs font-black uppercase tracking-widest mb-4">
-              Passo a Passo
+            
+            <div className="md:w-2/3 relative z-10 text-center md:text-left">
+              <span className="text-primary font-bold tracking-widest uppercase text-[10px] mb-3 block">Fase Inicial</span>
+              <h3 className="text-3xl sm:text-4xl font-display font-black text-on-surface mb-6 leading-tight">
+                Mapeamento Profundo
+              </h3>
+              <p className="text-on-surface/70 font-body text-lg leading-relaxed mb-6">
+                Antes de qualquer ação, nós mapeamos. Usamos instrumentos lúdicos e testes neuropsicopedagógicos validados para descobrir exatamente <strong>como</strong> a criança processa a informação. O foco não é rotular, mas entender o caminho neural único que ela usa.
+              </p>
             </div>
-            <h3 className="text-2xl sm:text-4xl font-black text-slate-900">
-              O <span className="text-grass-green underline decoration-grass-green/20 decoration-8 underline-offset-4">Caminho</span> da Metodologia
-            </h3>
-            <p className="text-slate-500 mt-4 font-medium italic">Como transformamos esses desafios em autonomia</p>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-start gap-12 lg:gap-8 overflow-visible">
-            {steps.map((step, index) => (
-              <div key={index} className="flex-1 flex flex-col items-center text-center group relative w-full translate-y-0 hover:-translate-y-2 transition-transform duration-300">
-                <div className={`w-28 h-28 sm:w-32 sm:h-32 rounded-[2rem] ${step.color} flex items-center justify-center text-4xl sm:text-5xl mb-6 sm:mb-8 shadow-xl border-4 border-white group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 relative z-10`}>
-                  <span className="absolute -top-3 -right-3 w-10 h-10 sm:w-12 sm:h-12 bg-slate-900 text-white text-sm sm:text-base font-black flex items-center justify-center rounded-xl sm:rounded-2xl border-4 border-white shadow-lg transform rotate-12">
-                    {step.id}
-                  </span>
-                  <span role="img" aria-label={step.title}>{step.icon}</span>
+          {/* FASE 2: Intervenção Lúdica com Cogni e Afetina (DESTAQUE) */}
+          <div className="bg-surface-container rounded-[3.5rem] overflow-hidden shadow-ambient relative border border-outline-variant/5">
+             <div className="absolute inset-0 felt-texture opacity-30 pointer-events-none"></div>
+             
+             {/* Text Header for Phase 2 */}
+             <div className="px-8 md:px-16 pt-16 pb-8 text-center relative z-10">
+                <span className="text-secondary font-bold tracking-widest uppercase text-[10px] mb-3 block border border-secondary/20 bg-secondary/10 px-4 py-2 rounded-full inline-block">Fase de Intervenção</span>
+                <h3 className="text-3xl sm:text-5xl font-display font-black text-on-surface mb-6">
+                   A magia da Neuroplasticidade
+                </h3>
+                <p className="text-on-surface/70 font-body text-lg leading-relaxed max-w-3xl mx-auto">
+                   A intervenção não é uma aula chata. É aqui que nossos grandes parceiros entram em cena. Quando o afeto se une à técnica estruturada, o cérebro cria novas conexões sem o peso do medo de errar.
+                </p>
+             </div>
+
+             {/* The Characters Grid */}
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-white/50 backdrop-blur-sm relative z-10 border-t border-outline-variant/10">
+                
+                {/* COGNI */}
+                <div className="bg-white p-10 lg:p-16 flex flex-col items-center text-center relative group overflow-hidden">
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                   
+                   <div className="w-48 h-48 lg:w-56 lg:h-56 mb-8 relative z-10 transition-transform duration-700 group-hover:-translate-y-4">
+                      <img src="/cogni.png" alt="Cogni - O Parceiro da Inteligência" className="w-full h-full object-contain filter drop-shadow-2xl" />
+                   </div>
+                   
+                   <h4 className="text-3xl font-display font-black text-primary mb-4 relative z-10">Cogni</h4>
+                   <p className="text-on-surface/70 font-body leading-relaxed text-base lg:text-lg relative z-10">
+                      Representa a <strong>cognição e a neurociência</strong>. Ele traz foco, memória, estratégia e ajuda a criança a organizar as ideias de um jeito divertido e prático.
+                   </p>
                 </div>
 
-                <h4 className="text-xl sm:text-2xl font-black text-slate-900 mb-1">{step.title}</h4>
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-400 mb-4 block px-2">
-                  {step.phase}
-                </span>
-                <p className="text-slate-500 text-sm sm:text-base leading-relaxed max-w-[280px] px-4">
-                  {step.description}
-                </p>
-              </div>
-            ))}
+                {/* AFETINA */}
+                <div className="bg-white p-10 lg:p-16 flex flex-col items-center text-center relative group overflow-hidden">
+                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary/10 rounded-full blur-[80px] -z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                   
+                   <div className="w-48 h-48 lg:w-56 lg:h-56 mb-8 relative z-10 transition-transform duration-700 group-hover:-translate-y-4">
+                      <img src="/afetina.png" alt="Afetina - O Poder do Acolhimento" className="w-full h-full object-contain filter drop-shadow-2xl" />
+                   </div>
+                   
+                   <h4 className="text-3xl font-display font-black text-secondary mb-4 relative z-10">Afetina</h4>
+                   <p className="text-on-surface/70 font-body leading-relaxed text-base lg:text-lg relative z-10">
+                      O símbolo do <strong>vínculo e das emoções</strong>. Sem ela, o aprendizado esfria. Ela garante que a sessão seja um porto seguro para a criança se expressar.
+                   </p>
+                </div>
+
+             </div>
           </div>
+
+          {/* FASE 3: Autonomia */}
+          <div className="bg-primary text-white rounded-[3.5rem] p-8 md:p-12 lg:p-16 shadow-premium flex flex-col md:flex-row items-center gap-10 md:gap-16 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-80 pointer-events-none"></div>
+            
+            <div className="md:w-2/3 relative z-10 text-center md:text-left order-2 md:order-1">
+              <span className="text-white/60 font-bold tracking-widest uppercase text-[10px] mb-3 block">Fase Final</span>
+              <h3 className="text-3xl sm:text-4xl font-display font-black text-white mb-6 leading-tight">
+                Autonomia para Voar
+              </h3>
+              <p className="text-white/80 font-body text-lg leading-relaxed">
+                Toda terapia bem sucedida deve ter fim. O objetivo final é criar uma bagagem tão robusta para a criança, que ela passa a ser a comandante do próprio aprendizado, munida de ferramentas para lidar com a escola (e a vida) por conta própria.
+              </p>
+            </div>
+
+            <div className="md:w-1/3 shrink-0 relative z-10 flex justify-center order-1 md:order-2">
+              <div className="w-24 h-24 sm:w-32 sm:h-32 bg-white/10 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center border border-white/20 -rotate-3 group-hover:rotate-3 transition-transform duration-700">
+                <Map size={48} className="text-white" strokeWidth={1} />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* --- SECTION: App / Área do Cliente --- */}
+        <div className="bg-secondary text-white rounded-[3.5rem] p-8 sm:p-16 flex flex-col md:flex-row items-center justify-between gap-12 relative overflow-hidden shadow-premium mb-12">
+           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-80 pointer-events-none"></div>
+           
+           <div className="max-w-xl relative z-10">
+              <div className="flex items-center gap-3 mb-6">
+                <Laptop className="text-secondary" size={28} strokeWidth={1.5} />
+                <span className="font-bold uppercase tracking-widest text-xs text-white/60">Tecnologia e Transparência</span>
+              </div>
+              <h3 className="text-3xl sm:text-4xl font-display font-black mb-6 leading-tight">
+                 O tratamento continua <br/> <span className="text-primary-container text-purple-300">na palma da mão.</span>
+              </h3>
+              <p className="font-body text-white/70 leading-relaxed text-lg mb-8">
+                 Transparência total é o nosso lema. Através da nossa Área do Cliente exclusiva, os pais e a escola acompanham de perto:
+              </p>
+              <ul className="space-y-4 font-body text-white/80">
+                 <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-secondary"></div> Resumo de cada sessão e evolução técnica.</li>
+                 <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-secondary"></div> Materiais de apoio para aplicar em casa.</li>
+                 <li className="flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-secondary"></div> Gestão financeira e de agenda simplificada.</li>
+              </ul>
+           </div>
+
+           <div className="w-full md:w-auto relative z-10 shrink-0">
+               <div className="bg-white/10 backdrop-blur-md p-6 rounded-[2.5rem] border border-white/10 text-center">
+                  <div className="w-24 h-24 bg-surface rounded-full flex items-center justify-center mx-auto mb-6">
+                     <Laptop size={32} className="text-primary" />
+                  </div>
+                  <h4 className="font-display font-black text-white mb-2">Portal do Cliente</h4>
+                  <p className="text-xs font-body text-white/60 mb-6 max-w-[200px] mx-auto">Acesse seu ambiente seguro</p>
+                  <button 
+                     onClick={() => {
+                        const element = document.getElementById('cliente');
+                        if (element) {
+                           const y = element.getBoundingClientRect().top + window.scrollY - 100;
+                           window.scrollTo({ top: y, behavior: 'smooth' });
+                        }
+                     }}
+                     className="w-full bg-white text-secondary font-bold py-3 px-6 rounded-full text-xs uppercase tracking-widest hover:bg-surface hover:text-secondary-container transition-colors"
+                  >
+                     Acessar Informações
+                  </button>
+               </div>
+           </div>
         </div>
 
       </div>
