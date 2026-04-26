@@ -46,6 +46,47 @@ const situations = [
   }
 ];
 
+const PainPointCard: React.FC<{ item: typeof situations[0] }> = ({ item }) => {
+  const [isFlipped, setIsFlipped] = React.useState(false);
+
+  return (
+    <div 
+      className="h-[240px] [perspective:1000px] cursor-pointer"
+      onClick={() => setIsFlipped(!isFlipped)}
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
+    >
+      <div className={`relative h-full w-full transition-all duration-500 [transform-style:preserve-3d] ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}>
+        {/* Front Side (Pain) */}
+        <div className="absolute inset-0 h-full w-full bg-white p-8 rounded-md border border-muted/10 shadow-premium flex flex-col items-center justify-center text-center [backface-visibility:hidden]">
+          <div className={`w-14 h-14 ${item.color} ${item.accent} rounded-pill flex items-center justify-center mb-6`}>
+            {item.icon}
+          </div>
+          <h3 className="text-xl font-display font-bold text-primary leading-tight mb-4">
+            {item.pain}
+          </h3>
+          <div className="mt-auto text-[9px] text-text/30 font-bold uppercase tracking-[0.15em] sm:opacity-100 transition-opacity">
+            {isFlipped ? 'Toque para voltar' : 'Toque para ver a solução'}
+          </div>
+        </div>
+
+        {/* Back Side (Solution) */}
+        <div className="absolute inset-0 h-full w-full bg-primary p-8 rounded-md shadow-premium flex flex-col items-center justify-center text-center text-white [transform:rotateY(180deg)] [backface-visibility:hidden]">
+          <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4">
+            <span className="text-2xl">✨</span>
+          </div>
+          <h3 className="text-lg font-body font-medium leading-relaxed">
+            {item.solution}
+          </h3>
+          <p className="mt-4 text-[9px] text-white/50 font-bold uppercase tracking-[0.15em]">
+            Toque para voltar
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const PainPoints: React.FC = () => {
   return (
     <section className="py-24 px-4 bg-surface relative overflow-hidden">
@@ -62,41 +103,13 @@ const PainPoints: React.FC = () => {
             Muitas vezes, o que parece ser "preguiça" ou "falta de interesse" é, na verdade, uma barreira que a criança não consegue vencer sozinha.
           </p>
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 rounded-pill border border-primary/10 animate-pulse">
-            <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Dica: Passe o mouse ou toque nos cards</span>
+            <span className="text-[10px] font-bold text-primary uppercase tracking-[0.2em]">Dica: Toque nos cards para ver a solução</span>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {situations.map((item, index) => (
-            <div 
-              key={index}
-              className="group h-[240px] [perspective:1000px]"
-            >
-              <div className="relative h-full w-full transition-all duration-500 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)] cursor-help">
-                {/* Front Side (Pain) */}
-                <div className="absolute inset-0 h-full w-full bg-white p-8 rounded-md border border-muted/10 shadow-premium flex flex-col items-center justify-center text-center [backface-visibility:hidden]">
-                  <div className={`w-14 h-14 ${item.color} ${item.accent} rounded-pill flex items-center justify-center mb-6`}>
-                    {item.icon}
-                  </div>
-                  <h3 className="text-xl font-display font-bold text-primary leading-tight mb-4">
-                    {item.pain}
-                  </h3>
-                  <div className="mt-auto text-[9px] text-text/30 font-bold uppercase tracking-[0.15em] opacity-0 group-hover:opacity-0 sm:opacity-100 transition-opacity">
-                    Toque para ver a solução
-                  </div>
-                </div>
-
-                {/* Back Side (Solution) */}
-                <div className="absolute inset-0 h-full w-full bg-primary p-8 rounded-md shadow-premium flex flex-col items-center justify-center text-center text-white [transform:rotateY(180deg)] [backface-visibility:hidden]">
-                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mb-4">
-                    <span className="text-2xl">✨</span>
-                  </div>
-                  <h3 className="text-lg font-body font-medium leading-relaxed">
-                    {item.solution}
-                  </h3>
-                </div>
-              </div>
-            </div>
+            <PainPointCard key={index} item={item} />
           ))}
         </div>
 
