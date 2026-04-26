@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import Header from './components/Header';
+import SEO from './components/SEO';
 import Hero from './components/Hero';
-import IssoSoaFamiliar from './components/IssoSoaFamiliar';
+import PainPoints from './components/PainPoints';
 import About from './components/About';
 import Services from './components/Services';
 import ClientArea from './components/ClientArea';
@@ -61,10 +62,14 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen selection:bg-primary/20 selection:text-primary overflow-x-hidden font-body">
+      <SEO 
+        title="Transformando dificuldades em potenciais de aprendizagem"
+        description="Atendimento psicopedagógico especializado em Ribeirão Preto e Online. Foco em neuropsicopedagogia, dificuldades de aprendizagem e autonomia escolar com afeto e ciência."
+      />
       <Header />
       <main>
         <Hero />
-        <IssoSoaFamiliar />
+        <PainPoints />
         <Methodology />
         <Services />
         <About />

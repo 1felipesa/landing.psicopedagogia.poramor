@@ -1,20 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #4e0078;
-  --color-primary-container: #6a1b9a;
-  --color-secondary: #835400;
-  --color-secondary-container: #fcab28;
-  --color-tertiary: #00363d;
-  --color-surface: #fff7ff;
-  --color-on-surface: #1f1926;
-  --color-outline-variant: rgba(208, 194, 211, 0.15);
+  --color-primary: #4A2B6B;
+  --color-background: #F9F8F6;
+  --color-surface: #FFFFFF;
+  --color-text: #2D2A32;
+  --color-muted: #9CA3AF;
+  --color-accent: #739E82;
   
-  --font-display: "Plus Jakarta Sans", sans-serif;
-  --font-body: "Manrope", sans-serif;
+  --font-display: "Montserrat", sans-serif;
+  --font-body: "Outfit", sans-serif;
 
-  --shadow-premium: 0 12px 32px -8px rgba(78, 0, 120, 0.08);
-  --shadow-ambient: 48px 48px 64px -12px rgba(78, 0, 120, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-pill: 9999px;
+
+  --shadow-premium: 0 10px 40px -10px rgba(74, 43, 107, 0.1);
+  --shadow-ambient: 0 20px 60px -15px rgba(74, 43, 107, 0.05);
 }
 
 /* Material Design 3 Ripples (from Platform) */
@@ -97,18 +99,16 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
-  /* slate-50 */
+  background: var(--color-background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(37, 140, 244, 0.2);
-  /* finn-blue with opacity */
-  border-radius: 9999px;
-  border: 4px solid #f8fafc;
+  background: rgba(74, 43, 107, 0.2); /* primary with opacity */
+  border-radius: var(--radius-pill);
+  border: 4px solid var(--color-background);
   transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(37, 140, 244, 0.4);
+  background: rgba(74, 43, 107, 0.4);
 }

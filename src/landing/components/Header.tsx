@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { User, Heart, MessageCircle, Menu, X } from 'lucide-react';
 
 const Header: React.FC = () => {
@@ -39,13 +39,13 @@ const Header: React.FC = () => {
 
   return (
     <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex flex-col items-center px-4 sm:px-6 w-full pointer-events-none">
-      <nav className="glass-premium w-full max-w-7xl rounded-full shadow-premium border border-outline-variant py-2 sm:py-2.5 px-4 sm:px-8 flex items-center justify-between transition-all duration-300 pointer-events-auto relative z-50">
+      <nav className="glass-premium w-full max-w-7xl rounded-pill shadow-premium border border-muted/20 py-2 sm:py-2.5 px-4 sm:px-8 flex items-center justify-between transition-all duration-300 pointer-events-auto relative z-50">
         <div className="flex items-center shrink-0">
           <div
             role="button"
             tabIndex={0}
             aria-label="Voltar ao início"
-            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
+            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
             onClick={() => {
               setIsMobileMenuOpen(false);
               if (location.pathname !== '/') {
@@ -57,12 +57,12 @@ const Header: React.FC = () => {
               }
             }}
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/5 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary/10 group-hover:scale-110 shrink-0">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/5 flex items-center justify-center rounded-md transition-all duration-300 group-hover:bg-primary/10 group-hover:scale-110 shrink-0">
               <Heart size={20} className="text-primary sm:w-[24px] sm:h-[24px] fill-primary/20" />
             </div>
             <div className="flex flex-col leading-tight pr-4">
-              <span className="text-lg sm:text-[22px] text-primary font-display font-black tracking-tight text-editorial">Psicopedagogia</span>
-              <span className="font-body font-black text-[9px] sm:text-[11px] text-on-surface/60 -mt-1 uppercase tracking-[0.2em]">por Amor</span>
+              <span className="text-lg sm:text-[22px] text-primary font-display font-bold tracking-tight">Psicopedagogia</span>
+              <span className="font-body font-bold text-[9px] sm:text-[11px] text-text/60 -mt-1 uppercase tracking-[0.2em]">por Amor</span>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@ const Header: React.FC = () => {
             <button
               key={link.id}
               onClick={() => scrollToSection(link.id)}
-              className="text-[12px] font-body font-bold text-on-surface/70 hover:text-primary transition-all uppercase tracking-widest whitespace-nowrap"
+              className="text-[12px] font-body font-bold text-text/70 hover:text-primary transition-all uppercase tracking-widest whitespace-nowrap"
             >
               {link.label}
             </button>
@@ -91,7 +91,7 @@ const Header: React.FC = () => {
             href="/area-cliente"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary hover:bg-primary/5 font-bold py-2 px-3 sm:px-4 rounded-full transition-all flex items-center gap-2 text-[11px] sm:text-sm uppercase tracking-wider shrink-0"
+            className="text-primary hover:bg-primary/5 font-bold py-2 px-3 sm:px-4 rounded-pill transition-all flex items-center gap-2 text-[11px] sm:text-sm uppercase tracking-wider shrink-0"
             aria-label="Portal do Cliente"
           >
             <User size={18} strokeWidth={2.5} />
@@ -100,7 +100,7 @@ const Header: React.FC = () => {
           
           <button
             onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-6 rounded-full shadow-premium transition-all text-[11px] sm:text-sm uppercase tracking-wider hidden lg:flex items-center gap-2 shrink-0"
+            className="bg-accent hover:bg-accent/90 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-6 rounded-pill shadow-premium transition-all text-[11px] sm:text-sm uppercase tracking-wider hidden lg:flex items-center gap-2 shrink-0"
           >
             <MessageCircle size={18} />
             Agendar Consulta
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
 
           {/* Hamburger Menu Toggle (Mobile) */}
           <button 
-            className="lg:hidden p-2 text-primary hover:bg-primary/5 rounded-full transition-colors flex items-center justify-center"
+            className="lg:hidden p-2 text-primary hover:bg-primary/5 rounded-pill transition-colors flex items-center justify-center"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Abrir menu"
           >
@@ -119,14 +119,14 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`fixed inset-0 top-0 bg-surface/95 backdrop-blur-xl transition-all duration-300 lg:hidden flex flex-col pt-24 px-6 pb-12 overflow-y-auto pointer-events-auto z-40 ${
+        className={`fixed inset-0 top-0 bg-background/95 backdrop-blur-xl transition-all duration-300 lg:hidden flex flex-col pt-24 px-6 pb-12 overflow-y-auto pointer-events-auto z-40 ${
             isMobileMenuOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'
         }`}
       >
           <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
             {/* Links */}
             <div className="flex flex-col gap-2">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/40 mb-2">Navegação Principal</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-2">Navegação Principal</span>
                 {[
                   { label: 'Sobre a Especialista', id: 'sobre' },
                   { label: 'Nossa Metodologia', id: 'metodologia' },
@@ -137,7 +137,7 @@ const Header: React.FC = () => {
                   <button
                     key={link.id}
                     onClick={() => scrollToSection(link.id)}
-                    className="text-left font-display font-black text-2xl text-on-surface py-4 border-b border-outline-variant/30 hover:text-primary transition-colors flex items-center justify-between"
+                    className="text-left font-display font-bold text-2xl text-primary py-4 border-b border-muted/30 hover:text-accent transition-colors flex items-center justify-between"
                   >
                     {link.label}
                   </button>
@@ -151,7 +151,7 @@ const Header: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="bg-primary/5 text-primary border border-primary/20 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 w-full"
+                  className="bg-primary/5 text-primary border border-primary/20 font-bold py-4 px-6 rounded-md flex items-center justify-center gap-3 w-full"
                 >
                   <User size={20} className="text-primary"/>
                   Portal do Cliente Exclusivo
@@ -162,7 +162,7 @@ const Header: React.FC = () => {
                       window.open('https://wa.me/5516991864393', '_blank');
                       setIsMobileMenuOpen(false);
                   }}
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 shadow-premium w-full"
+                  className="bg-accent hover:bg-accent/90 text-white font-bold py-4 px-6 rounded-md flex items-center justify-center gap-3 shadow-premium w-full"
                 >
                   <MessageCircle size={20}/>
                   Agendar Consulta via WhatsApp

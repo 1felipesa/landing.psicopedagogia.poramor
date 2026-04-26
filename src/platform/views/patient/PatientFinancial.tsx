@@ -28,9 +28,10 @@ const PatientFinancial: React.FC = () => {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
     const [showPixModal, setShowPixModal] = useState<Invoice | null>(null);
+    const [copied, setCopied] = useState(false);
 
-    // Mock PIX data - in a real app this would come from the admin's profile/settings
-    const pixKey = "financeiro@psicopedagogiaporamor.com.br";
+    // Chave PIX - Telefone da Raiane
+    const pixKey = "16991864393";
 
     useEffect(() => {
         if (user) fetchData();
@@ -55,7 +56,8 @@ const PatientFinancial: React.FC = () => {
 
     const copyPixKey = () => {
         navigator.clipboard.writeText(pixKey);
-        alert('Chave PIX copiada!');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
     };
 
     return (
@@ -174,10 +176,21 @@ const PatientFinancial: React.FC = () => {
                                 <p className="text-sm font-mono text-slate-600 dark:text-slate-300 break-all transition-colors">{pixKey}</p>
                                 <button
                                     onClick={copyPixKey}
-                                    className="absolute -top-3 -right-3 p-2 bg-white dark:bg-slate-700 rounded-full shadow-md text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
+                                    className={`absolute -top-3 -right-3 p-2 rounded-full shadow-md transition-all flex items-center gap-2 ${
+                                        copied 
+                                        ? 'bg-green-600 text-white px-4' 
+                                        : 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 hover:text-primary-700'
+                                    }`}
                                     title="Copiar Chave"
                                 >
-                                    <Copy size={16} />
+                                    {copied ? (
+                                        <>
+                                            <CheckCircle2 size={16} />
+                                            <span className="text-[10px] font-bold uppercase">Copiado!</span>
+                                        </>
+                                    ) : (
+                                        <Copy size={16} />
+                                    )}
                                 </button>
                             </div>
 

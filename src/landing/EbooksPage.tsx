@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LeadFormModal from './components/LeadFormModal';
-import { BookOpen, Download, Search, LayoutGrid, Loader2, ArrowLeft, Sparkles } from 'lucide-react';
+import { Download, Search, LayoutGrid, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from './components/SEO';
 
 interface Ebook {
   titulo: string;
@@ -47,14 +48,23 @@ const EbooksPage: React.FC = () => {
   }, []);
 
   const extractDriveId = (url: string) => {
-    const match = url.match(/\/d\/(.+?)\//) || url.match(/id=(.+?)(&|$)/);
-    return match ? match[1] : null;
+    // Busca o ID após /d/ ou id= ou /folders/
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]{25,})/) || 
+                  url.match(/id=([a-zA-Z0-9_-]{25,})/) ||
+                  url.match(/\/folders\/([a-zA-Z0-9_-]{25,})/);
+    return match ? match[1] : (url.match(/[a-zA-Z0-9_-]{25,}/)?.[0] || null);
   };
 
   const getThumbnailUrl = (driveUrl: string) => {
     const id = extractDriveId(driveUrl);
     if (!id) return "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?q=80&w=1000&auto=format&fit=crop";
-    return `https://drive.google.com/thumbnail?id=${id}&sz=w1000`;
+    
+    // Tentando o endpoint de thumbnail com um parâmetro extra de segurança
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w1000&authuser=0`;
+  };
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?q=80&w=1000&auto=format&fit=crop";
   };
 
   const filteredEbooks = ebooks.filter(ebook => 
@@ -68,7 +78,11 @@ const EbooksPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-surface flex flex-col font-body">
+    <div className="min-h-screen bg-background flex flex-col font-body">
+      <SEO 
+        title="Materiais e E-books Gratuitos"
+        description="Baixe gratuitamente nossos materiais e e-books sobre TDAH, dificuldades de aprendizagem, alfabetização e muito mais para pais e educadores."
+      />
       <Header />
       
       <main className="flex-grow pt-32 pb-24 px-4">
@@ -81,24 +95,28 @@ const EbooksPage: React.FC = () => {
                 to="/" 
                 className="inline-flex items-center gap-2 text-primary font-bold uppercase text-[10px] tracking-[0.2em] mb-6 group"
               >
-                <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
                 Voltar para o Início
               </Link>
-              <h1 className="text-4xl md:text-6xl font-display font-black text-on-surface leading-[1.1] mb-8 text-editorial">
-                Biblioteca de <span className="text-primary">Conhecimento.</span>
+              <h1 className="text-4xl md:text-6xl font-display font-bold text-primary leading-[1.1] mb-8">
+                Biblioteca de <span className="text-accent">Conhecimento.</span>
               </h1>
-              <p className="text-on-surface/60 font-body text-lg leading-relaxed">
+              <p className="text-text/60 font-body text-lg leading-relaxed">
                 Recursos Práticos Baseados em Evidências para pais e educadores que buscam transformar o aprendizado através do afeto e da ciência.
               </p>
             </div>
 
             {/* Search Bar */}
-            <div className="relative group w-full lg:max-w-sm">
-              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-on-surface/20 group-focus-within:text-primary transition-colors" size={20} />
+            <div className="relative max-w-2xl mx-auto group w-full lg:max-w-sm">
+              <label htmlFor="ebook-search" className="sr-only">Pesquisar materiais</label>
+              <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-text/30 group-focus-within:text-primary transition-colors">
+                <Search size={20} />
+              </div>
               <input 
+                id="ebook-search"
                 type="text" 
-                placeholder="O que você está procurando?"
-                className="w-full bg-white border border-outline-variant/10 rounded-full py-5 pl-14 pr-6 font-body text-on-surface focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all shadow-ambient"
+                placeholder="Busque por temas (Ex: TDAH, Alfabetização...)"
+                className="w-full bg-white border border-muted/10 rounded-pill pl-14 pr-8 py-5 text-lg font-body text-text focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all shadow-ambient"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -113,7 +131,7 @@ const EbooksPage: React.FC = () => {
                   <Sparkles size={20} />
                 </div>
               </div>
-              <p className="text-on-surface/40 font-bold uppercase tracking-[0.2em] text-[10px]">
+              <p className="text-text/40 font-bold uppercase tracking-[0.2em] text-[10px]">
                 Organizando materiais...
               </p>
             </div>
@@ -122,14 +140,16 @@ const EbooksPage: React.FC = () => {
               {filteredEbooks.map((ebook, idx) => (
                 <div 
                   key={idx}
-                  className="group bg-white rounded-[3rem] overflow-hidden transition-all duration-500 shadow-ambient hover:shadow-premium flex flex-col h-full border border-outline-variant/5"
+                  className="group bg-white rounded-md overflow-hidden transition-all duration-500 shadow-ambient hover:shadow-premium flex flex-col h-full border border-muted/5"
                 >
                   {/* Card Image */}
-                  <div className="aspect-[16/10] overflow-hidden bg-surface relative shrink-0">
+                  <div className="aspect-[16/10] overflow-hidden bg-background relative shrink-0">
                     <img 
                       src={getThumbnailUrl(ebook.linkDrive)} 
                       alt={ebook.titulo}
                       className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                      onError={handleImageError}
                     />
                     <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors"></div>
                   </div>
@@ -138,17 +158,17 @@ const EbooksPage: React.FC = () => {
                   <div className="p-8 md:p-10 flex flex-col justify-between flex-grow">
                     <div>
                       <span className="text-primary font-bold text-[10px] uppercase tracking-[0.2em] mb-4 block">Material Gratuito</span>
-                      <h3 className="text-2xl font-display font-black text-on-surface mb-4 leading-tight group-hover:text-primary transition-colors">
+                      <h3 className="text-2xl font-display font-bold text-primary mb-4 leading-tight group-hover:text-accent transition-colors">
                         {ebook.titulo}
                       </h3>
-                      <p className="text-on-surface/60 font-body text-sm leading-relaxed mb-8 line-clamp-3">
+                      <p className="text-text/60 font-body text-sm leading-relaxed mb-8 line-clamp-3">
                         {ebook.descricao}
                       </p>
                     </div>
                     
                     <button 
                       onClick={() => handleDownloadClick(ebook)}
-                      className="w-full bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 px-6 rounded-full shadow-premium transition-all flex items-center justify-center gap-3 group/btn mt-auto"
+                      className="w-full bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 px-6 rounded-pill shadow-premium transition-all flex items-center justify-center gap-3 group/btn mt-auto"
                     >
                       <Download size={18} className="group-hover/btn:translate-y-1 transition-transform" />
                       Baixar Material
@@ -158,12 +178,12 @@ const EbooksPage: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-32 bg-white rounded-[4rem] border border-dashed border-outline-variant/30">
-              <div className="w-20 h-20 bg-surface rounded-full flex items-center justify-center mx-auto mb-8">
-                <LayoutGrid size={32} className="text-on-surface/20" />
+            <div className="text-center py-32 bg-white rounded-md border border-dashed border-muted/30">
+              <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8">
+                <LayoutGrid size={32} className="text-text/20" />
               </div>
-              <h3 className="text-2xl font-display font-black text-on-surface">Nada encontrado</h3>
-              <p className="text-on-surface/40 font-body max-w-xs mx-auto mt-4">
+              <h3 className="text-2xl font-display font-bold text-primary">Nada encontrado</h3>
+              <p className="text-text/40 font-body max-w-xs mx-auto mt-4">
                 Não localizamos materiais para o termo "{searchTerm}".
               </p>
             </div>

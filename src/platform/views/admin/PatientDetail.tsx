@@ -218,7 +218,7 @@ const PatientDetail: React.FC = () => {
             const htmlContent = `
                 <div style="font-family: Arial, sans-serif; padding: 40px; color: #333; line-height: 1.6; max-width: 800px; background: white;">
                     <div style="text-align: center; border-bottom: 2px solid #6750A4; padding-bottom: 20px; margin-bottom: 30px;">
-                        <h1 style="color: #6750A4; font-size: 24px; margin-bottom: 5px;">RELATÓRIO DE ALTA PSICOPEDAGÓGICA</h1>
+                        <h2 style="color: #6750A4; font-size: 24px; margin-bottom: 5px;">RELATÓRIO DE ALTA PSICOPEDAGÓGICA</h2>
                         <p style="margin: 0; color: #555;">Psicopedagogia por Amor - Gestão de Atendimentos</p>
                     </div>
 
@@ -314,7 +314,7 @@ const PatientDetail: React.FC = () => {
             const htmlContent = `
                 <div style="font-family: Arial, sans-serif; padding: 40px; color: #333; line-height: 1.6; max-width: 800px; background: white;">
                     <div style="text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px;">
-                        <h1 style="color: #2563eb; font-size: 24px; margin: 0 0 5px 0;">DECLARAÇÃO DE QUITAÇÃO FINANCEIRA</h1>
+                        <h2 style="color: #2563eb; font-size: 24px; margin: 0 0 5px 0;">DECLARAÇÃO DE QUITAÇÃO FINANCEIRA</h2>
                         <p style="margin: 0; font-weight: bold; color: #444;">${financialForm.professionalName} | ${financialForm.professionalCpf}</p>
                         <p style="margin: 0; font-size: 12px; color: #666;">${financialForm.professionalAddress}</p>
                     </div>
