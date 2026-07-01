@@ -49,6 +49,13 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
       setSubmitted(true);
       setLoading(false);
       
+      // Integrar com GTM Data Layer para rastrear a conversão
+      const dataLayer = (window as any).dataLayer || [];
+      dataLayer.push({
+        event: 'ebook_download',
+        ebook_title: ebookTitle
+      });
+      
       // Inicia o download
       window.open(ebookLink, '_blank');
       
