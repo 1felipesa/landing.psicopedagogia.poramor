@@ -91,7 +91,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
       ></div>
 
       {/* Modal Content */}
-      <div className="relative bg-white w-full max-w-xl rounded-3xl overflow-hidden shadow-premium animate-in zoom-in-95 fade-in duration-500 border border-muted/10">
+      <div className="relative bg-white w-full max-w-xl rounded-3xl shadow-premium animate-in zoom-in-95 fade-in duration-500 border border-muted/10 max-h-[90vh] overflow-y-auto">
         
         {/* Header */}
         <div className="p-8 sm:p-12 pb-6 relative">
