@@ -19,8 +19,17 @@ const CookieBanner: React.FC = () => {
     localStorage.setItem('cookie-consent', 'accepted');
     setIsVisible(false);
 
-    // Integrar com GTM Data Layer
+    // Atualizar GTM Consent Mode V2
     const dataLayer = (window as any).dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    (window as any).gtag = (window as any).gtag || gtag;
+    (window as any).gtag('consent', 'update', {
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted',
+      'analytics_storage': 'granted'
+    });
+
     dataLayer.push({
       event: 'consent_granted',
       consent_type: 'all'
@@ -31,8 +40,17 @@ const CookieBanner: React.FC = () => {
     localStorage.setItem('cookie-consent', 'declined');
     setIsVisible(false);
 
-    // Integrar com GTM Data Layer
+    // Atualizar GTM Consent Mode V2
     const dataLayer = (window as any).dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    (window as any).gtag = (window as any).gtag || gtag;
+    (window as any).gtag('consent', 'update', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied'
+    });
+
     dataLayer.push({
       event: 'consent_declined',
       consent_type: 'none'
