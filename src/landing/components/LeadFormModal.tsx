@@ -36,6 +36,13 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
 
     setLoading(true);
     
+    // Integrar com GTM Data Layer para rastrear a conversão instantaneamente
+    const dataLayer = (window as any).dataLayer || [];
+    dataLayer.push({
+      event: 'ebook_download',
+      ebook_title: ebookTitle
+    });
+    
     try {
       const GAS_URL = 'https://script.google.com/macros/s/AKfycbydDk4eH3LSeXZ869JFHhuLdVh8sf59fXeQkDJKcyiiYVlJ9H18C1lJXe18ueKWPssh/exec'; 
       
@@ -48,13 +55,6 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
 
       setSubmitted(true);
       setLoading(false);
-      
-      // Integrar com GTM Data Layer para rastrear a conversão
-      const dataLayer = (window as any).dataLayer || [];
-      dataLayer.push({
-        event: 'ebook_download',
-        ebook_title: ebookTitle
-      });
       
       // Inicia o download
       window.open(ebookLink, '_blank');
