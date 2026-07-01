@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "overrides": {
+    "dompurify": "^3.4.11",
+    "picomatch": "^4.0.4"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
