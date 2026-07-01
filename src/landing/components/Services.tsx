@@ -36,7 +36,6 @@ const Services: React.FC = () => {
 
       <div className="w-full max-w-7xl mx-auto">
         <div className="text-center mb-24 relative">
-          <span className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] sm:text-[11px] mb-4 block">Nossa Expertise</span>
           <h2 className="text-4xl sm:text-6xl font-display font-bold text-primary mb-6">
             Como destravamos a <span className="text-accent">aprendizagem?</span>
           </h2>
@@ -45,14 +44,14 @@ const Services: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 lg:gap-24 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
           {services.map((service, index) => (
             <div
               key={index}
-              className="group flex flex-col"
+              className="group bg-background/30 hover:bg-white p-8 sm:p-10 rounded-2xl border border-muted/10 shadow-sm hover:shadow-premium transition-all duration-500 hover:-translate-y-2 flex flex-col h-full"
             >
-              <div className={`w-24 h-24 sm:w-28 sm:h-28 mx-auto md:mx-0 ${service.color} rounded-md flex items-center justify-center mb-8 shadow-sm group-hover:shadow-premium transition-all duration-500 group-hover:-translate-y-2 border border-muted/5`}>
-                <div className="group-hover:scale-110 transition-transform duration-500">
+              <div className={`w-20 h-20 ${service.color} rounded-2xl flex items-center justify-center mb-8 border border-muted/5 transition-transform duration-500 group-hover:scale-105`}>
+                <div className="transition-transform duration-500">
                    {service.icon}
                 </div>
               </div>
@@ -65,14 +64,14 @@ const Services: React.FC = () => {
                    {service.title}
                 </h3>
                 <p className="text-text/60 font-body text-base leading-relaxed mb-8">
-                  {service.description}
+                   {service.description}
                 </p>
               </div>
 
               <div className="mt-auto">
                 <button 
                   onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
-                  className={`inline-flex items-center justify-center gap-3 font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-pill border transition-all duration-300 w-full hover:shadow-ambient ${service.btn}`}
+                  className={`inline-flex items-center justify-center gap-3 font-bold text-xs uppercase tracking-widest px-8 py-4 rounded-pill border transition-all duration-300 w-full hover:shadow-ambient cursor-pointer ${service.btn}`}
                 >
                   Saiba como funciona <ArrowRight size={16} />
                 </button>

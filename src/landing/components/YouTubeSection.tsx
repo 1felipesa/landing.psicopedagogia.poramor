@@ -12,7 +12,7 @@ const YouTubeSection: React.FC = () => {
     const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    const API_KEY = 'AIzaSyBAzx6LzHNvsXDPKddbFtM_RL2i-H1AkDI';
+    const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
     const UPLOADS_PLAYLIST_ID = 'UULRm2ZVbdPtyioo1wkc5zGQ';
 
     useEffect(() => {
@@ -71,7 +71,7 @@ const YouTubeSection: React.FC = () => {
                 ) : videos.length > 0 ? (
                     <div className="w-full max-w-6xl mx-auto animate-in fade-in zoom-in duration-700">
                         {/* Main Player */}
-                        <div className="relative aspect-video rounded-md overflow-hidden shadow-2xl bg-black border-4 sm:border-8 border-white mb-10 group">
+                        <div className="relative aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black border-4 sm:border-8 border-white mb-10 group">
                             {activeVideoId && (
                                 <iframe
                                     className="w-full h-full"
@@ -90,7 +90,7 @@ const YouTubeSection: React.FC = () => {
                                 <button
                                     key={video.id}
                                     onClick={() => setActiveVideoId(video.id)}
-                                    className={`relative aspect-video rounded-md overflow-hidden transition-all duration-300 group ${
+                                    className={`relative aspect-video rounded-xl overflow-hidden transition-all duration-300 group cursor-pointer ${
                                         activeVideoId === video.id 
                                         ? 'ring-4 ring-red-600 ring-offset-2 scale-95 shadow-lg' 
                                         : 'hover:scale-105 shadow-md opacity-70 hover:opacity-100'
@@ -112,7 +112,7 @@ const YouTubeSection: React.FC = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="w-full max-w-4xl mx-auto p-12 rounded-md bg-white border border-muted/10 shadow-premium flex flex-col items-center gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="w-full max-w-4xl mx-auto p-12 rounded-2xl bg-white border border-muted/10 shadow-premium flex flex-col items-center gap-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <div className="w-20 h-20 bg-red-50 text-red-600 rounded-full flex items-center justify-center">
                             <Video size={40} />
                         </div>
@@ -126,7 +126,7 @@ const YouTubeSection: React.FC = () => {
                             href="https://www.youtube.com/@psicopedagogia.poramor"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-8 rounded-pill transition-all flex items-center gap-2"
+                            className="bg-primary hover:bg-primary/90 text-white font-bold py-4 px-8 rounded-pill transition-all flex items-center gap-2 cursor-pointer"
                         >
                             <PlayCircle size={20} />
                             Abrir Galeria de Vídeos
@@ -139,7 +139,7 @@ const YouTubeSection: React.FC = () => {
                         href="https://www.youtube.com/@psicopedagogia.poramor"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-10 rounded-pill shadow-premium transition-all text-lg group"
+                        className="inline-flex items-center gap-3 bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-10 rounded-pill shadow-premium transition-all text-lg group cursor-pointer"
                     >
                         Inscreva-se no Canal
                         <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />

@@ -69,19 +69,19 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar Container - Navigation Drawer */}
       <aside className={`
-        fixed inset-y-0 left-0 z-30 w-[300px] bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 transform transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-30 w-[300px] bg-surface text-on-surface border-r border-outline-variant transform transition-transform duration-300 ease-in-out
         hidden md:flex md:translate-x-0 md:static md:h-screen flex-col rounded-e-3xl
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         {/* Logo Area */}
         <div className="flex flex-col gap-3 px-7 py-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-md3-1 flex-shrink-0">
+            <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center text-on-primary shadow-sm flex-shrink-0">
               <Heart size={22} fill="currentColor" />
             </div>
-            <h1 className="font-bold text-slate-800 dark:text-white text-lg leading-tight tracking-tight">Psicopedagogia por Amor</h1>
+            <h1 className="font-bold text-on-surface text-lg leading-tight tracking-tight">Psicopedagogia por Amor</h1>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium pl-1">Plataforma de gestão em Psicopedagogia</p>
+          <p className="text-xs text-on-surface-variant font-medium pl-1">Plataforma de gestão em Psicopedagogia</p>
         </div>
 
         {/* Navigation Links */}
@@ -101,12 +101,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 className={`
                   w-full flex items-center gap-3 px-6 py-4 rounded-full text-sm font-medium transition-all duration-200
                   ${isActive
-                    ? 'bg-primary-100 dark:bg-primary-900/40 text-primary-900 dark:text-primary-300'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
+                    ? 'bg-primary-container text-on-primary-container'
+                    : 'text-on-surface-variant hover:bg-surface-variant hover:text-on-surface'
                   }
                 `}
               >
-                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} className={isActive ? 'text-primary-700 dark:text-primary-400' : 'text-slate-500 dark:text-slate-500'} />
+                <Icon size={24} strokeWidth={isActive ? 2.5 : 2} className={isActive ? 'text-primary' : 'text-on-surface-variant'} />
                 <span className="tracking-wide">{link.label}</span>
               </button>
             );
@@ -115,12 +115,12 @@ const Sidebar: React.FC<SidebarProps> = ({
 
         {/* User Mini Profile & Footer */}
         <div className="p-4 mt-auto">
-          <div className="bg-white/50 dark:bg-slate-800/40 rounded-3xl p-4 mb-2 border border-slate-100 dark:border-slate-800 transition-colors">
+          <div className="bg-surface-variant/30 rounded-3xl p-4 mb-2 border border-outline-variant transition-colors">
             <div className="flex items-center gap-3 mb-4 transition-colors">
               <Avatar name={currentUser.name} />
               <div className="overflow-hidden">
-                <p className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate transition-colors">{currentUser.name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400 truncate transition-colors">
+                <p className="text-sm font-bold text-on-surface truncate transition-colors">{currentUser.name}</p>
+                <p className="text-xs text-on-surface-variant truncate transition-colors">
                   {isAdmin ? 'Psicopedagoga' : 'Paciente'}
                 </p>
               </div>
@@ -128,7 +128,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={onLogout}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-all border border-transparent dark:border-slate-700/50 hover:border-red-100 dark:hover:border-red-900/30"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium text-error hover:bg-error/10 transition-all border border-transparent hover:border-error/30"
             >
               <LogOut size={18} />
               Sair da Conta

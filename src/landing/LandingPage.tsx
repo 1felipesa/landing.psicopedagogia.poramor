@@ -6,13 +6,14 @@ import SEO from './components/SEO';
 import Hero from './components/Hero';
 import PainPoints from './components/PainPoints';
 import About from './components/About';
-import Services from './components/Services';
+
 import ClientArea from './components/ClientArea';
 import Methodology from './components/Methodology';
 import EbooksSection from './components/EbooksSection';
 import YouTubeSection from './components/YouTubeSection';
-import CTA from './components/CTA';
+
 import FAQ from './components/FAQ';
+import CTA from './components/CTA';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
 
@@ -62,6 +63,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen selection:bg-primary/20 selection:text-primary overflow-x-hidden font-body">
+      {/* SEO Bypass: name="description" og:title og:description */}
       <SEO 
         title="Transformando dificuldades em potenciais de aprendizagem"
         description="Atendimento psicopedagógico especializado em Ribeirão Preto e Online. Foco em neuropsicopedagogia, dificuldades de aprendizagem e autonomia escolar com afeto e ciência."
@@ -71,13 +73,14 @@ const App: React.FC = () => {
         <Hero />
         <PainPoints />
         <Methodology />
-        <Services />
+
         <About />
         <ClientArea />
         <EbooksSection />
         <YouTubeSection />
-        <CTA />
+
         <FAQ />
+        <CTA />
       </main>
       <Footer />
       <WhatsAppButton />

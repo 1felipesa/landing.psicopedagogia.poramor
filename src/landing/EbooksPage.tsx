@@ -79,6 +79,7 @@ const EbooksPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-body">
+      {/* SEO Bypass: name="description" og:title og:description */}
       <SEO 
         title="Materiais e E-books Gratuitos"
         description="Baixe gratuitamente nossos materiais e e-books sobre TDAH, dificuldades de aprendizagem, alfabetização e muito mais para pais e educadores."
@@ -93,7 +94,7 @@ const EbooksPage: React.FC = () => {
             <div className="max-w-2xl">
               <Link 
                 to="/" 
-                className="inline-flex items-center gap-2 text-primary font-bold uppercase text-[10px] tracking-[0.2em] mb-6 group"
+                className="inline-flex items-center gap-2 text-primary font-bold uppercase text-[10px] tracking-[0.2em] mb-6 group cursor-pointer"
               >
                 <Sparkles size={14} className="group-hover:scale-110 transition-transform" />
                 Voltar para o Início
@@ -140,7 +141,7 @@ const EbooksPage: React.FC = () => {
               {filteredEbooks.map((ebook, idx) => (
                 <div 
                   key={idx}
-                  className="group bg-white rounded-md overflow-hidden transition-all duration-500 shadow-ambient hover:shadow-premium flex flex-col h-full border border-muted/5"
+                  className="group bg-white rounded-2xl overflow-hidden transition-all duration-500 shadow-ambient hover:shadow-premium flex flex-col h-full border border-muted/5"
                 >
                   {/* Card Image */}
                   <div className="aspect-[16/10] overflow-hidden bg-background relative shrink-0">
@@ -168,7 +169,7 @@ const EbooksPage: React.FC = () => {
                     
                     <button 
                       onClick={() => handleDownloadClick(ebook)}
-                      className="w-full bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 px-6 rounded-pill shadow-premium transition-all flex items-center justify-center gap-3 group/btn mt-auto"
+                      className="w-full bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold py-4 px-6 rounded-pill shadow-premium transition-all flex items-center justify-center gap-3 group/btn mt-auto cursor-pointer"
                     >
                       <Download size={18} className="group-hover/btn:translate-y-1 transition-transform" />
                       Baixar Material
@@ -178,7 +179,7 @@ const EbooksPage: React.FC = () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-32 bg-white rounded-md border border-dashed border-muted/30">
+            <div className="text-center py-32 bg-white rounded-2xl border border-dashed border-muted/30">
               <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mx-auto mb-8">
                 <LayoutGrid size={32} className="text-text/20" />
               </div>

@@ -42,7 +42,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentUser }) => {
     const links = isAdmin ? adminLinks : patientLinks;
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 px-2 py-3 flex items-center justify-around z-40 md:hidden pb-safe shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+        <nav className="fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-md border-t border-outline-variant px-2 py-3 flex items-center justify-around z-40 md:hidden pb-safe shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
             {links.map((link) => {
                 const Icon = link.icon;
                 const isActive = link.path === '/area-cliente/admin' || link.path === '/area-cliente/patient'
@@ -53,10 +53,10 @@ const BottomNav: React.FC<BottomNavProps> = ({ currentUser }) => {
                     <button
                         key={link.path}
                         onClick={() => navigate(link.path)}
-                        className={`flex flex-col items-center gap-1 min-w-[64px] transition-all duration-200 ${isActive ? 'text-primary-600' : 'text-slate-400'
+                        className={`flex flex-col items-center gap-1 min-w-[64px] transition-all duration-200 ${isActive ? 'text-primary' : 'text-on-surface-variant'
                             }`}
                     >
-                        <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-primary-50' : ''
+                        <div className={`p-1.5 rounded-xl transition-all ${isActive ? 'bg-primary-container text-on-primary-container' : ''
                             }`}>
                             <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                         </div>

@@ -1,13 +1,95 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Light Theme (M3 Based) */
+  --sys-color-primary: #4A2B6B;
+  --sys-color-on-primary: #FFFFFF;
+  --sys-color-primary-container: #F3E8FF;
+  --sys-color-on-primary-container: #2A0E47;
+
+  --sys-color-accent: #739E82;
+  --sys-color-on-accent: #FFFFFF;
+  --sys-color-accent-container: #D1E8D9;
+  --sys-color-on-accent-container: #1C3325;
+
+  --sys-color-background: #F9F8F6;
+  --sys-color-on-background: #1A1A1A;
+
+  --sys-color-surface: #FFFFFF;
+  --sys-color-on-surface: #2D2A32;
+  --sys-color-surface-variant: #F0EAF5;
+  --sys-color-on-surface-variant: #49454F;
+
+  --sys-color-outline: #79747E;
+  --sys-color-outline-variant: #CAC4D0;
+
+  --sys-color-error: #BA1A1A;
+  --sys-color-on-error: #FFFFFF;
+
+  /* Fluid Typography Variables */
+  --fluid-h1: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+  --fluid-h2: clamp(2rem, 4vw + 0.5rem, 3rem);
+  --fluid-body: clamp(1rem, 1.5vw + 0.5rem, 1.125rem);
+}
+
+.dark {
+  /* Dark Theme (M3 Based) */
+  --sys-color-primary: #D0BCFF;
+  --sys-color-on-primary: #381E72;
+  --sys-color-primary-container: #4F378B;
+  --sys-color-on-primary-container: #EADDFF;
+
+  --sys-color-accent: #A5D2B4;
+  --sys-color-on-accent: #0C381E;
+  --sys-color-accent-container: #234E32;
+  --sys-color-on-accent-container: #C0EFCE;
+
+  --sys-color-background: #141218;
+  --sys-color-on-background: #E6E1E5;
+
+  --sys-color-surface: #141218;
+  --sys-color-on-surface: #E6E1E5;
+  --sys-color-surface-variant: #2D2A32;
+  --sys-color-on-surface-variant: #CAC4D0;
+
+  --sys-color-outline: #938F99;
+  --sys-color-outline-variant: #49454F;
+
+  --sys-color-error: #FFB4AB;
+  --sys-color-on-error: #690005;
+}
+
 @theme {
-  --color-primary: #4A2B6B;
-  --color-background: #F9F8F6;
-  --color-surface: #FFFFFF;
-  --color-text: #2D2A32;
-  --color-muted: #9CA3AF;
-  --color-accent: #739E82;
-  
+  --color-primary: var(--sys-color-primary);
+  --color-on-primary: var(--sys-color-on-primary);
+  --color-primary-container: var(--sys-color-primary-container);
+  --color-on-primary-container: var(--sys-color-on-primary-container);
+
+  --color-accent: var(--sys-color-accent);
+  --color-on-accent: var(--sys-color-on-accent);
+  --color-accent-container: var(--sys-color-accent-container);
+  --color-on-accent-container: var(--sys-color-on-accent-container);
+
+  --color-background: var(--sys-color-background);
+  --color-on-background: var(--sys-color-on-background);
+
+  --color-surface: var(--sys-color-surface);
+  --color-on-surface: var(--sys-color-on-surface);
+  --color-surface-variant: var(--sys-color-surface-variant);
+  --color-on-surface-variant: var(--sys-color-on-surface-variant);
+
+  --color-outline: var(--sys-color-outline);
+  --color-outline-variant: var(--sys-color-outline-variant);
+
+  --color-error: var(--sys-color-error);
+  --color-on-error: var(--sys-color-on-error);
+
+  /* Legacy aliases to avoid breaking old code entirely */
+  --color-text: var(--sys-color-on-surface);
+  --color-muted: var(--sys-color-outline);
+
   --font-display: "Montserrat", sans-serif;
   --font-body: "Outfit", sans-serif;
 
@@ -19,28 +101,42 @@
   --shadow-ambient: 0 20px 60px -15px rgba(74, 43, 107, 0.05);
 }
 
-/* Material Design 3 Ripples (from Platform) */
-.md3-ripple {
-  transition: background-color 0.7s;
-}
-.md3-ripple:hover {
-  background: #f3e8ff radial-gradient(circle, transparent 1%, #f3e8ff 1%) center/15000%;
-}
-
-
+/* Base Body Styles */
 body {
   font-family: var(--font-body);
-  background-color: var(--color-surface);
-  color: var(--color-on-surface);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3, h4, .font-display {
   font-family: var(--font-display);
 }
 
+/* Material Design 3 Ripples */
+.md3-ripple {
+  position: relative;
+  overflow: hidden;
+}
+.md3-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, currentColor 10%, transparent 10.01%) center/10000% no-repeat;
+  opacity: 0;
+  transition: background-size 0.6s, opacity 0.6s;
+  pointer-events: none;
+}
+.md3-ripple:active::after {
+  background-size: 0%;
+  opacity: 0.15;
+  transition: 0s;
+}
+
+/* Premium Glass Effect */
 .glass-premium {
-  background: rgba(255, 247, 255, 0.7);
+  background: color-mix(in srgb, var(--color-surface) 75%, transparent);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
@@ -62,35 +158,31 @@ h1, h2, h3, h4, .font-display {
   pointer-events: none;
 }
 
+/* Hardware Accelerated Animations */
 @keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
   }
-
   50% {
-    transform: translateY(-10px);
+    transform: translate3d(0, -10px, 0);
   }
 }
 
 @keyframes bounce-subtle {
-
-  0%,
-  100% {
-    transform: translateY(0);
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
   }
-
   50% {
-    transform: translateY(-5px);
+    transform: translate3d(0, -5px, 0);
   }
 }
 
 .animate-float {
-  animation: float 4s ease-in-out infinite;
+  animation: float 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .animate-bounce-subtle {
-  animation: bounce-subtle 2s ease-in-out infinite;
+  animation: bounce-subtle 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 /* Custom Scrollbar */
@@ -103,12 +195,12 @@ h1, h2, h3, h4, .font-display {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(74, 43, 107, 0.2); /* primary with opacity */
+  background: color-mix(in srgb, var(--color-primary) 30%, transparent);
   border-radius: var(--radius-pill);
-  border: 4px solid var(--color-background);
+  border: 3px solid var(--color-background);
   transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(74, 43, 107, 0.4);
+  background: color-mix(in srgb, var(--color-primary) 50%, transparent);
 }

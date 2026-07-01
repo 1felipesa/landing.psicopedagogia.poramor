@@ -5,7 +5,7 @@ import { trackConversion } from '../../utils/analytics';
 const CTA: React.FC = () => {
   return (
     <section className="py-24 px-4 bg-white">
-      <div className="w-full max-w-7xl mx-auto bg-primary rounded-md p-10 sm:p-24 text-center relative overflow-hidden shadow-ambient group/cta">
+      <div className="w-full max-w-7xl mx-auto bg-primary rounded-[32px] p-10 sm:p-24 text-center relative overflow-hidden shadow-ambient group/cta">
         {/* Subtle Ambient Background */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px] -z-0"></div>
         <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[80px] -z-0"></div>
@@ -26,7 +26,7 @@ const CTA: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackConversion('Contact', 'CTAFooterPrincipal')}
-            className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-white font-bold py-6 px-12 rounded-pill shadow-premium transition-all flex items-center justify-center gap-4 text-xl group"
+            className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-white font-bold py-6 px-12 rounded-pill shadow-premium transition-all flex items-center justify-center gap-4 text-xl group cursor-pointer"
           >
             <MessageCircle size={24} strokeWidth={2.5} />
             Agendar no WhatsApp

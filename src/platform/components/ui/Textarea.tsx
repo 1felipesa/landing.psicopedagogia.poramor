@@ -15,13 +15,10 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
                     <textarea
                         ref={ref}
                         className={`
-              block w-full text-slate-900 dark:text-white bg-surface-variant/30 dark:bg-slate-800 rounded-t-lg border-b-2 
-              appearance-none focus:outline-none focus:ring-0 peer transition-all resize-none
-              pt-6 pb-2 px-4 min-h-[120px] placeholder:text-slate-400 dark:placeholder:text-slate-500
-              ${error
-                                ? 'border-red-500 focus:border-red-600'
-                                : 'border-slate-400 dark:border-slate-700 focus:border-primary-600 dark:focus:border-primary-400'
-                            }
+              block w-full text-on-surface bg-surface-variant/20 border border-outline/20 rounded-2xl
+              focus:bg-surface focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all resize-none
+              pt-6 pb-2 px-4 min-h-[120px] placeholder:text-transparent
+              ${error ? 'border-error focus:border-error' : ''}
             `}
                         onFocus={(e) => {
                             setIsFocused(true);
@@ -36,15 +33,17 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
                     <label
                         className={`
-              absolute duration-300 transform -translate-y-3 scale-75 top-4 z-10 origin-[0] left-4
-              cursor-text pointer-events-none transition-all
-              ${error ? 'text-red-500 peer-focus:text-red-600' : 'text-slate-500 dark:text-slate-400 peer-focus:text-primary-600 dark:peer-focus:text-primary-400'}
+              absolute transition-all duration-300 pointer-events-none left-4
+              ${isFocused || props.value 
+                  ? 'top-1.5 text-[10px] uppercase tracking-widest font-bold text-primary' 
+                  : 'top-4 text-sm font-medium text-on-surface-variant/70'}
+              ${error && (isFocused || props.value) ? 'text-error' : ''}
             `}
                     >
                         {label}
                     </label>
                 </div>
-                {error && <span className="text-xs text-red-500 pl-4">{error}</span>}
+                {error && <span className="text-xs text-error pl-4">{error}</span>}
             </div>
         );
     }

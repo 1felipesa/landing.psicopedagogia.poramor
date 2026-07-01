@@ -49,9 +49,9 @@ const EbooksSection: React.FC = () => {
         <div className="absolute top-0 right-0 w-80 h-80 bg-primary/5 rounded-full blur-[100px] -z-10"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/5 rounded-full blur-[120px] -z-10"></div>
 
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+        <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-24">
           
-          <div className="flex-1 text-center lg:text-left order-2 lg:order-1">
+          <div className="flex-1 text-center lg:text-left">
             <span className="text-primary font-bold uppercase tracking-[0.2em] text-[10px] mb-4 block">Recursos Gratuitos</span>
             
             <h2 className="text-4xl sm:text-5xl font-display font-bold text-primary leading-[1.1] mb-8">
@@ -65,20 +65,20 @@ const EbooksSection: React.FC = () => {
 
             <Link 
               to="/ebooks" 
-              className="inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-white font-bold py-5 px-10 rounded-pill shadow-premium transition-all group"
+              className="inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-white font-bold py-5 px-10 rounded-pill shadow-premium transition-all group cursor-pointer"
             >
               Acessar Biblioteca de Materiais
               <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
-          <div className="flex-1 w-full order-1 lg:order-2 relative mt-12 lg:mt-0">
-             <div className="relative w-full flex items-center overflow-hidden py-12 mask-fade-horizontal">
+          <div className="flex-1 w-full relative mt-0">
+             <div className="relative w-full flex items-center overflow-hidden py-2 lg:py-12 mask-fade-horizontal">
                 
                 {loading ? (
                   <div className="flex gap-8 animate-pulse w-full justify-center">
                     {[1, 2, 3].map((n) => (
-                      <div key={n} className="w-52 h-72 bg-white rounded-md shadow-premium border border-muted/10 flex-shrink-0"></div>
+                      <div key={n} className="w-52 h-72 bg-white rounded-xl shadow-premium border border-muted/10 flex-shrink-0"></div>
                     ))}
                   </div>
                 ) : (
@@ -87,7 +87,7 @@ const EbooksSection: React.FC = () => {
                     {[...ebooks, ...ebooks, ...ebooks, ...ebooks].map((ebook, idx) => (
                       <div 
                         key={idx}
-                        className="w-56 sm:w-64 h-72 sm:h-80 bg-white rounded-md shadow-premium border border-muted/5 overflow-hidden flex-shrink-0 transform transition-all hover:scale-105 hover:-translate-y-2 hover:shadow-2xl duration-500 relative group"
+                        className="w-56 sm:w-64 h-72 sm:h-80 bg-white rounded-xl shadow-premium border border-muted/5 overflow-hidden flex-shrink-0 transform transition-all hover:scale-105 hover:-translate-y-2 hover:shadow-2xl duration-500 relative group"
                       >
                         <div className="absolute inset-0 bg-muted/10 animate-pulse -z-10"></div>
                         <img 

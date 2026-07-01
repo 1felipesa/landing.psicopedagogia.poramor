@@ -84,13 +84,13 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
       ></div>
 
       {/* Modal Content */}
-      <div className="relative bg-white w-full max-w-xl rounded-md overflow-hidden shadow-premium animate-in zoom-in-95 fade-in duration-500 border border-muted/10">
+      <div className="relative bg-white w-full max-w-xl rounded-3xl overflow-hidden shadow-premium animate-in zoom-in-95 fade-in duration-500 border border-muted/10">
         
         {/* Header */}
         <div className="p-8 sm:p-12 pb-6 relative">
           <button 
             onClick={onClose}
-            className="absolute top-8 right-8 w-10 h-10 rounded-full bg-background flex items-center justify-center text-text/40 hover:bg-primary hover:text-white transition-all"
+            className="absolute top-8 right-8 w-10 h-10 rounded-full bg-background flex items-center justify-center text-text/40 hover:bg-primary hover:text-white transition-all cursor-pointer"
           >
             <X size={20} />
           </button>
@@ -127,7 +127,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                     required
                     type="text"
                     placeholder="Como você prefere ser chamado?"
-                    className="w-full bg-background border border-muted/5 rounded-md px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
+                    className="w-full bg-background border border-muted/5 rounded-xl px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
                     value={formData.nome}
                     onChange={(e) => setFormData({...formData, nome: e.target.value})}
                   />
@@ -140,7 +140,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                     required
                     type="email"
                     placeholder="Seu melhor e-mail"
-                    className="w-full bg-background border border-muted/5 rounded-md px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
+                    className="w-full bg-background border border-muted/5 rounded-xl px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                   />
@@ -152,7 +152,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                     required
                     type="text"
                     placeholder="(00) 00000-0000"
-                    className="w-full bg-background border border-muted/5 rounded-md px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
+                    className="w-full bg-background border border-muted/5 rounded-xl px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
                     value={formData.celular}
                     onChange={handlePhoneChange}
                   />
@@ -165,7 +165,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                     required
                     type="text"
                     placeholder="Onde você mora?"
-                    className="w-full bg-background border border-muted/5 rounded-md px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
+                    className="w-full bg-background border border-muted/5 rounded-xl px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
                     value={formData.cidade}
                     onChange={(e) => setFormData({...formData, cidade: e.target.value})}
                   />
@@ -177,7 +177,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                     required
                     type="text"
                     placeholder="Sua área de atuação"
-                    className="w-full bg-background border border-muted/5 rounded-md px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
+                    className="w-full bg-background border border-muted/5 rounded-xl px-6 py-4 font-body text-text focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none transition-all placeholder:text-text/20 shadow-sm"
                     value={formData.profissao}
                     onChange={(e) => setFormData({...formData, profissao: e.target.value})}
                   />
@@ -194,7 +194,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
                       checked={formData.consentimento}
                       onChange={(e) => setFormData({...formData, consentimento: e.target.checked})}
                     />
-                    <div className="w-6 h-6 bg-background border border-muted/20 rounded-md peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center">
+                    <div className="w-6 h-6 bg-background border border-muted/20 rounded peer-checked:bg-primary peer-checked:border-primary transition-all flex items-center justify-center">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className={`scale-0 peer-checked:scale-100 transition-all ${formData.consentimento ? 'scale-100' : 'scale-0'}`}><path d="M20 6 9 17l-5-5"/></svg>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ const LeadFormModal: React.FC<LeadFormModalProps> = ({
               <button 
                 disabled={loading || !formData.consentimento}
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-pill shadow-premium transition-all flex items-center justify-center gap-3 text-lg mt-8 disabled:opacity-50 disabled:pointer-events-none group"
+                className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-6 px-10 rounded-pill shadow-premium transition-all flex items-center justify-center gap-3 text-lg mt-8 disabled:opacity-50 disabled:pointer-events-none group cursor-pointer"
               >
                 {loading ? (
                   <>

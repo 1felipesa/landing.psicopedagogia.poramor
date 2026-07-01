@@ -9,7 +9,8 @@ import {
     Trash2,
     Clock
 } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+import { db } from '../../lib/firebase';
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, addDoc, orderBy } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Button from '../ui/Button';
@@ -43,14 +44,17 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
 
     const fetchEvolutions = async () => {
         try {
-            const { data, error } = await supabase
-                .from('patient_evolutions')
-                .select('*')
-                .eq('patient_id', patientId)
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-            setEvolutions(data || []);
+            const q = query(
+                collection(db, 'patient_evolutions'),
+                where('patient_id', '==', patientId),
+                orderBy('created_at', 'desc')
+            );
+            const querySnapshot = await getDocs(q);
+            const data = querySnapshot.docs.map(docSnap => ({
+                id: docSnap.id,
+                ...docSnap.data()
+            })) as Evolution[];
+            setEvolutions(data);
         } catch (error: any) {
             console.error('Error fetching evolutions:', error);
         } finally {
@@ -62,15 +66,12 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
         if (!newContent.trim()) return;
         setSaving(true);
         try {
-            const { error } = await supabase
-                .from('patient_evolutions')
-                .insert([{
-                    patient_id: patientId,
-                    content: newContent.trim(),
-                    is_public: isPublic
-                }]);
-
-            if (error) throw error;
+            await addDoc(collection(db, 'patient_evolutions'), {
+                patient_id: patientId,
+                content: newContent.trim(),
+                is_public: isPublic,
+                created_at: new Date().toISOString()
+            });
             
             showToast('Evolução registrada com sucesso!');
             setNewContent('');
@@ -87,12 +88,7 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
     const handleDelete = async (id: string) => {
         if (!confirm('Deseja excluir esta evolução?')) return;
         try {
-            const { error } = await supabase
-                .from('patient_evolutions')
-                .delete()
-                .eq('id', id);
-
-            if (error) throw error;
+            await deleteDoc(doc(db, 'patient_evolutions', id));
             showToast('Evolução removida.');
             fetchEvolutions();
         } catch (error: any) {
@@ -102,12 +98,8 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
 
     const togglePublic = async (id: string, currentStatus: boolean) => {
         try {
-            const { error } = await supabase
-                .from('patient_evolutions')
-                .update({ is_public: !currentStatus })
-                .eq('id', id);
-
-            if (error) throw error;
+            const evoRef = doc(db, 'patient_evolutions', id);
+            await updateDoc(evoRef, { is_public: !currentStatus });
             fetchEvolutions();
         } catch (error: any) {
             showToast('Erro ao atualizar privacidade: ' + error.message, 'error');

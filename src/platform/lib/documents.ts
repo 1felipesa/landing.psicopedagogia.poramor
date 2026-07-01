@@ -1,4 +1,6 @@
-import { supabase } from '../lib/supabase';
+import { db, storage } from './firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+import { collection, addDoc, doc, deleteDoc as firestoreDeleteDoc } from 'firebase/firestore';
 
 export type Document = {
     id: string;
@@ -8,50 +10,56 @@ export type Document = {
     type: 'report' | 'activity' | 'other';
     created_at: string;
     size_bytes?: number;
+    storage_path?: string;
 };
 
 export const uploadDocument = async (file: File, patientId: string, title: string, type: 'report' | 'activity' | 'other') => {
     // 1. Upload to Storage
     const fileExt = file.name.split('.').pop();
-    const fileName = `${patientId}/${Math.random()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const fileName = `${Math.random()}.${fileExt}`;
+    const storagePath = `patient-documents/${patientId}/${fileName}`;
+    const fileRef = ref(storage, storagePath);
 
-    const { error: uploadError, data } = await supabase.storage
-        .from('patient-documents')
-        .upload(filePath, file);
+    await uploadBytes(fileRef, file);
 
-    if (uploadError) throw uploadError;
+    // 2. Get Public Download URL
+    const publicUrl = await getDownloadURL(fileRef);
 
-    // 2. Get Public URL
-    const { data: { publicUrl } } = supabase.storage
-        .from('patient-documents')
-        .getPublicUrl(filePath);
-
-    // 3. Save Metadata to Table
-    const { error: dbError } = await supabase
-        .from('documents')
-        .insert({
-            patient_id: patientId,
-            title: title,
-            url: publicUrl,
-            type: type,
-            size_bytes: file.size
-        });
-
-    if (dbError) throw dbError;
+    // 3. Save Metadata to Firestore
+    await addDoc(collection(db, 'documents'), {
+        patient_id: patientId,
+        title: title,
+        url: publicUrl,
+        type: type,
+        size_bytes: file.size,
+        storage_path: storagePath,
+        created_at: new Date().toISOString()
+    });
 
     return publicUrl;
 };
 
-export const deleteDocument = async (id: string, url: string) => {
-    // Extract path from URL for storage deletion
-    // e.g., https://.../storage/v1/object/public/patient-documents/USER_ID/FILE.pdf
-    const path = url.split('patient-documents/')[1];
-
-    if (path) {
-        await supabase.storage.from('patient-documents').remove([path]);
+export const deleteDocument = async (id: string, url: string, storagePath?: string) => {
+    // 1. Delete from Storage
+    let path = storagePath;
+    if (!path) {
+        // Fallback: extract storage path from Firebase Storage URL
+        const match = url.match(/\/o\/(.+)\?/);
+        if (match && match[1]) {
+            path = decodeURIComponent(match[1]);
+        }
     }
 
-    const { error } = await supabase.from('documents').delete().eq('id', id);
-    if (error) throw error;
+    if (path) {
+        try {
+            const fileRef = ref(storage, path);
+            await deleteObject(fileRef);
+        } catch (storageError) {
+            console.error("Error deleting file from storage, proceeding with DB delete:", storageError);
+        }
+    }
+
+    // 2. Delete metadata from Firestore
+    const docRef = doc(db, 'documents', id);
+    await firestoreDeleteDoc(docRef);
 };

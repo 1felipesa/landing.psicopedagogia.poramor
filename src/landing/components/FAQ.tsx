@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, MessageCircle, Target, Headphones, Book, Clipboard, Lock, Brain } from 'lucide-react';
+import { ChevronDown, Target, Headphones, Book, Clipboard, Lock, Brain } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 
 const faqs = [
     {
@@ -70,17 +71,17 @@ const FAQ: React.FC = () => {
                 {faqs.map((faq, index) => (
                     <div
                         key={index}
-                        className={`rounded-md overflow-hidden transition-all duration-500 ${openIndex === index ? 'bg-background shadow-premium' : 'bg-white border border-muted/10'}`}
+                        className={`rounded-2xl overflow-hidden transition-all duration-500 ${openIndex === index ? 'bg-background shadow-premium border border-primary/10' : 'bg-white border border-muted/10'}`}
                     >
                         <button
                             id={`faq-button-${index}`}
                             onClick={() => toggleFAQ(index)}
                             aria-expanded={openIndex === index}
                             aria-controls={`faq-content-${index}`}
-                            className="w-full text-left p-6 sm:p-8 flex items-center justify-between gap-4 group focus:outline-none"
+                            className="w-full text-left p-6 sm:p-8 flex items-center justify-between gap-4 group focus:outline-none cursor-pointer"
                         >
                             <div className="flex items-center gap-5">
-                                <div className={`w-12 h-12 rounded-md ${faq.color} ${faq.accent} flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110`}>
+                                <div className={`w-12 h-12 rounded-xl ${faq.color} ${faq.accent} flex items-center justify-center shrink-0 transition-all duration-500 group-hover:scale-110`}>
                                     {faq.icon}
                                 </div>
                                 <h3 className="font-display font-bold text-primary text-base sm:text-lg leading-tight">
@@ -106,18 +107,6 @@ const FAQ: React.FC = () => {
                         </div>
                     </div>
                 ))}
-            </div>
-            
-            <div className="mt-16 text-center">
-              <p className="text-text/40 font-body mb-4">Ainda com dúvidas?</p>
-              <a 
-                href="https://wa.me/5516991864393" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-3 bg-accent hover:bg-accent/90 text-white font-bold py-4 px-8 rounded-pill shadow-premium transition-all text-sm uppercase tracking-widest mt-2"
-              >
-                <MessageCircle size={18} /> Conversar no WhatsApp
-              </a>
             </div>
         </section>
     );

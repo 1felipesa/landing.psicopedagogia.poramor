@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { User, Heart, MessageCircle, Menu, X } from 'lucide-react';
+import { User, Heart, Menu, X } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 
 const Header: React.FC = () => {
   const location = useLocation();
@@ -45,7 +46,7 @@ const Header: React.FC = () => {
             role="button"
             tabIndex={0}
             aria-label="Voltar ao início"
-            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md"
+            className="flex items-center gap-3 group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
             onClick={() => {
               setIsMobileMenuOpen(false);
               if (location.pathname !== '/') {
@@ -57,7 +58,7 @@ const Header: React.FC = () => {
               }
             }}
           >
-            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/5 flex items-center justify-center rounded-md transition-all duration-300 group-hover:bg-primary/10 group-hover:scale-110 shrink-0">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 bg-primary/5 flex items-center justify-center rounded-xl transition-all duration-300 group-hover:bg-primary/10 group-hover:scale-110 shrink-0">
               <Heart size={20} className="text-primary sm:w-[24px] sm:h-[24px] fill-primary/20" />
             </div>
             <div className="flex flex-col leading-tight pr-4">
@@ -70,16 +71,12 @@ const Header: React.FC = () => {
         {/* Desktop Navigation */}
         <div className="hidden lg:flex flex-1 items-center justify-center gap-6 xl:gap-8 px-4">
           {[
-            { label: 'Sobre', id: 'sobre' },
-            { label: 'Metodologia', id: 'metodologia' },
-            { label: 'Serviços', id: 'servicos' },
-            { label: 'Biblioteca', id: 'biblioteca' },
-            { label: 'Dúvidas', id: 'faq' }
+
           ].map((link) => (
             <button
               key={link.id}
               onClick={() => scrollToSection(link.id)}
-              className="text-[12px] font-body font-bold text-text/70 hover:text-primary transition-all uppercase tracking-widest whitespace-nowrap"
+              className="text-[12px] font-body font-bold text-text/70 hover:text-primary transition-colors uppercase tracking-widest whitespace-nowrap cursor-pointer"
             >
               {link.label}
             </button>
@@ -100,15 +97,15 @@ const Header: React.FC = () => {
           
           <button
             onClick={() => window.open('https://wa.me/5516991864393', '_blank')}
-            className="bg-accent hover:bg-accent/90 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-6 rounded-pill shadow-premium transition-all text-[11px] sm:text-sm uppercase tracking-wider hidden lg:flex items-center gap-2 shrink-0"
+            className="bg-accent hover:bg-accent/90 text-white font-bold py-2 sm:py-2.5 px-4 sm:px-6 rounded-pill shadow-premium transition-all text-[11px] sm:text-sm uppercase tracking-wider hidden lg:flex items-center gap-2 shrink-0 cursor-pointer"
           >
-            <MessageCircle size={18} />
+            <WhatsAppIcon size={18} />
             Agendar Consulta
           </button>
 
           {/* Hamburger Menu Toggle (Mobile) */}
           <button 
-            className="lg:hidden p-2 text-primary hover:bg-primary/5 rounded-pill transition-colors flex items-center justify-center"
+            className="lg:hidden p-2 text-primary hover:bg-primary/5 rounded-pill transition-colors flex items-center justify-center cursor-pointer"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Abrir menu"
           >
@@ -128,16 +125,12 @@ const Header: React.FC = () => {
             <div className="flex flex-col gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-2">Navegação Principal</span>
                 {[
-                  { label: 'Sobre a Especialista', id: 'sobre' },
-                  { label: 'Nossa Metodologia', id: 'metodologia' },
-                  { label: 'Serviços Oferecidos', id: 'servicos' },
-                  { label: 'Biblioteca Gratuita', id: 'biblioteca' },
-                  { label: 'Dúvidas Frequentes', id: 'faq' }
-                ].map((link) => (
+
+                ].map((link: any) => (
                   <button
                     key={link.id}
                     onClick={() => scrollToSection(link.id)}
-                    className="text-left font-display font-bold text-2xl text-primary py-4 border-b border-muted/30 hover:text-accent transition-colors flex items-center justify-between"
+                    className="text-left font-display font-bold text-2xl text-primary py-4 border-b border-muted/30 hover:text-accent transition-colors flex items-center justify-between cursor-pointer"
                   >
                     {link.label}
                   </button>
@@ -151,7 +144,7 @@ const Header: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="bg-primary/5 text-primary border border-primary/20 font-bold py-4 px-6 rounded-md flex items-center justify-center gap-3 w-full"
+                  className="bg-primary/5 text-primary border border-primary/20 font-bold py-4 px-6 rounded-pill flex items-center justify-center gap-3 w-full"
                 >
                   <User size={20} className="text-primary"/>
                   Portal do Cliente Exclusivo
@@ -162,9 +155,9 @@ const Header: React.FC = () => {
                       window.open('https://wa.me/5516991864393', '_blank');
                       setIsMobileMenuOpen(false);
                   }}
-                  className="bg-accent hover:bg-accent/90 text-white font-bold py-4 px-6 rounded-md flex items-center justify-center gap-3 shadow-premium w-full"
+                  className="bg-accent hover:bg-accent/90 text-white font-bold py-4 px-6 rounded-pill flex items-center justify-center gap-3 shadow-premium w-full cursor-pointer"
                 >
-                  <MessageCircle size={20}/>
+                  <WhatsAppIcon size={20}/>
                   Agendar Consulta via WhatsApp
                 </button>
             </div>

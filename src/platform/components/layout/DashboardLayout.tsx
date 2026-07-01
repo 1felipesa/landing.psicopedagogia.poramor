@@ -32,7 +32,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ currentUser }) => {
     };
 
     return (
-        <div className="flex h-screen bg-slate-50 dark:bg-slate-900 transition-colors overflow-hidden">
+        <div className="flex h-screen bg-background text-on-background transition-colors overflow-hidden">
             <Sidebar
                 currentUser={currentUser}
                 onLogout={logout}

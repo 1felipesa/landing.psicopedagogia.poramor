@@ -11,6 +11,7 @@ const PrivacyPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* SEO Bypass: name="description" og:title og:description */}
       <SEO 
         title="Política de Privacidade"
         description="Informações sobre como coletamos, usamos e protegemos seus dados pessoais na Psicopedagogia por Amor, em conformidade com a LGPD."
@@ -21,7 +22,7 @@ const PrivacyPage: React.FC = () => {
         <div className="max-w-4xl mx-auto">
           
           <div className="text-center mb-16">
-            <div className="w-20 h-20 bg-primary/10 rounded-md flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-primary/10 rounded-xl flex items-center justify-center mx-auto mb-6">
               <ShieldCheck size={40} className="text-primary" />
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-bold text-primary mb-4">Política de Privacidade</h1>
@@ -30,9 +31,9 @@ const PrivacyPage: React.FC = () => {
 
           <div className="space-y-10">
             
-            <section className="bg-white p-8 rounded-md border border-muted/10 shadow-sm">
+            <section className="bg-white p-8 rounded-2xl border border-muted/10 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-primary/5 rounded-md">
+                <div className="p-2 bg-primary/5 rounded-xl">
                   <Eye className="text-primary" size={24} strokeWidth={2} />
                 </div>
                 <h2 className="text-2xl font-display font-bold text-primary m-0">1. Coleta de Dados</h2>
@@ -42,9 +43,9 @@ const PrivacyPage: React.FC = () => {
               </p>
             </section>
 
-            <section className="p-8 bg-white/50 rounded-md border border-muted/5">
+            <section className="p-8 bg-white/50 rounded-2xl border border-muted/5">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-accent/10 rounded-md">
+                <div className="p-2 bg-accent/10 rounded-xl">
                   <FileText className="text-accent" size={24} strokeWidth={2} />
                 </div>
                 <h2 className="text-2xl font-display font-bold text-primary m-0">2. Finalidade do Tratamento</h2>
@@ -60,9 +61,9 @@ const PrivacyPage: React.FC = () => {
               </ul>
             </section>
 
-            <section className="bg-primary/5 p-8 rounded-md border border-primary/10">
+            <section className="bg-primary/5 p-8 rounded-2xl border border-primary/10">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-primary/10 rounded-md">
+                <div className="p-2 bg-primary/10 rounded-xl">
                   <Lock className="text-primary" size={24} strokeWidth={2} />
                 </div>
                 <h2 className="text-2xl font-display font-bold text-primary m-0">3. Seus Direitos</h2>
@@ -72,7 +73,22 @@ const PrivacyPage: React.FC = () => {
               </p>
             </section>
 
-            <section className="p-12 text-center bg-primary rounded-md text-white shadow-premium">
+            <section className="bg-white p-8 rounded-2xl border border-muted/10 shadow-sm">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-primary/5 rounded-xl">
+                  <ShieldCheck className="text-primary" size={24} strokeWidth={2} />
+                </div>
+                <h2 className="text-2xl font-display font-bold text-primary m-0">4. Cookies e Rastreamento</h2>
+              </div>
+              <p className="text-text/70 font-body leading-relaxed mb-4">
+                Utilizamos cookies e tecnologias de rastreamento semelhantes para analisar a performance do site, tráfego e personalizar conteúdos e anúncios de publicidade direcionada através do <strong>Google Analytics 4</strong> e do <strong>Meta Pixel (Facebook/Instagram)</strong>.
+              </p>
+              <p className="text-text/70 font-body leading-relaxed">
+                O uso dessas tecnologias está condicionado ao seu consentimento prévio, o qual pode ser revogado ou ajustado por você a qualquer momento por meio das configurações de cookies ou limpando os dados de navegação.
+              </p>
+            </section>
+
+            <section className="p-12 text-center bg-primary rounded-3xl text-white shadow-premium">
               <h2 className="text-3xl font-display font-bold mb-6">Compromisso com a Segurança</h2>
               <p className="text-white/80 font-body max-w-2xl mx-auto leading-relaxed">
                 Implementamos medidas rigorosas de segurança para proteger suas informações contra acesso não autorizado ou uso indevido. Seus dados nunca serão vendidos para terceiros.
