@@ -1,5 +1,6 @@
 import React from 'react';
 import { MessageCircle, ArrowRight } from 'lucide-react';
+import WhatsAppIcon from './WhatsAppIcon';
 import { trackConversion } from '../../utils/analytics';
 
 const CTA: React.FC = () => {
@@ -28,7 +29,7 @@ const CTA: React.FC = () => {
             onClick={() => trackConversion('Contact', 'CTAFooterPrincipal')}
             className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-white font-bold py-6 px-12 rounded-pill shadow-premium transition-all flex items-center justify-center gap-4 text-xl group cursor-pointer"
           >
-            <MessageCircle size={24} strokeWidth={2.5} />
+            <WhatsAppIcon size={24} />
             Agendar no WhatsApp
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
           </a>
