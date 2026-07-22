@@ -60,9 +60,9 @@ const CookieBanner: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-white/85 backdrop-blur-md border border-white/40 p-6 rounded-2xl shadow-premium z-[9999] animate-float duration-300">
+    <div className="fixed bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-surface/95 dark:bg-[#1e1b24]/95 backdrop-blur-xl border border-outline-variant/40 p-6 rounded-2xl shadow-ambient z-[9999] animate-float duration-300">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 mt-0.5">
+        <div className="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container shrink-0 mt-0.5">
           <ShieldCheck size={20} />
         </div>
         
@@ -73,27 +73,27 @@ const CookieBanner: React.FC = () => {
             </h4>
             <button 
               onClick={() => setIsVisible(false)}
-              className="text-text/30 hover:text-text/60 transition-colors cursor-pointer"
+              className="text-on-surface-variant/60 hover:text-on-surface transition-colors cursor-pointer"
               aria-label="Fechar"
             >
               <X size={16} />
             </button>
           </div>
           
-          <p className="text-xs text-text/75 font-body leading-relaxed mb-5">
+          <p className="text-xs text-on-surface-variant font-body leading-relaxed mb-5">
             Valorizamos sua privacidade. Utilizamos cookies para analisar o tráfego do site e personalizar anúncios do Meta Pixel e Google Analytics. Ao clicar em "Aceitar Todos", você concorda com este uso. Veja mais em nossa <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">Política de Privacidade</a>.
           </p>
           
           <div className="flex items-center justify-end gap-3">
             <button
               onClick={handleDecline}
-              className="px-4 py-2.5 rounded-pill text-xs font-bold text-text/60 border border-muted/15 hover:bg-black/5 active:scale-95 transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-full text-xs font-bold text-on-surface-variant border border-outline-variant/50 hover:bg-on-surface/10 active:scale-95 transition-all cursor-pointer"
             >
               Recusar
             </button>
             <button
               onClick={handleAccept}
-              className="px-6 py-2.5 bg-accent hover:bg-accent/90 text-white rounded-pill text-xs font-bold shadow-premium active:scale-95 transition-all flex items-center justify-center cursor-pointer"
+              className="px-6 py-2.5 bg-[#5a2e8c] hover:bg-[#452070] text-white rounded-full text-xs font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center cursor-pointer"
             >
               Aceitar Todos
             </button>

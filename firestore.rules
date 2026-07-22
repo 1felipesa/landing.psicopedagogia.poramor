@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper para verificar se o usuário logado é Admin
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/profiles/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // Perfil do usuário
+    match /profiles/{userId} {
+      allow read, write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // Anamnese
+    match /anamnesis/{patientId} {
+      allow read, write: if request.auth != null && (request.auth.uid == patientId || isAdmin());
+    }
+
+    // Documentos, Cobranças, Objetivos, Evoluções
+    match /{collectionName}/{docId} {
+      allow read, write: if request.auth != null && (
+        resource.data.patient_id == request.auth.uid ||
+        request.data.patient_id == request.auth.uid ||
+        isAdmin()
+      );
+    }
+  }
+}

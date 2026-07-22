@@ -1,0 +1,14 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Permite leitura e escrita na pasta de documentos do paciente apenas para usuários autenticados
+    match /patient-documents/{patientId}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Regra padrão de fallback
+    match /{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
