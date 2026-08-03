@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../../lib/firebase';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import {
     CheckCircle2,
@@ -38,14 +38,15 @@ const PatientLibrary: React.FC = () => {
                 const q = query(
                     collection(db, 'appointments'),
                     where('patient_id', '==', user.id),
-                    where('status', '==', 'completed'),
-                    orderBy('date', 'desc')
+                    where('status', '==', 'completed')
                 );
                 const querySnapshot = await getDocs(q);
                 const sessionsData = querySnapshot.docs.map(docSnap => ({
                     id: docSnap.id,
                     ...docSnap.data()
                 })) as Session[];
+
+                sessionsData.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
                 setSessions(sessionsData);
             } catch (error) {

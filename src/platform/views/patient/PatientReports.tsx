@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { db } from '../../lib/firebase';
-import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useAuth } from '../../context/AuthContext';
 import { uploadDocument, Document } from '../../lib/documents';
 import { useToast } from '../../context/ToastContext';
@@ -45,14 +45,16 @@ const PatientReports: React.FC = () => {
             if (!user) return;
             const q = query(
                 collection(db, 'documents'),
-                where('patient_id', '==', user.id),
-                orderBy('created_at', 'desc')
+                where('patient_id', '==', user.id)
             );
             const querySnapshot = await getDocs(q);
             const docsData = querySnapshot.docs.map(docSnap => ({
                 id: docSnap.id,
                 ...docSnap.data()
             })) as Document[];
+
+            // Sort in memory by created_at desc
+            docsData.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
 
             // Categorize documents
             const templates = docsData.filter(d => d.type === 'contract_template' || (d.uploaded_by === 'admin' && (d.title.toLowerCase().includes('contrato') || d.title.toLowerCase().includes('prestacao') || d.title.toLowerCase().includes('prestação'))));
