@@ -65,13 +65,13 @@ const CookieBanner: React.FC = () => {
         <div className="w-10 h-10 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container shrink-0 mt-0.5">
           <ShieldCheck size={20} />
         </div>
-        
+
         <div className="flex-grow">
           <div className="flex justify-between items-center mb-2">
             <h4 className="font-display font-bold text-sm text-primary uppercase tracking-wide">
               Controle de Privacidade
             </h4>
-            <button 
+            <button
               onClick={() => setIsVisible(false)}
               className="text-on-surface-variant/60 hover:text-on-surface transition-colors cursor-pointer"
               aria-label="Fechar"
@@ -79,11 +79,11 @@ const CookieBanner: React.FC = () => {
               <X size={16} />
             </button>
           </div>
-          
+
           <p className="text-xs text-on-surface-variant font-body leading-relaxed mb-5">
             Valorizamos sua privacidade. Utilizamos cookies para analisar o tráfego do site e personalizar anúncios do Meta Pixel e Google Analytics. Ao clicar em "Aceitar Todos", você concorda com este uso. Veja mais em nossa <a href="/privacidade" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">Política de Privacidade</a>.
           </p>
-          
+
           <div className="flex items-center justify-end gap-3">
             <button
               onClick={handleDecline}

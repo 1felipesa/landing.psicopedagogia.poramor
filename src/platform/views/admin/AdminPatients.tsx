@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from '../../lib/firebase';
-import { collection, query, where, getDocs, doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, deleteDoc, updateDoc } from 'firebase/firestore';
 import Avatar from '../../components/ui/Avatar';
 
 const AdminPatients: React.FC = () => {
@@ -27,16 +27,19 @@ const AdminPatients: React.FC = () => {
 
     const fetchPatients = async () => {
         try {
-            // Fetch profiles that are patients
+            // Fetch profiles that are active patients
             const q = query(
                 collection(db, 'profiles'),
                 where('role', '==', 'patient')
             );
             const querySnapshot = await getDocs(q);
-            const profiles = querySnapshot.docs.map(docSnap => ({
+            const rawProfiles = querySnapshot.docs.map(docSnap => ({
                 id: docSnap.id,
                 ...docSnap.data()
             })) as any[];
+
+            // Exclude inactive patients from active list
+            const profiles = rawProfiles.filter(p => p.status !== 'inactive');
 
             // For each patient, check if they have anamnesis
             const patientsWithStatus = await Promise.all(profiles.map(async (p) => {
@@ -60,20 +63,23 @@ const AdminPatients: React.FC = () => {
     };
 
     const handleDeletePatient = async (id: string, name: string) => {
-        if (!window.confirm(`Tem certeza que deseja excluir permanentemente o paciente "${name || 'Usuário'}"? Esta ação não pode ser desfeita.`)) {
+        if (!window.confirm(`Deseja inativar o paciente "${name || 'Usuário'}"? O perfil será removido da lista ativa, mas todo o histórico clínico será mantido.`)) {
             return;
         }
 
         try {
-            // Delete from profiles collection in Firestore
-            await deleteDoc(doc(db, 'profiles', id));
+            // Inactivate profile in Firestore (Soft Delete)
+            await updateDoc(doc(db, 'profiles', id), {
+                status: 'inactive',
+                updated_at: new Date().toISOString()
+            });
 
             // Update local state
             setPatients(prev => prev.filter(p => p.id !== id));
-            alert('Paciente excluído com sucesso!');
+            alert('Paciente inativado com sucesso! Histórico preservado.');
         } catch (error) {
-            console.error('Erro ao excluir paciente:', error);
-            alert('Ocorreu um erro ao excluir o paciente. Verifique sua conexão.');
+            console.error('Erro ao inativar paciente:', error);
+            alert('Ocorreu um erro ao inativar o paciente. Verifique sua conexão.');
         }
     };
 

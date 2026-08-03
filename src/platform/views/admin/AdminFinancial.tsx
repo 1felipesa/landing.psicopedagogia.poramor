@@ -116,10 +116,13 @@ const AdminFinancial: React.FC = () => {
                 where('role', '==', 'patient')
             );
             const querySnapshot = await getDocs(q);
-            const patientsData = querySnapshot.docs.map(docSnap => ({
-                id: docSnap.id,
-                full_name: docSnap.data().full_name
-            }));
+            const patientsData = querySnapshot.docs
+                .map(docSnap => ({
+                    id: docSnap.id,
+                    full_name: docSnap.data().full_name,
+                    status: docSnap.data().status
+                }))
+                .filter(p => p.status !== 'inactive');
             setPatients(patientsData);
         } catch (err) {
             console.error('Error fetching patients:', err);

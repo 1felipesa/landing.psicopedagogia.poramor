@@ -7,16 +7,23 @@ export type Document = {
     patient_id: string;
     title: string;
     url: string;
-    type: 'report' | 'activity' | 'other';
+    type: 'report' | 'activity' | 'signed_contract' | 'other';
     created_at: string;
     size_bytes?: number;
     storage_path?: string;
+    uploaded_by?: 'patient' | 'admin';
 };
 
-export const uploadDocument = async (file: File, patientId: string, title: string, type: 'report' | 'activity' | 'other') => {
+export const uploadDocument = async (
+    file: File,
+    patientId: string,
+    title: string,
+    type: 'report' | 'activity' | 'signed_contract' | 'other',
+    uploadedBy: 'patient' | 'admin' = 'admin'
+) => {
     // 1. Upload to Storage
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;
     const storagePath = `patient-documents/${patientId}/${fileName}`;
     const fileRef = ref(storage, storagePath);
 
@@ -33,6 +40,7 @@ export const uploadDocument = async (file: File, patientId: string, title: strin
         type: type,
         size_bytes: file.size,
         storage_path: storagePath,
+        uploaded_by: uploadedBy,
         created_at: new Date().toISOString()
     });
 

@@ -400,7 +400,7 @@ const PatientDetail: React.FC = () => {
  } finally {
  setIsGenerating(false);
  }
- };
+ me};
 
  if (loading) {
  return <div className="p-8 text-center text-on-surface-variant">Carregando detalhes...</div>;
@@ -534,295 +534,340 @@ const PatientDetail: React.FC = () => {
 
  {/* Documents Side Column */}
  <div className="space-y-6">
- {/* Official Actions */}
- <div className="bg-primary dark:bg-primary-700 p-6 rounded-[24px] shadow-sm text-white space-y-4 transition-colors">
- <h3 className="font-bold flex items-center gap-2">
- <ShieldCheck size={20} />
- Documentos Oficiais
- </h3>
- <div className="space-y-2">
- <button
- onClick={() => setShowDischargeModal(true)}
- className="w-full flex items-center justify-between p-3 bg-surface/10 hover:bg-surface/20 rounded-xl transition-colors text-sm font-medium"
- >
- <div className="flex items-center gap-2">
- <FileCheck size={18} />
- Relatório de Alta
- </div>
- <Plus size={16} />
- </button>
- <button
- onClick={() => setShowFinancialReportModal(true)}
- className="w-full flex items-center justify-between p-3 bg-surface/10 hover:bg-surface/20 rounded-xl transition-colors text-sm font-medium"
- >
- <div className="flex items-center gap-2">
- <Receipt size={18} />
- Quitação Financeira
- </div>
- <Plus size={16} />
- </button>
- </div>
- </div>
+    {/* Official Actions */}
+    <div className="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm space-y-4 transition-colors">
+      <h3 className="font-bold text-on-surface flex items-center gap-2">
+        <div className="p-2 bg-primary/10 text-primary rounded-xl">
+          <ShieldCheck size={18} />
+        </div>
+        Documentos Oficiais
+      </h3>
+      <div className="space-y-3">
+        {/* Status do Contrato Assinado */}
+        {(() => {
+          const signedContracts = documents.filter(d => d.type === 'signed_contract');
+          const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
 
- <div className="bg-slate-800 p-6 rounded-[24px] border border-slate-700 shadow-sm space-y-4 transition-colors">
- <div className="flex items-center justify-between">
- <h3 className="font-bold text-white flex items-center gap-2 transition-colors">
- <File size={18} className="text-blue-400" />
- Documentos
- </h3>
- <input
- type="file"
- ref={fileInputRef}
- className="hidden"
- onChange={handleFileUpload}
- accept=".pdf,.doc,.docx,.jpg,.png"
- />
- <button
- onClick={() => fileInputRef.current?.click()}
- disabled={uploading}
- className="p-2 bg-blue-900/30 text-blue-400 rounded-lg hover:bg-blue-900/50 transition-colors"
- >
- <Upload size={18} />
- </button>
- </div>
+          if (latestContract) {
+            return (
+              <div className="p-3.5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300">
+                    <CheckCircle2 size={14} /> Contrato Assinado Recebido
+                  </span>
+                  <span className="text-[10px] text-green-700 dark:text-green-400 font-medium">
+                    {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestContract.title}</p>
+                <a
+                  href={latestContract.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs"
+                >
+                  <Download size={14} /> Baixar Contrato Assinado
+                </a>
+              </div>
+            );
+          } else {
+            return (
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <ShieldCheck size={14} /> Contrato Assinado Pendente
+                </span>
+                <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase">Aguardando Envio</span>
+              </div>
+            );
+          }
+        })()}
 
- <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
- {documents.length === 0 ? (
- <p className="text-center py-4 text-xs text-on-surface-variant">Sem arquivos.</p>
- ) : (
- documents.map(doc => (
- <div key={doc.id} className="group flex items-center justify-between p-3 bg-slate-900 rounded-xl border border-slate-700 transition-colors">
- <div className="flex items-center gap-2 overflow-hidden">
- <FileText size={16} className="text-on-surface-variant" />
- <p className="text-xs font-bold text-slate-200 truncate">{doc.title}</p>
- </div>
- <div className="flex items-center gap-1">
- <a href={doc.url} target="_blank" rel="noopener noreferrer" className="p-1 text-primary-400 hover:bg-slate-800 rounded transition-colors">
- <Download size={14} />
- </a>
- <button onClick={() => handleDeleteDoc(doc.id, doc.url)} className="p-1 text-red-900 hover:text-red-400 transition-colors">
- <Trash2 size={14} />
- </button>
- </div>
- </div>
- ))
- )}
- </div>
- </div>
+        <button
+          onClick={() => setShowDischargeModal(true)}
+          className="w-full flex items-center justify-between p-3 bg-surface-variant/40 hover:bg-surface-variant text-on-surface rounded-xl transition-colors text-sm font-medium border border-outline-variant/40"
+        >
+          <div className="flex items-center gap-2">
+            <FileCheck size={18} className="text-primary" />
+            Relatório de Alta
+          </div>
+          <Plus size={16} className="text-on-surface-variant" />
+        </button>
+        <button
+          onClick={() => setShowFinancialReportModal(true)}
+          className="w-full flex items-center justify-between p-3 bg-surface-variant/40 hover:bg-surface-variant text-on-surface rounded-xl transition-colors text-sm font-medium border border-outline-variant/40"
+        >
+          <div className="flex items-center gap-2">
+            <Receipt size={18} className="text-primary" />
+            Quitação Financeira
+          </div>
+          <Plus size={16} className="text-on-surface-variant" />
+        </button>
+      </div>
+    </div>
 
- {/* Compact Anamnesis Access */}
- <div className="bg-slate-800 p-6 rounded-[24px] border border-slate-700 shadow-sm group hover:border-primary-800 transition-colors cursor-pointer" onClick={() => setShowAnamnesisModal(true)}>
- <div className="flex items-center justify-between">
- <div className="flex items-center gap-3">
- <div className="p-3 bg-purple-900/30 text-purple-400 rounded-2xl group-hover:scale-110 transition-transform">
- <FileText size={24} />
- </div>
- <div>
- <h3 className="font-bold text-white text-sm transition-colors">Pré-Anamnese</h3>
- <p className="text-[10px] text-on-surface-variant font-bold uppercase transition-colors">{anamnesis ? 'Completa' : 'Pendente'}</p>
- </div>
- </div>
- <div className="p-2 bg-slate-900 text-slate-600 rounded-xl group-hover:bg-primary-900/40 group-hover:text-primary-400 transition-colors">
- <ExternalLink size={20} />
- </div>
- </div>
- {anamnesis && (
- <div className="mt-4 pt-4 border-t border-slate-50 transition-colors">
- <p className="text-xs text-on-surface-variant line-clamp-2 italic">
- "{answers.mainReason || 'Sem queixa principal informada.'}"
- </p>
- </div>
- )}
- </div>
- </div>
- </div>
+    {/* Documents */}
+    <div className="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm space-y-4 transition-colors">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-on-surface flex items-center gap-2 transition-colors">
+          <div className="p-2 bg-primary/10 text-primary rounded-xl">
+            <File size={18} />
+          </div>
+          Documentos Anexados
+        </h3>
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={handleFileUpload}
+          accept=".pdf,.doc,.docx,.jpg,.png"
+        />
+        <button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="p-2 bg-primary/10 text-primary rounded-xl hover:bg-primary/20 transition-colors"
+          title="Fazer upload de documento"
+        >
+          <Upload size={18} />
+        </button>
+      </div>
 
- {/* Discharge Modal */}
- {showDischargeModal && (
- <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
- <div className="bg-surface w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp max-h-[90vh] border border-transparent transition-colors">
- <div className="p-6 border-b border-outline-variant flex items-center justify-between transition-colors">
- <h2 className="text-xl font-bold text-on-surface transition-colors">Gerar Relatório de Alta</h2>
- <button onClick={() => setShowDischargeModal(false)} className=""><X size={20} /></button>
- </div>
- <div className="p-6 overflow-y-auto space-y-4 custom-scrollbar">
- <Input label="Seu Nome Profissional" value={dischargeForm.professionalName} onChange={e => setDischargeForm({ ...dischargeForm, professionalName: e.target.value })} placeholder="Ex: Dra. Raiane Ferreira" />
- <Input label="Registro Profissional (CRP/CBO)" value={dischargeForm.professionalReg} onChange={e => setDischargeForm({ ...dischargeForm, professionalReg: e.target.value })} placeholder="Ex: CBO 2394-25" />
- <Textarea label="Evolução do Caso" value={dischargeForm.evolution} onChange={e => setDischargeForm({ ...dischargeForm, evolution: e.target.value })} placeholder="Descreva os marcos alcançados..." />
- <Textarea label="Metodologia Utilizada" value={dischargeForm.methodology} onChange={e => setDischargeForm({ ...dischargeForm, methodology: e.target.value })} placeholder="Ex: Intervenções baseadas em jogos..." />
- <Textarea label="Estado Atual" value={dischargeForm.currentStatus} onChange={e => setDischargeForm({ ...dischargeForm, currentStatus: e.target.value })} placeholder="Como o paciente está hoje?" />
- <Textarea label="Recomendações Finais" value={dischargeForm.recommendations} onChange={e => setDischargeForm({ ...dischargeForm, recommendations: e.target.value })} placeholder="Orientações para a família e escola..." />
- </div>
- <div className="p-6 bg-background bg-surface-variant/40 border-t border-outline-variant flex justify-end gap-3 transition-colors">
- <Button variant="outline" onClick={() => setShowDischargeModal(false)}>Cancelar</Button>
- <Button onClick={generateDischargeReport} isLoading={isGenerating}>Gerar e Disponibilizar</Button>
- </div>
- </div>
- </div>
- )}
+      <div className="space-y-2 max-h-[200px] overflow-y-auto pr-1 custom-scrollbar">
+        {documents.length === 0 ? (
+          <p className="text-center py-4 text-xs text-on-surface-variant">Nenhum arquivo anexado.</p>
+        ) : (
+          documents.map(doc => (
+            <div key={doc.id} className="group flex items-center justify-between p-3 bg-surface-variant/30 rounded-xl border border-outline-variant/40 transition-colors">
+              <div className="flex items-center gap-2 overflow-hidden">
+                <FileText size={16} className="text-primary flex-shrink-0" />
+                <p className="text-xs font-medium text-on-surface truncate">{doc.title}</p>
+              </div>
+              <div className="flex items-center gap-1">
+                <a href={doc.url} target="_blank" rel="noopener noreferrer" className="p-1.5 text-primary hover:bg-primary/10 rounded-lg transition-colors">
+                  <Download size={14} />
+                </a>
+                <button onClick={() => handleDeleteDoc(doc.id, doc.url)} className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
 
- {/* Financial Report Modal */}
- {showFinancialReportModal && (
- <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
- <div className="bg-surface w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp border border-transparent transition-colors">
- <div className="p-6 border-b border-outline-variant flex items-center justify-between transition-colors">
- <h2 className="text-xl font-bold text-on-surface transition-colors">Declaração de Quitação</h2>
- <button onClick={() => setShowFinancialReportModal(false)} className=""><X size={20} /></button>
- </div>
- <div className="p-6 space-y-4">
- <Input label="Seu Nome/Clínica" value={financialForm.professionalName} onChange={e => setFinancialForm({ ...financialForm, professionalName: e.target.value })} />
- <Input label="Seu CPF/CNPJ" value={financialForm.professionalCpf} onChange={e => setFinancialForm({ ...financialForm, professionalCpf: e.target.value })} />
- <Input label="Endereço Profissional" value={financialForm.professionalAddress} onChange={e => setFinancialForm({ ...financialForm, professionalAddress: e.target.value })} />
- <div className="p-4 bg-blue-50 rounded-2xl text-xs text-blue-700 leading-relaxed">
- <p>Este documento trará automaticamente uma tabela com todos os pagamentos marcados como <strong>Pagos</strong> para este paciente no sistema.</p>
- </div>
- </div>
- <div className="p-6 bg-background bg-surface-variant/40 border-t border-outline-variant flex justify-end gap-3 transition-colors">
- <Button variant="outline" onClick={() => setShowFinancialReportModal(false)}>Cancelar</Button>
- <Button onClick={generateFinancialReport} isLoading={isGenerating}>Gerar Quitação</Button>
- </div>
- </div>
- </div>
- )}
+    {/* Compact Anamnesis Access */}
+    <div className="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm group hover:border-primary/50 transition-colors cursor-pointer" onClick={() => setShowAnamnesisModal(true)}>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-primary/10 text-primary rounded-2xl group-hover:scale-105 transition-transform">
+            <FileText size={24} />
+          </div>
+          <div>
+            <h3 className="font-bold text-on-surface text-sm transition-colors">Pré-Anamnese</h3>
+            <p className="text-[10px] text-on-surface-variant font-bold uppercase transition-colors">{anamnesis ? 'Completa' : 'Pendente'}</p>
+          </div>
+        </div>
+        <div className="p-2 bg-surface-variant text-on-surface-variant rounded-xl group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+          <ExternalLink size={20} />
+        </div>
+      </div>
+      {anamnesis && (
+        <div className="mt-4 pt-4 border-t border-outline-variant transition-colors">
+          <p className="text-xs text-on-surface-variant line-clamp-2 italic">
+            "{answers.mainReason || 'Sem queixa principal informada.'}"
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+  </div>
 
- {/* Anamnesis Full Modal */}
- {showAnamnesisModal && (
- <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
- <div className="bg-surface w-full max-w-4xl max-h-[90vh] rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp border border-transparent transition-colors">
- {/* Modal Header */}
- <div className="p-6 md:p-8 flex items-center justify-between border-b border-slate-700 transition-colors">
- <div className="flex items-center gap-4">
- <div className="p-3 bg-purple-900/30 text-purple-400 rounded-2xl transition-colors">
- <FileText size={24} />
- </div>
- <div>
- <h2 className="text-xl md:text-2xl font-bold text-white transition-colors">Resultado da Pré-Anamnese</h2>
- <p className="text-sm text-outline">Respondido por {answers.responsibleName || 'Responsável'}</p>
- </div>
- </div>
- <button
- onClick={() => setShowAnamnesisModal(false)}
- className="p-2 hover:bg-slate-700 rounded-full transition-colors"
- >
- <X size={24} className="text-on-surface-variant" />
- </button>
- </div>
+  {/* Discharge Modal */}
+  {showDischargeModal && (
+  <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+  <div className="bg-surface w-full max-w-2xl rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp max-h-[90vh] border border-transparent transition-colors">
+  <div className="p-6 border-b border-outline-variant flex items-center justify-between transition-colors">
+  <h2 className="text-xl font-bold text-on-surface transition-colors">Gerar Relatório de Alta</h2>
+  <button onClick={() => setShowDischargeModal(false)} className=""><X size={20} /></button>
+  </div>
+  <div className="p-6 overflow-y-auto space-y-4 custom-scrollbar">
+  <Input label="Seu Nome Profissional" value={dischargeForm.professionalName} onChange={e => setDischargeForm({ ...dischargeForm, professionalName: e.target.value })} placeholder="Ex: Dra. Raiane Ferreira" />
+  <Input label="Registro Profissional (CRP/CBO)" value={dischargeForm.professionalReg} onChange={e => setDischargeForm({ ...dischargeForm, professionalReg: e.target.value })} placeholder="Ex: CBO 2394-25" />
+  <Textarea label="Evolução do Caso" value={dischargeForm.evolution} onChange={e => setDischargeForm({ ...dischargeForm, evolution: e.target.value })} placeholder="Descreva os marcos alcançados..." />
+  <Textarea label="Metodologia Utilizada" value={dischargeForm.methodology} onChange={e => setDischargeForm({ ...dischargeForm, methodology: e.target.value })} placeholder="Ex: Intervenções baseadas em jogos..." />
+  <Textarea label="Estado Atual" value={dischargeForm.currentStatus} onChange={e => setDischargeForm({ ...dischargeForm, currentStatus: e.target.value })} placeholder="Como o paciente está hoje?" />
+  <Textarea label="Recomendações Finais" value={dischargeForm.recommendations} onChange={e => setDischargeForm({ ...dischargeForm, recommendations: e.target.value })} placeholder="Orientações para a família e escola..." />
+  </div>
+  <div className="p-6 bg-background bg-surface-variant/40 border-t border-outline-variant flex justify-end gap-3 transition-colors">
+  <Button variant="outline" onClick={() => setShowDischargeModal(false)}>Cancelar</Button>
+  <Button onClick={generateDischargeReport} isLoading={isGenerating}>Gerar e Disponibilizar</Button>
+  </div>
+  </div>
+  </div>
+  )}
 
- {/* Modal Content */}
- <div className="p-6 md:p-8 overflow-y-auto space-y-10 custom-scrollbar bg-surface transition-colors">
- {!anamnesis ? (
- <div className="text-center py-12">
- <p className="text-on-surface-variant italic">Este paciente ainda não enviou a anamnese.</p>
- </div>
- ) : (
- <>
- {/* Section 1 */}
- <section>
- <div className="flex items-center gap-2 mb-6 text-purple-600">
- <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
- <h3 className="text-sm font-bold uppercase tracking-wider">Identificação & Família</h3>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- <DetailItem label="Criança/Paciente" value={answers.childName} />
- <DetailItem label="Idade" value={answers.childAge ? `${answers.childAge} anos` : null} />
- <DetailItem label="Estrutura Familiar" value={answers.familyStructure} fullWidth />
- <DetailItem label="Vínculo do Responsável" value={answers.responsibleBond} />
- <DetailItem label="Escola / Série" value={answers.school} />
- </div>
- </section>
+  {/* Financial Report Modal */}
+  {showFinancialReportModal && (
+  <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+  <div className="bg-surface w-full max-w-md rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp border border-transparent transition-colors">
+  <div className="p-6 border-b border-outline-variant flex items-center justify-between transition-colors">
+  <h2 className="text-xl font-bold text-on-surface transition-colors">Declaração de Quitação</h2>
+  <button onClick={() => setShowFinancialReportModal(false)} className=""><X size={20} /></button>
+  </div>
+  <div className="p-6 space-y-4">
+  <Input label="Seu Nome/Clínica" value={financialForm.professionalName} onChange={e => setFinancialForm({ ...financialForm, professionalName: e.target.value })} />
+  <Input label="Seu CPF/CNPJ" value={financialForm.professionalCpf} onChange={e => setFinancialForm({ ...financialForm, professionalCpf: e.target.value })} />
+  <Input label="Endereço Profissional" value={financialForm.professionalAddress} onChange={e => setFinancialForm({ ...financialForm, professionalAddress: e.target.value })} />
+  <div className="p-4 bg-blue-50 rounded-2xl text-xs text-blue-700 leading-relaxed">
+  <p>Este documento trará automaticamente uma tabela com todos os pagamentos marcados como <strong>Pagos</strong> para este paciente no sistema.</p>
+  </div>
+  </div>
+  <div className="p-6 bg-background bg-surface-variant/40 border-t border-outline-variant flex justify-end gap-3 transition-colors">
+  <Button variant="outline" onClick={() => setShowFinancialReportModal(false)}>Cancelar</Button>
+  <Button onClick={generateFinancialReport} isLoading={isGenerating}>Gerar Quitação</Button>
+  </div>
+  </div>
+  </div>
+  )}
 
- <hr className="border-slate-700" />
+  {/* Anamnesis Full Modal */}
+  {showAnamnesisModal && (
+  <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
+  <div className="bg-surface w-full max-w-4xl max-h-[90vh] rounded-[32px] shadow-2xl overflow-hidden flex flex-col animate-scaleUp border border-transparent transition-colors">
+  {/* Modal Header */}
+  <div className="p-6 md:p-8 flex items-center justify-between border-b border-slate-700 transition-colors">
+  <div className="flex items-center gap-4">
+  <div className="p-3 bg-purple-900/30 text-purple-400 rounded-2xl transition-colors">
+  <FileText size={24} />
+  </div>
+  <div>
+  <h2 className="text-xl md:text-2xl font-bold text-white transition-colors">Resultado da Pré-Anamnese</h2>
+  <p className="text-sm text-outline">Respondido por {answers.responsibleName || 'Responsável'}</p>
+  </div>
+  </div>
+  <button
+  onClick={() => setShowAnamnesisModal(false)}
+  className="p-2 hover:bg-slate-700 rounded-full transition-colors"
+  >
+  <X size={24} className="text-on-surface-variant" />
+  </button>
+  </div>
 
- {/* Section 2 */}
- <section>
- <div className="flex items-center gap-2 mb-6 text-purple-600">
- <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
- <h3 className="text-sm font-bold uppercase tracking-wider">Motivo & Histórico</h3>
- </div>
- <div className="space-y-6">
- <DetailItem label="Principal Queixa" value={answers.mainReason} fullWidth highlight />
- <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- <DetailItem label="Aparecimento dos sintomas" value={answers.sinceWhen} />
- <DetailItem label="Eventos Recentes Impactantes" value={answers.recentEvents} />
- </div>
- </div>
- </section>
+  {/* Modal Content */}
+  <div className="p-6 md:p-8 overflow-y-auto space-y-10 custom-scrollbar bg-surface transition-colors">
+  {!anamnesis ? (
+  <div className="text-center py-12">
+  <p className="text-on-surface-variant italic">Este paciente ainda não enviou a anamnese.</p>
+  </div>
+  ) : (
+  <>
+  {/* Section 1 */}
+  <section>
+  <div className="flex items-center gap-2 mb-6 text-purple-600">
+  <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+  <h3 className="text-sm font-bold uppercase tracking-wider">Identificação & Família</h3>
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <DetailItem label="Criança/Paciente" value={answers.childName} />
+  <DetailItem label="Idade" value={answers.childAge ? `${answers.childAge} anos` : null} />
+  <DetailItem label="Estrutura Familiar" value={answers.familyStructure} fullWidth />
+  <DetailItem label="Vínculo do Responsável" value={answers.responsibleBond} />
+  <DetailItem label="Escola / Série" value={answers.school} />
+  </div>
+  </section>
 
- <hr className="border-slate-700" />
+  <hr className="border-slate-700" />
 
- {/* Section 3 */}
- <section>
- <div className="flex items-center gap-2 mb-6 text-purple-600">
- <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
- <h3 className="text-sm font-bold uppercase tracking-wider">Saúde e Rotina</h3>
- </div>
- <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- <DetailItem label="Diagnósticos Prévios" value={answers.diagnosis} />
- <DetailItem label="Medicações em uso" value={answers.medication} />
- <DetailItem label="Sono e Alimentação" value={answers.sleepAndFood} fullWidth />
- <DetailItem label="Outros tratamentos/terapias" value={answers.otherTreatments} fullWidth />
- </div>
- </section>
+  {/* Section 2 */}
+  <section>
+  <div className="flex items-center gap-2 mb-6 text-purple-600">
+  <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+  <h3 className="text-sm font-bold uppercase tracking-wider">Motivo & Histórico</h3>
+  </div>
+  <div className="space-y-6">
+  <DetailItem label="Principal Queixa" value={answers.mainReason} fullWidth highlight />
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <DetailItem label="Aparecimento dos sintomas" value={answers.sinceWhen} />
+  <DetailItem label="Eventos Recentes Impactantes" value={answers.recentEvents} />
+  </div>
+  </div>
+  </section>
 
- <hr className="border-slate-700" />
+  <hr className="border-slate-700" />
 
- {/* Section 4 */}
- <section>
- <div className="flex items-center gap-2 mb-6 text-purple-600">
- <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
- <h3 className="text-sm font-bold uppercase tracking-wider">Vida Escolar</h3>
- </div>
- <div className="space-y-6">
- <DetailItem label="Feedback da Escola" value={answers.schoolFeedback} fullWidth />
- <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
- <DetailItem label="Preferências Escolares" value={answers.preferences} />
- <DetailItem label="Relação com Lição de Casa" value={answers.homework} />
- <DetailItem label="Autonomia nos estudos" value={answers.autonomy} />
- </div>
- </div>
- </section>
+  {/* Section 3 */}
+  <section>
+  <div className="flex items-center gap-2 mb-6 text-purple-600">
+  <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+  <h3 className="text-sm font-bold uppercase tracking-wider">Saúde e Rotina</h3>
+  </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <DetailItem label="Diagnósticos Prévios" value={answers.diagnosis} />
+  <DetailItem label="Medicações em uso" value={answers.medication} />
+  <DetailItem label="Sono e Alimentação" value={answers.sleepAndFood} fullWidth />
+  <DetailItem label="Outros tratamentos/terapias" value={answers.otherTreatments} fullWidth />
+  </div>
+  </section>
 
- <hr className="border-slate-700" />
+  <hr className="border-slate-700" />
 
- {/* Section 5 */}
- <section>
- <div className="flex items-center gap-2 mb-6 text-purple-600">
- <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
- <h3 className="text-sm font-bold uppercase tracking-wider">Comportamento e Social</h3>
- </div>
- <div className="space-y-6">
- <DetailItem label="Reação a Frustrações" value={answers.frustration} fullWidth />
- <DetailItem label="Relação com Colegas/Irmãos" value={answers.socialization} fullWidth />
- <DetailItem label="Principais Interesses/Hobbies" value={answers.interactions} fullWidth />
- <DetailItem label="Observações Adicionais" value={answers.extraObservations} fullWidth highlight />
- </div>
- </section>
- </>
- )}
- </div>
+  {/* Section 4 */}
+  <section>
+  <div className="flex items-center gap-2 mb-6 text-purple-600">
+  <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+  <h3 className="text-sm font-bold uppercase tracking-wider">Vida Escolar</h3>
+  </div>
+  <div className="space-y-6">
+  <DetailItem label="Feedback da Escola" value={answers.schoolFeedback} fullWidth />
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <DetailItem label="Preferências Escolares" value={answers.preferences} />
+  <DetailItem label="Relação com Lição de Casa" value={answers.homework} />
+  <DetailItem label="Autonomia nos estudos" value={answers.autonomy} />
+  </div>
+  </div>
+  </section>
 
- {/* Modal Footer */}
- <div className="p-6 bg-slate-900/40 border-t border-slate-700 flex justify-end transition-colors">
- <Button onClick={() => setShowAnamnesisModal(false)} className="px-8">
- Fechar Visualização
- </Button>
- </div>
- </div>
- </div>
- )}
- </div>
- );
+  <hr className="border-slate-700" />
+
+  {/* Section 5 */}
+  <section>
+  <div className="flex items-center gap-2 mb-6 text-purple-600">
+  <div className="w-1 h-4 bg-purple-600 rounded-full"></div>
+  <h3 className="text-sm font-bold uppercase tracking-wider">Comportamento e Social</h3>
+  </div>
+  <div className="space-y-6">
+  <DetailItem label="Reação a Frustrações" value={answers.frustration} fullWidth />
+  <DetailItem label="Relação com Colegas/Irmãos" value={answers.socialization} fullWidth />
+  <DetailItem label="Principais Interesses/Hobbies" value={answers.interactions} fullWidth />
+  <DetailItem label="Observações Adicionais" value={answers.extraObservations} fullWidth highlight />
+  </div>
+  </section>
+  </>
+  )}
+  </div>
+
+  {/* Modal Footer */}
+  <div className="p-6 bg-slate-900/40 border-t border-slate-700 flex justify-end transition-colors">
+  <Button onClick={() => setShowAnamnesisModal(false)} className="px-8">
+  Fechar Visualização
+  </Button>
+  </div>
+  </div>
+  </div>
+  )}
+  </div>
+  );
 };
 
 // Helper Component for consistent display
 const DetailItem = ({ label, value, fullWidth, highlight }: any) => {
- if (!value) return null;
- return (
- <div className={`${fullWidth ? 'col-span-full' : ''} ${highlight ? 'bg-primary-container p-5 rounded-2xl border border-primary-100 dark:border-primary-800/30' : ''} transition-colors`}>
- <p className="text-[10px] font-bold text-outline dark:text-on-surface-variant uppercase mb-2 tracking-widest transition-colors">{label}</p>
- <p className="text-on-surface whitespace-pre-wrap leading-relaxed text-sm transition-colors">{value || '—'}</p>
- </div>
- );
+  if (!value) return null;
+  return (
+  <div className={`${fullWidth ? 'col-span-full' : ''} ${highlight ? 'bg-primary-container p-5 rounded-2xl border border-primary-100 dark:border-primary-800/30' : ''} transition-colors`}>
+  <p className="text-[10px] font-bold text-outline dark:text-on-surface-variant uppercase mb-2 tracking-widest transition-colors">{label}</p>
+  <p className="text-on-surface whitespace-pre-wrap leading-relaxed text-sm transition-colors">{value || '—'}</p>
+  </div>
+  );
 };
 
 export default PatientDetail;

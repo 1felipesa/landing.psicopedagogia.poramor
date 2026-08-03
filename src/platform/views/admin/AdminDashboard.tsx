@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 const AdminDashboard: React.FC = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [recentSignedContractsCount, setRecentSignedContractsCount] = useState(0);
     const [stats, setStats] = useState({
         activePatients: 0,
         anamnesisCount: 0,
@@ -56,91 +57,115 @@ const AdminDashboard: React.FC = () => {
                     where('status', '==', 'completed')
                 );
 
-                // 3. Fetch Today's Appointments
-                const endOfToday = new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                // 3. Fetch Appointments
                 const appointmentsQuery = query(
-                    collection(db, 'appointments'),
-                    where('date', '>=', todayStr),
-                    where('date', '<', endOfToday)
+                    collection(db, 'appointments')
                 );
 
-                // 4. Fetch Chart Appointments
-                const chartQuery = query(
-                    collection(db, 'appointments'),
-                    where('date', '>=', startYear),
-                    where('date', '<=', endYear)
-                );
-
-                // 5. Fetch Pending Invoices
+                // 4. Fetch Invoices
                 const invoicesQuery = query(
-                    collection(db, 'invoices'),
-                    where('status', '==', 'pending'),
-                    where('due_date', '>=', firstDayOfMonth),
-                    where('due_date', '<=', lastDayOfMonth)
+                    collection(db, 'invoices')
                 );
 
-                // Run queries in parallel
-                const [patientsSnap, anamnesisSnap, appointmentsSnap, chartSnap, invoicesSnap, objectivesSnap] = await Promise.all([
+                // 5. Fetch Signed Contracts
+                const signedContractsQuery = query(
+                    collection(db, 'documents'),
+                    where('type', '==', 'signed_contract')
+                );
+
+                // Run queries in parallel with allSettled for resilience
+                const results = await Promise.allSettled([
                     getDocs(patientsQuery),
                     getDocs(anamnesisQuery),
                     getDocs(appointmentsQuery),
-                    getDocs(chartQuery),
                     getDocs(invoicesQuery),
-                    getDocs(collection(db, 'patient_objectives'))
+                    getDocs(collection(db, 'patient_objectives')),
+                    getDocs(signedContractsQuery)
                 ]);
 
+                const patientsSnap = results[0].status === 'fulfilled' ? results[0].value : null;
+                const anamnesisSnap = results[1].status === 'fulfilled' ? results[1].value : null;
+                const appointmentsSnap = results[2].status === 'fulfilled' ? results[2].value : null;
+                const invoicesSnap = results[3].status === 'fulfilled' ? results[3].value : null;
+                const objectivesSnap = results[4].status === 'fulfilled' ? results[4].value : null;
+                const signedContractsSnap = results[5].status === 'fulfilled' ? results[5].value : null;
+
+                const signedContractsCount = signedContractsSnap ? signedContractsSnap.size : 0;
+                setRecentSignedContractsCount(signedContractsCount);
+
+                // Process Active Patients (Exclude inactive)
+                const allPatients = patientsSnap ? patientsSnap.docs.map(d => ({ id: d.id, ...d.data() })) : [];
+                const activePatients = allPatients.filter((p: any) => p.status !== 'inactive');
+                const activePatientsCount = activePatients.length;
+
+                // Process Anamnesis
+                const completedAnamnesisCount = anamnesisSnap ? anamnesisSnap.size : 0;
+                const pendingAnamnesisCount = activePatientsCount - completedAnamnesisCount;
+
                 // Process Objectives
-                const objectives = objectivesSnap.docs.map(docSnap => docSnap.data());
+                const objectives = objectivesSnap ? objectivesSnap.docs.map(docSnap => docSnap.data()) : [];
                 const completedObj = objectives.filter(o => o.is_completed).length;
                 const totalObj = objectives.length;
                 
-                const activePatientsCount = patientsSnap.size;
-                const completedAnamnesisCount = anamnesisSnap.size;
-                const pendingAnamnesisCount = activePatientsCount - completedAnamnesisCount;
-
                 setClinicProgress({
                     totalObjectives: totalObj,
                     completedObjectives: completedObj,
                     pendingAnamnesis: pendingAnamnesisCount > 0 ? pendingAnamnesisCount : 0
                 });
 
-                // Process Financial
-                const pendingAmount = invoicesSnap.docs.reduce((acc, currDoc) => acc + Number(currDoc.data().amount || 0), 0);
+                // Process Financial (Filter pending in current month)
+                let pendingAmount = 0;
+                if (invoicesSnap) {
+                    invoicesSnap.docs.forEach(docSnap => {
+                        const data = docSnap.data();
+                        if (data.status === 'pending') {
+                            const dueDate = data.due_date;
+                            if (!dueDate || (dueDate >= firstDayOfMonth && dueDate <= lastDayOfMonth)) {
+                                pendingAmount += Number(data.amount || 0);
+                            }
+                        }
+                    });
+                }
+
+                // Process Appointments
+                const allAppointments = appointmentsSnap ? appointmentsSnap.docs.map(docSnap => ({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                })) as any[] : [];
+
+                // Exclude cancelled appointments per user preference
+                const validAppointments = allAppointments.filter(a => a.status !== 'cancelled');
+
+                const endOfToday = new Date(today.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+                const todayAppts = validAppointments.filter(a => a.date && a.date >= todayStr && a.date < endOfToday);
 
                 // Process Stats
                 setStats({
                     activePatients: activePatientsCount,
                     anamnesisCount: completedAnamnesisCount,
-                    todayAppointmentsCount: appointmentsSnap.size,
+                    todayAppointmentsCount: todayAppts.length,
                     pendingFinancial: pendingAmount
                 });
 
-                // Map appointments with patient names (client-side join)
-                const rawAppointments = appointmentsSnap.docs.map(docSnap => ({
-                    id: docSnap.id,
-                    ...docSnap.data()
-                })) as any[];
-
-                // Pre-fetch all patient profiles to make lookup fast
+                // Map appointments with patient names
                 const patientsMap = new Map<string, any>();
-                patientsSnap.docs.forEach(docSnap => {
-                    patientsMap.set(docSnap.id, docSnap.data());
+                allPatients.forEach((p: any) => {
+                    patientsMap.set(p.id, p);
                 });
 
-                const joinedAppointments = rawAppointments.map(appt => {
+                const joinedAppointments = todayAppts.map(appt => {
                     const patientProfile = patientsMap.get(appt.patient_id);
                     return {
                         ...appt,
-                        patient: patientProfile ? { full_name: patientProfile.full_name } : { full_name: 'Desconhecido' }
+                        patient: patientProfile ? { full_name: patientProfile.full_name } : { full_name: appt.patient_name || 'Desconhecido' }
                     };
                 });
 
-                // Sort today's appointments by date ascending
-                joinedAppointments.sort((a, b) => a.date.localeCompare(b.date));
+                joinedAppointments.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
                 setTodayAppointments(joinedAppointments);
 
-                // Process Chart Data (Group by Month)
-                const chartApptsData = chartSnap.docs.map(docSnap => docSnap.data());
+                // Process Chart Data (Group valid appointments by Month for current year)
+                const chartAppts = validAppointments.filter(a => a.date && a.date >= startYear && a.date <= endYear);
                 const months = Array.from({ length: 12 }, (_, i) => {
                     const d = new Date(new Date().getFullYear(), i, 1);
                     return {
@@ -150,15 +175,16 @@ const AdminDashboard: React.FC = () => {
                     };
                 });
 
-                chartApptsData.forEach(appt => {
+                chartAppts.forEach(appt => {
                     if (appt.date) {
                         const date = parseISO(appt.date);
                         const monthIndex = date.getMonth();
-                        months[monthIndex].sessions += 1;
+                        if (monthIndex >= 0 && monthIndex < 12) {
+                            months[monthIndex].sessions += 1;
+                        }
                     }
                 });
 
-                // Capitalize month names
                 const formattedData = months.map(m => ({
                     ...m,
                     name: m.name.charAt(0).toUpperCase() + m.name.slice(1)
@@ -176,13 +202,38 @@ const AdminDashboard: React.FC = () => {
         fetchDashboardData();
     }, []);
 
- return (
- <div className="space-y-6 animate-fadeIn px-4 md:px-0">
- {/* Header */}
- <div>
- <h2 className="text-2xl md:text-3xl font-normal text-on-surface transition-colors">Olá, {user?.name.split(' ')[0] || 'Dra.'}</h2>
- <p className="text-on-surface-variant mt-1 text-sm md:text-base transition-colors">Resumo dos atendimentos.</p>
- </div>
+  return (
+    <div className="space-y-6 animate-fadeIn px-4 md:px-0">
+      {/* Signed Contracts Notification Banner */}
+      {recentSignedContractsCount > 0 && (
+        <div
+          onClick={() => navigate('/area-cliente/admin/patients')}
+          className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/40 p-4 rounded-2xl flex items-center justify-between cursor-pointer hover:bg-green-100/60 dark:hover:bg-green-900/30 transition-colors group shadow-sm animate-slideDown"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+              <TrendingUp size={20} />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-green-900 dark:text-green-200">
+                {recentSignedContractsCount} {recentSignedContractsCount === 1 ? 'Contrato Assinado Recebido' : 'Contratos Assinados Recebidos'}
+              </p>
+              <p className="text-xs text-green-700 dark:text-green-400">
+                Os pacientes enviaram documentos assinados. Acesse as fichas dos pacientes para visualizar e baixar.
+              </p>
+            </div>
+          </div>
+          <button className="flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300 group-hover:translate-x-1 transition-transform flex-shrink-0">
+            Ver Pacientes
+          </button>
+        </div>
+      )}
+
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl md:text-3xl font-normal text-on-surface transition-colors">Olá, {user?.name.split(' ')[0] || 'Dra.'}</h2>
+        <p className="text-on-surface-variant mt-1 text-sm md:text-base transition-colors">Resumo dos atendimentos.</p>
+      </div>
 
  {/* Stats Grid */}
  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

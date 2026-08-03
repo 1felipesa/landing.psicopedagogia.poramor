@@ -74,11 +74,14 @@ const AdminSchedule: React.FC = () => {
                 where('role', '==', 'patient')
             );
             const patientsSnap = await getDocs(patientsQuery);
-            const profiles = patientsSnap.docs.map(docSnap => ({
-                id: docSnap.id,
-                full_name: docSnap.data().full_name,
-                email: docSnap.data().email
-            }));
+            const profiles = patientsSnap.docs
+                .map(docSnap => ({
+                    id: docSnap.id,
+                    full_name: docSnap.data().full_name,
+                    email: docSnap.data().email,
+                    status: docSnap.data().status
+                }))
+                .filter(p => p.status !== 'inactive');
             setPatients(profiles);
 
             // Fetch Appointments
