@@ -73,6 +73,24 @@ const PatientDetail: React.FC = () => {
 
  // Upload Refs
  const fileInputRef = useRef<HTMLInputElement>(null);
+ const contractInputRef = useRef<HTMLInputElement>(null);
+
+ const handleContractUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  if (!event.target.files || event.target.files.length === 0 || !id) return;
+  setUploading(true);
+
+  const file = event.target.files[0];
+  try {
+  await uploadDocument(file, id, file.name || 'Contrato de Prestação de Serviços', 'contract_template', 'admin');
+  showToast('Contrato enviado para o paciente com sucesso!');
+  fetchData(); // Refresh list
+  } catch (error: any) {
+  showToast('Erro no upload do contrato: ' + error.message, 'error');
+  } finally {
+  setUploading(false);
+  if (contractInputRef.current) contractInputRef.current.value = '';
+  }
+ };
 
  useEffect(() => {
  if (!id) return;
@@ -298,7 +316,7 @@ const PatientDetail: React.FC = () => {
  } finally {
  setIsGenerating(false);
  }
- };
+ me};
 
  const generateFinancialReport = async () => {
  if (!id || !patient) return;
@@ -543,44 +561,82 @@ const PatientDetail: React.FC = () => {
         Documentos Oficiais
       </h3>
       <div className="space-y-3">
-        {/* Status do Contrato Assinado */}
-        {(() => {
-          const signedContracts = documents.filter(d => d.type === 'signed_contract');
-          const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
+         {/* Contrato para Assinatura (Enviado pelo Admin) */}
+         {(() => {
+           const templateDocs = documents.filter(d => d.type === 'contract_template' || (d.uploaded_by === 'admin' && d.title.toLowerCase().includes('contrato')));
+           const latestTemplate = templateDocs.length > 0 ? templateDocs[0] : null;
 
-          if (latestContract) {
-            return (
-              <div className="p-3.5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300">
-                    <CheckCircle2 size={14} /> Contrato Assinado Recebido
-                  </span>
-                  <span className="text-[10px] text-green-700 dark:text-green-400 font-medium">
-                    {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestContract.title}</p>
-                <a
-                  href={latestContract.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs"
-                >
-                  <Download size={14} /> Baixar Contrato Assinado
-                </a>
-              </div>
-            );
-          } else {
-            return (
-              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-medium">
-                <span className="flex items-center gap-1.5">
-                  <ShieldCheck size={14} /> Contrato Assinado Pendente
-                </span>
-                <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase">Aguardando Envio</span>
-              </div>
-            );
-          }
-        })()}
+           return (
+             <div className="p-3.5 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800/40 space-y-2">
+               <div className="flex items-center justify-between">
+                 <span className="inline-flex items-center gap-1 text-xs font-bold text-blue-800 dark:text-blue-300">
+                   <FileText size={14} /> Contrato para o Paciente
+                 </span>
+                 <span className="text-[10px] text-blue-700 dark:text-blue-400 font-medium">
+                   {latestTemplate ? new Date(latestTemplate.created_at).toLocaleDateString('pt-BR') : 'Não enviado'}
+                 </span>
+               </div>
+               {latestTemplate ? (
+                 <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestTemplate.title}</p>
+               ) : (
+                 <p className="text-xs text-slate-500 italic">Nenhum contrato anexado para este paciente.</p>
+               )}
+               <input
+                 type="file"
+                 ref={contractInputRef}
+                 className="hidden"
+                 onChange={handleContractUpload}
+                 accept=".pdf,.doc,.docx,.jpg,.png"
+               />
+               <button
+                 onClick={() => contractInputRef.current?.click()}
+                 disabled={uploading}
+                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs cursor-pointer"
+               >
+                 <Upload size={14} /> {latestTemplate ? 'Substituir Contrato Enviado' : 'Enviar Contrato para Paciente'}
+               </button>
+             </div>
+           );
+         })()}
+
+         {/* Status do Contrato Assinado Recebido */}
+         {(() => {
+           const signedContracts = documents.filter(d => d.type === 'signed_contract' || (d.uploaded_by === 'patient' && d.title.toLowerCase().includes('contrato')));
+           const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
+
+           if (latestContract) {
+             return (
+               <div className="p-3.5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40 space-y-2">
+                 <div className="flex items-center justify-between">
+                   <span className="inline-flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300">
+                     <CheckCircle2 size={14} /> Contrato Assinado Recebido
+                   </span>
+                   <span className="text-[10px] text-green-700 dark:text-green-400 font-medium">
+                     {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
+                   </span>
+                 </div>
+                 <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestContract.title}</p>
+                 <a
+                   href={latestContract.url}
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs"
+                 >
+                   <Download size={14} /> Baixar Contrato Assinado
+                 </a>
+               </div>
+             );
+           } else {
+             return (
+               <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-medium">
+                 <span className="flex items-center gap-1.5">
+                   <ShieldCheck size={14} /> Assinatura do Paciente
+                 </span>
+                 <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase">Devolução Pendente</span>
+               </div>
+             );
+           }
+         })()}
 
         <button
           onClick={() => setShowDischargeModal(true)}

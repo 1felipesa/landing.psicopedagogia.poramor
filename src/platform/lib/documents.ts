@@ -7,7 +7,7 @@ export type Document = {
     patient_id: string;
     title: string;
     url: string;
-    type: 'report' | 'activity' | 'signed_contract' | 'other';
+    type: 'report' | 'activity' | 'signed_contract' | 'contract_template' | 'other';
     created_at: string;
     size_bytes?: number;
     storage_path?: string;
@@ -18,7 +18,7 @@ export const uploadDocument = async (
     file: File,
     patientId: string,
     title: string,
-    type: 'report' | 'activity' | 'signed_contract' | 'other',
+    type: 'report' | 'activity' | 'signed_contract' | 'contract_template' | 'other',
     uploadedBy: 'patient' | 'admin' = 'admin'
 ) => {
     // 1. Upload to Storage

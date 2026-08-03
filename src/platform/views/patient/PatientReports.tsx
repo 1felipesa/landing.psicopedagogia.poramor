@@ -17,7 +17,8 @@ import {
     Camera,
     PenTool,
     ChevronDown,
-    ChevronUp
+    ChevronUp,
+    AlertCircle
 } from 'lucide-react';
 import Button from '../../components/ui/Button';
 
@@ -25,6 +26,7 @@ const PatientReports: React.FC = () => {
     const { user } = useAuth();
     const { showToast } = useToast();
     const [documents, setDocuments] = useState<Document[]>([]);
+    const [contractTemplates, setContractTemplates] = useState<Document[]>([]);
     const [signedContracts, setSignedContracts] = useState<Document[]>([]);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
@@ -52,11 +54,17 @@ const PatientReports: React.FC = () => {
                 ...docSnap.data()
             })) as Document[];
 
-            // Separate general documents from signed contracts
-            const contracts = docsData.filter(d => d.type === 'signed_contract');
-            const otherDocs = docsData.filter(d => d.type !== 'signed_contract');
+            // Categorize documents
+            const templates = docsData.filter(d => d.type === 'contract_template' || (d.uploaded_by === 'admin' && (d.title.toLowerCase().includes('contrato') || d.title.toLowerCase().includes('prestacao') || d.title.toLowerCase().includes('prestação'))));
+            const signed = docsData.filter(d => d.type === 'signed_contract' || (d.uploaded_by === 'patient' && (d.title.toLowerCase().includes('contrato') || d.title.toLowerCase().includes('assinado'))));
+            
+            const templateIds = new Set(templates.map(t => t.id));
+            const signedIds = new Set(signed.map(s => s.id));
 
-            setSignedContracts(contracts);
+            const otherDocs = docsData.filter(d => !templateIds.has(d.id) && !signedIds.has(d.id));
+
+            setContractTemplates(templates);
+            setSignedContracts(signed);
             setDocuments(otherDocs);
         } catch (error) {
             console.error('Erro ao buscar documentos:', error);
@@ -109,7 +117,8 @@ const PatientReports: React.FC = () => {
         );
     }
 
-    const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
+    const latestSignedContract = signedContracts.length > 0 ? signedContracts[0] : null;
+    const latestContractTemplate = contractTemplates.length > 0 ? contractTemplates[0] : null;
 
     return (
         <div className="space-y-8 animate-fadeIn max-w-5xl mx-auto px-4 md:px-0 pb-12">
@@ -129,9 +138,13 @@ const PatientReports: React.FC = () => {
                         <div>
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h3 className="text-xl font-bold text-on-surface">Contrato de Prestação de Serviços</h3>
-                                {latestContract ? (
+                                {latestSignedContract ? (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300">
-                                        <CheckCircle2 size={14} /> Contrato Enviado
+                                        <CheckCircle2 size={14} /> Contrato Assinado Devolvido
+                                    </span>
+                                ) : latestContractTemplate ? (
+                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300">
+                                        <Clock size={14} /> Aguardando sua Assinatura
                                     </span>
                                 ) : (
                                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300">
@@ -140,8 +153,10 @@ const PatientReports: React.FC = () => {
                                 )}
                             </div>
                             <p className="text-sm text-on-surface-variant mt-1">
-                                {latestContract
-                                    ? `Último envio em ${new Date(latestContract.created_at).toLocaleDateString('pt-BR')} às ${new Date(latestContract.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`
+                                {latestSignedContract
+                                    ? `Você enviou o contrato assinado em ${new Date(latestSignedContract.created_at).toLocaleDateString('pt-BR')}`
+                                    : latestContractTemplate
+                                    ? `A Dra. Raiane disponibilizou o contrato abaixo para você baixar, assinar e reenviar.`
                                     : 'Por favor, assine o documento e envie por aqui.'}
                             </p>
                         </div>
@@ -157,6 +172,41 @@ const PatientReports: React.FC = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* PASSO 1: BAIXAR CONTRATO DISPONIBILIZADO PELA DRA. RAIANE */}
+                {latestContractTemplate ? (
+                    <div className="p-4 md:p-5 bg-blue-50/80 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800/40 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="p-3 bg-blue-600 text-white rounded-xl flex-shrink-0">
+                                <Download size={22} />
+                            </div>
+                            <div className="truncate">
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 dark:text-blue-300 block">
+                                    Passo 1: Baixar Contrato enviado para você
+                                </span>
+                                <p className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">{latestContractTemplate.title}</p>
+                                <p className="text-xs text-slate-600 dark:text-slate-400">
+                                    Enviado pela Dra. Raiane em {new Date(latestContractTemplate.created_at).toLocaleDateString('pt-BR')}
+                                </p>
+                            </div>
+                        </div>
+                        <a
+                            href={latestContractTemplate.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-2 flex-shrink-0"
+                        >
+                            <Download size={16} /> Baixar Contrato para Assinar
+                        </a>
+                    </div>
+                ) : (
+                    <div className="p-4 bg-amber-50/60 dark:bg-amber-900/20 border border-amber-200/60 dark:border-amber-800/30 rounded-2xl flex items-center gap-3 text-xs text-amber-900 dark:text-amber-300">
+                        <AlertCircle size={18} className="flex-shrink-0 text-amber-600" />
+                        <span>
+                            A Dra. Raiane irá disponibilizar o contrato de prestação de serviços nesta área para você baixar. Se você já possui a cópia impressa ou em arquivo PDF, pode assinar e enviar pelo formulário abaixo.
+                        </span>
+                    </div>
+                )}
 
                 {/* ORIENTAÇÕES PASSO A PASSO (Expansível / Didático) */}
                 {showInstructions && (
@@ -217,7 +267,7 @@ const PatientReports: React.FC = () => {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-primary/5 dark:bg-primary/10 rounded-2xl border border-primary/20">
                     <div>
                         <p className="text-sm font-bold text-on-surface">
-                            {latestContract ? 'Enviar nova versão do Contrato Assinado' : 'Enviar Contrato Assinado'}
+                            {latestSignedContract ? 'Enviar nova versão do Contrato Assinado' : 'Enviar Contrato Assinado'}
                         </p>
                         <p className="text-xs text-on-surface-variant mt-0.5">
                             Aceita arquivos em formato **PDF, JPG, JPEG ou PNG** (até 10MB).
@@ -238,7 +288,7 @@ const PatientReports: React.FC = () => {
                         className="w-full sm:w-auto flex items-center justify-center gap-2"
                     >
                         <Upload size={18} />
-                        {latestContract ? 'Enviar Nova Versão' : 'Selecionar Arquivo'}
+                        {latestSignedContract ? 'Enviar Nova Versão' : 'Selecionar Arquivo'}
                     </Button>
                 </div>
 
@@ -259,22 +309,22 @@ const PatientReports: React.FC = () => {
                         </div>
 
                         {/* Versão Atual */}
-                        {latestContract && (
+                        {latestSignedContract && (
                             <div className="flex items-center justify-between p-4 bg-surface rounded-2xl border border-green-200 dark:border-green-900/40 shadow-2xs">
                                 <div className="flex items-center gap-3 overflow-hidden">
                                     <div className="p-2.5 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-xl flex-shrink-0">
                                         <FileCheck size={20} />
                                     </div>
                                     <div className="truncate">
-                                        <p className="text-sm font-bold text-on-surface truncate">{latestContract.title}</p>
+                                        <p className="text-sm font-bold text-on-surface truncate">{latestSignedContract.title}</p>
                                         <p className="text-xs text-on-surface-variant">
-                                            Enviado em {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
+                                            Enviado em {new Date(latestSignedContract.created_at).toLocaleDateString('pt-BR')}
                                         </p>
                                     </div>
                                 </div>
 
                                 <a
-                                    href={latestContract.url}
+                                    href={latestSignedContract.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-1.5 px-4 py-2 bg-surface-variant hover:bg-primary/10 text-primary font-bold text-xs rounded-xl transition-colors flex-shrink-0"
