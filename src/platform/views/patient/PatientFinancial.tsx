@@ -43,14 +43,15 @@ const PatientFinancial: React.FC = () => {
             if (!user) return;
             const q = query(
                 collection(db, 'invoices'),
-                where('patient_id', '==', user.id),
-                orderBy('due_date', 'desc')
+                where('patient_id', '==', user.id)
             );
             const querySnapshot = await getDocs(q);
             const invoicesData = querySnapshot.docs.map(docSnap => ({
                 id: docSnap.id,
                 ...docSnap.data()
             })) as Invoice[];
+
+            invoicesData.sort((a, b) => (b.due_date || '').localeCompare(a.due_date || ''));
 
             setInvoices(invoicesData);
         } catch (err) {

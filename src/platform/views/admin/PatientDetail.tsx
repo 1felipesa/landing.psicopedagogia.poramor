@@ -118,14 +118,14 @@ const PatientDetail: React.FC = () => {
  // Fetch Documents
  const docsQuery = query(
  collection(db, 'documents'),
- where('patient_id', '==', id),
- orderBy('created_at', 'desc')
+ where('patient_id', '==', id)
  );
  const docsSnap = await getDocs(docsQuery);
  const docsData = docsSnap.docs.map(docSnap => ({
  id: docSnap.id,
  ...docSnap.data()
  })) as Document[];
+ docsData.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
  setDocuments(docsData);
 
  } catch (error) {
@@ -140,14 +140,14 @@ const PatientDetail: React.FC = () => {
  try {
  const q = query(
  collection(db, 'patient_objectives'),
- where('patient_id', '==', id),
- orderBy('created_at', 'asc')
+ where('patient_id', '==', id)
  );
  const querySnapshot = await getDocs(q);
  const objsData = querySnapshot.docs.map(docSnap => ({
  id: docSnap.id,
  ...docSnap.data()
  }));
+ objsData.sort((a: any, b: any) => (a.created_at || '').localeCompare(b.created_at || ''));
  setObjectives(objsData);
  } catch (error) {
  console.error('Error fetching objectives:', error);
@@ -316,24 +316,21 @@ const PatientDetail: React.FC = () => {
  } finally {
  setIsGenerating(false);
  }
- me};
+ };
 
  const generateFinancialReport = async () => {
  if (!id || !patient) return;
  setIsGenerating(true);
  try {
- // Fetch financial data for the report from Firestore
  const invoicesQuery = query(
  collection(db, 'invoices'),
  where('patient_id', '==', id),
- where('status', '==', 'paid'),
- orderBy('due_date', 'asc')
+ where('status', '==', 'paid')
  );
  const appointmentsQuery = query(
  collection(db, 'appointments'),
  where('patient_id', '==', id),
- where('status', '==', 'completed'),
- orderBy('date', 'asc')
+ where('status', '==', 'completed')
  );
 
  const [invoicesSnap, appointmentsSnap] = await Promise.all([
@@ -342,6 +339,7 @@ const PatientDetail: React.FC = () => {
  ]);
 
  const paidInvoices = invoicesSnap.docs.map(docSnap => docSnap.data()) || [];
+ paidInvoices.sort((a: any, b: any) => (a.due_date || '').localeCompare(b.due_date || ''));
  const currentDate = format(new Date(), "dd 'de' MMMM 'de' yyyy", { locale: ptBR });
 
  const htmlContent = `
