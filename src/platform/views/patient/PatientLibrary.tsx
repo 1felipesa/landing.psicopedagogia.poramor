@@ -35,20 +35,46 @@ const PatientLibrary: React.FC = () => {
 
         const fetchSessions = async () => {
             try {
-                const q = query(
+                // 1. Fetch completed appointments
+                const qAppts = query(
                     collection(db, 'appointments'),
                     where('patient_id', '==', user.id),
                     where('status', '==', 'completed')
                 );
-                const querySnapshot = await getDocs(q);
-                const sessionsData = querySnapshot.docs.map(docSnap => ({
+                // 2. Fetch public evolutions from Diário de Bordo
+                const qEvo = query(
+                    collection(db, 'patient_evolutions'),
+                    where('patient_id', '==', user.id),
+                    where('is_public', '==', true)
+                );
+
+                const [apptsSnap, evosSnap] = await Promise.all([
+                    getDocs(qAppts),
+                    getDocs(qEvo)
+                ]);
+
+                const apptsData = apptsSnap.docs.map(docSnap => ({
                     id: docSnap.id,
+                    title: 'Sessão Concluída',
+                    type: 'Presencial',
+                    notes: docSnap.data().notes || '',
+                    date: docSnap.data().date,
                     ...docSnap.data()
                 })) as Session[];
 
-                sessionsData.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+                const evosData = evosSnap.docs.map(docSnap => ({
+                    id: docSnap.id,
+                    title: 'Evolução Psicopedagógica',
+                    type: 'Diário de Bordo',
+                    notes: docSnap.data().content || '',
+                    date: docSnap.data().created_at,
+                    ...docSnap.data()
+                })) as Session[];
 
-                setSessions(sessionsData);
+                const combined = [...apptsData, ...evosData];
+                combined.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+
+                setSessions(combined);
             } catch (error) {
                 console.error('Error fetching sessions:', error);
             } finally {

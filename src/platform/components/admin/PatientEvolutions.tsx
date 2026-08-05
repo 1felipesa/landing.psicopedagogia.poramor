@@ -7,10 +7,13 @@ import {
     Calendar,
     Save, 
     Trash2,
-    Clock
+    Clock,
+    Edit2,
+    X,
+    Check
 } from 'lucide-react';
 import { db } from '../../lib/firebase';
-import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, addDoc, orderBy } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { format, parseISO } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import Button from '../ui/Button';
@@ -36,6 +39,12 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
     const [newContent, setNewContent] = useState('');
     const [isPublic, setIsPublic] = useState(false);
     const [saving, setSaving] = useState(false);
+
+    // Edit state
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [editContent, setEditContent] = useState('');
+    const [updating, setUpdating] = useState(false);
+
     const { showToast } = useToast();
 
     useEffect(() => {
@@ -46,14 +55,16 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
         try {
             const q = query(
                 collection(db, 'patient_evolutions'),
-                where('patient_id', '==', patientId),
-                orderBy('created_at', 'desc')
+                where('patient_id', '==', patientId)
             );
             const querySnapshot = await getDocs(q);
             const data = querySnapshot.docs.map(docSnap => ({
                 id: docSnap.id,
                 ...docSnap.data()
             })) as Evolution[];
+
+            // Sort in memory by created_at desc (avoids Firestore composite index error)
+            data.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
             setEvolutions(data);
         } catch (error: any) {
             console.error('Error fetching evolutions:', error);
@@ -85,6 +96,27 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
         }
     };
 
+    const handleStartEdit = (evo: Evolution) => {
+        setEditingId(evo.id);
+        setEditContent(evo.content);
+    };
+
+    const handleUpdate = async (id: string) => {
+        if (!editContent.trim()) return;
+        setUpdating(true);
+        try {
+            const evoRef = doc(db, 'patient_evolutions', id);
+            await updateDoc(evoRef, { content: editContent.trim() });
+            showToast('Registro atualizado com sucesso!');
+            setEditingId(null);
+            fetchEvolutions();
+        } catch (error: any) {
+            showToast('Erro ao atualizar: ' + error.message, 'error');
+        } finally {
+            setUpdating(false);
+        }
+    };
+
     const handleDelete = async (id: string) => {
         if (!confirm('Deseja excluir esta evolução?')) return;
         try {
@@ -100,13 +132,14 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
         try {
             const evoRef = doc(db, 'patient_evolutions', id);
             await updateDoc(evoRef, { is_public: !currentStatus });
+            showToast(currentStatus ? 'Registro alterado para Privado' : 'Registro alterado para Público (Paciente vê)');
             fetchEvolutions();
         } catch (error: any) {
             showToast('Erro ao atualizar privacidade: ' + error.message, 'error');
         }
     };
 
-    if (loading) return <div className="p-4 text-center">Carregando evolução...</div>;
+    if (loading) return <div className="p-4 text-center text-slate-400">Carregando evolução...</div>;
 
     return (
         <div className="space-y-6">
@@ -163,31 +196,61 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
 
                             <div className="bg-slate-800 p-5 rounded-[24px] border border-slate-700 shadow-sm hover:shadow-md transition-all">
                                 <div className="flex items-center justify-between mb-3">
-                                    <div className="flex items-center gap-2 text-slate-500 transition-colors">
+                                    <div className="flex items-center gap-2 text-slate-400 transition-colors">
                                         <Clock size={14} />
                                         <span className="text-xs font-bold uppercase tracking-wider transition-colors">
                                             {format(parseISO(evo.created_at), "dd 'de' MMM, yyyy 'às' HH:mm", { locale: ptBR })}
                                         </span>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ml-2 ${evo.is_public ? 'bg-green-900/40 text-green-300 border border-green-800/50' : 'bg-slate-900 text-slate-400 border border-slate-700'}`}>
+                                            {evo.is_public ? 'Público' : 'Privado'}
+                                        </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                         <button 
                                             onClick={() => togglePublic(evo.id, evo.is_public)}
-                                            className={`p-2 rounded-lg hover:bg-slate-900 transition-colors ${evo.is_public ? 'text-green-400' : 'text-slate-600 hover:text-slate-400'}`}
-                                            title={evo.is_public ? 'Público' : 'Privado'}
+                                            className={`p-2 rounded-lg hover:bg-slate-900 transition-colors ${evo.is_public ? 'text-green-400' : 'text-slate-500 hover:text-slate-300'}`}
+                                            title={evo.is_public ? 'Alterar para Privado' : 'Alterar para Público'}
                                         >
                                             {evo.is_public ? <Eye size={18} /> : <EyeOff size={18} />}
                                         </button>
                                         <button 
+                                            onClick={() => handleStartEdit(evo)}
+                                            className="p-2 text-slate-400 hover:text-purple-400 hover:bg-slate-900 rounded-lg transition-colors"
+                                            title="Editar Registro"
+                                        >
+                                            <Edit2 size={18} />
+                                        </button>
+                                        <button 
                                             onClick={() => handleDelete(evo.id)}
-                                            className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                            className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors"
+                                            title="Excluir Registro"
                                         >
                                             <Trash2 size={18} />
                                         </button>
                                     </div>
                                 </div>
-                                <div className="text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed text-sm transition-colors">
-                                    {evo.content}
-                                </div>
+
+                                {editingId === evo.id ? (
+                                    <div className="space-y-3 pt-2">
+                                        <Textarea
+                                            value={editContent}
+                                            onChange={(e) => setEditContent(e.target.value)}
+                                            className="min-h-[100px] dark:bg-slate-900 border-slate-700 text-sm"
+                                        />
+                                        <div className="flex justify-end gap-2">
+                                            <Button size="sm" variant="outline" onClick={() => setEditingId(null)} disabled={updating}>
+                                                <X size={14} className="mr-1" /> Cancelar
+                                            </Button>
+                                            <Button size="sm" onClick={() => handleUpdate(evo.id)} isLoading={updating} disabled={!editContent.trim()}>
+                                                <Check size={14} className="mr-1" /> Salvar Edição
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-slate-200 whitespace-pre-wrap leading-relaxed text-sm transition-colors">
+                                        {evo.content}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))

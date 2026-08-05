@@ -13,7 +13,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { db } from '../../lib/firebase';
-import { collection, query, where, orderBy, limit, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { format, parseISO, isToday } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -65,64 +65,77 @@ const PatientDashboard: React.FC = () => {
        setHasSignedContract(hasSigned);
        setHasTemplateContract(hasTemplate);
 
-       // Check Next Appointment
-       const nextApptQuery = query(
-         collection(db, 'appointments'),
-         where('patient_id', '==', user.id),
-         where('date', '>=', new Date().toISOString()),
-         orderBy('date', 'asc'),
-         limit(1)
-       );
-       const nextApptSnap = await getDocs(nextApptQuery);
+        // Check Next Appointment
+        const apptQuery = query(
+          collection(db, 'appointments'),
+          where('patient_id', '==', user.id)
+        );
+        const apptSnap = await getDocs(apptQuery);
+        const allAppts = apptSnap.docs.map(d => ({ id: d.id, ...d.data() })) as any[];
 
-       if (!nextApptSnap.empty) {
-         const apptDoc = nextApptSnap.docs[0];
-         const apptData = { id: apptDoc.id, ...apptDoc.data() } as any;
+        const nowIso = new Date().toISOString();
+        const upcomingAppts = allAppts
+          .filter(a => a.date >= nowIso)
+          .sort((a, b) => (a.date || '').localeCompare(b.date || ''));
 
-         // Fetch associated invoices
-         const invoiceQuery = query(
-           collection(db, 'invoices'),
-           where('appointment_id', '==', apptDoc.id)
-         );
-         const invoiceSnap = await getDocs(invoiceQuery);
-         const invoices = invoiceSnap.docs.map(d => d.data());
+        if (upcomingAppts.length > 0) {
+          const apptData = upcomingAppts[0];
 
-         const isPaid = invoices.length === 0 || invoices.some((inv: any) => inv.status === 'paid');
-         setNextAppointment({ ...apptData, isPaid });
-       } else {
-         setNextAppointment(null);
-       }
+          // Fetch associated invoices
+          const invoiceQuery = query(
+            collection(db, 'invoices'),
+            where('appointment_id', '==', apptData.id)
+          );
+          const invoiceSnap = await getDocs(invoiceQuery);
+          const invoices = invoiceSnap.docs.map(d => d.data());
 
-       // Fetch Past Appointments
-       const pastQuery = query(
-         collection(db, 'appointments'),
-         where('patient_id', '==', user.id),
-         where('status', '==', 'completed'),
-         orderBy('date', 'desc'),
-         limit(2)
-       );
-       const pastSnap = await getDocs(pastQuery);
-       const pastData = pastSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-       setPastAppointments(pastData);
+          const isPaid = invoices.length === 0 || invoices.some((inv: any) => inv.status === 'paid');
+          setNextAppointment({ ...apptData, isPaid });
+        } else {
+          setNextAppointment(null);
+        }
 
-       // Fetch Pending Invoices
-       const pendingInvoicesQuery = query(
-         collection(db, 'invoices'),
-         where('patient_id', '==', user.id),
-         where('status', '==', 'pending')
-       );
-       const pendingSnap = await getDocs(pendingInvoicesQuery);
-       setPendingInvoicesCount(pendingSnap.size);
+        // Fetch Past Appointments & Public Diário de Bordo Evolutions
+        const completedAppts = allAppts.filter(a => a.status === 'completed');
 
-       // Fetch Objectives
-       const objectivesQuery = query(
-         collection(db, 'patient_objectives'),
-         where('patient_id', '==', user.id),
-         orderBy('created_at', 'asc')
-       );
-       const objectivesSnap = await getDocs(objectivesQuery);
-       const objectivesData = objectivesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-       setObjectives(objectivesData);
+        const evosQuery = query(
+          collection(db, 'patient_evolutions'),
+          where('patient_id', '==', user.id),
+          where('is_public', '==', true)
+        );
+        const evosSnap = await getDocs(evosQuery);
+        const publicEvos = evosSnap.docs.map(d => ({
+          id: d.id,
+          date: d.data().created_at,
+          notes: d.data().content,
+          type: 'Diário de Bordo',
+          ...d.data()
+        }));
+
+        const combinedPast = [...completedAppts, ...publicEvos]
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+          .slice(0, 2);
+        setPastAppointments(combinedPast);
+
+        // Fetch Pending Invoices
+        const pendingInvoicesQuery = query(
+          collection(db, 'invoices'),
+          where('patient_id', '==', user.id),
+          where('status', '==', 'pending')
+        );
+        const pendingSnap = await getDocs(pendingInvoicesQuery);
+        setPendingInvoicesCount(pendingSnap.size);
+
+        // Fetch Objectives
+        const objectivesQuery = query(
+          collection(db, 'patient_objectives'),
+          where('patient_id', '==', user.id)
+        );
+        const objectivesSnap = await getDocs(objectivesQuery);
+        const objectivesData = objectivesSnap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a: any, b: any) => (a.created_at || '').localeCompare(b.created_at || ''));
+        setObjectives(objectivesData);
 
      } catch (error) {
        console.error('Error fetching dashboard data:', error);
