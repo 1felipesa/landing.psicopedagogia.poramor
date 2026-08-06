@@ -79,9 +79,12 @@ const PatientReports: React.FC = () => {
         const file = e.target.files?.[0];
         if (!file || !user) return;
 
-        // Validations
-        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
-        if (!allowedTypes.includes(file.type)) {
+        // Validations: check both MIME type and file extension for maximum compatibility across browsers/OS
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg', 'application/x-pdf'];
+        const isExtValid = /\.(pdf|png|jpg|jpeg)$/i.test(file.name);
+        const isTypeValid = allowedTypes.includes(file.type);
+
+        if (!isTypeValid && !isExtValid) {
             showToast('Formato não suportado. Por favor, envie um arquivo PDF ou imagem (JPG/PNG).', 'error');
             return;
         }
@@ -100,9 +103,9 @@ const PatientReports: React.FC = () => {
             await uploadDocument(file, user.id, docTitle, 'signed_contract', 'patient');
             showToast('Contrato assinado enviado com sucesso!', 'success');
             await fetchDocs();
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao fazer upload do contrato:', error);
-            showToast('Erro ao enviar o contrato. Tente novamente.', 'error');
+            showToast(`Erro ao enviar o contrato: ${error.message || 'Tente novamente.'}`, 'error');
         } finally {
             setUploading(false);
             if (fileInputRef.current) {
