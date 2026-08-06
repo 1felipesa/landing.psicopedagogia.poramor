@@ -148,7 +148,7 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
                     <div className="p-2 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-xl transition-colors shrink-0">
                         <BookOpen size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <h2 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-white transition-colors">Diário de Bordo</h2>
+                    <h2 className="text-lg sm:text-xl font-bold text-on-surface transition-colors">Diário de Bordo</h2>
                 </div>
                 {!isAdding && (
                     <Button onClick={() => setIsAdding(true)} className="!py-2 flex items-center justify-center gap-2 w-full xs:w-auto text-xs sm:text-sm">
@@ -158,17 +158,17 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
             </div>
 
             {isAdding && (
-                <div className="bg-slate-900/40 border border-slate-700 p-4 sm:p-6 rounded-[20px] sm:rounded-[24px] space-y-4 animate-fadeIn transition-colors">
+                <div className="bg-surface-variant/30 dark:bg-slate-900/40 border border-outline-variant dark:border-slate-700 p-4 sm:p-6 rounded-[20px] sm:rounded-[24px] space-y-4 animate-fadeIn transition-colors">
                     <Textarea 
                         placeholder="Descreva o que aconteceu na sessão, comportamentos observados e evoluções..."
                         value={newContent}
                         onChange={(e) => setNewContent(e.target.value)}
-                        className="min-h-[120px] sm:min-h-[150px] dark:bg-slate-800 border-slate-700 text-xs sm:text-sm"
+                        className="min-h-[120px] sm:min-h-[150px] text-xs sm:text-sm"
                     />
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
                         <button 
                             onClick={() => setIsPublic(!isPublic)}
-                            className={`flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm font-bold transition-colors p-2 sm:p-0 rounded-xl sm:rounded-none bg-slate-800/40 sm:bg-transparent ${isPublic ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-400'}`}
+                            className={`flex items-center justify-center sm:justify-start gap-2 text-xs sm:text-sm font-bold transition-colors p-2 sm:p-0 rounded-xl sm:rounded-none ${isPublic ? 'text-green-600 dark:text-green-400' : 'text-on-surface-variant hover:text-on-surface'}`}
                         >
                             {isPublic ? <Eye size={16} /> : <EyeOff size={16} />}
                             {isPublic ? 'Público (Paciente vê)' : 'Privado (Só Raiane vê)'}
@@ -181,48 +181,48 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
                 </div>
             )}
 
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-4 sm:before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-700 before:to-transparent transition-colors">
+            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-4 sm:before:ml-5 before:-translate-x-px before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-outline-variant dark:before:via-slate-700 before:to-transparent transition-colors">
                 {evolutions.length === 0 ? (
-                    <div className="text-center py-8 sm:py-12 bg-slate-800/20 rounded-[20px] sm:rounded-[24px] border border-dashed border-slate-700 ml-2 sm:ml-4 transition-colors">
-                        <p className="text-slate-500 text-xs sm:text-sm italic transition-colors">Nenhuma sessão registrada ainda.</p>
+                    <div className="text-center py-8 sm:py-12 bg-surface-variant/20 rounded-[20px] sm:rounded-[24px] border border-dashed border-outline-variant ml-2 sm:ml-4 transition-colors">
+                        <p className="text-on-surface-variant text-xs sm:text-sm italic transition-colors">Nenhuma sessão registrada ainda.</p>
                     </div>
                 ) : (
                     evolutions.map((evo) => (
                         <div key={evo.id} className="relative pl-10 sm:pl-12 group">
                             {/* Dot on timeline */}
-                            <div className="absolute left-0 top-1 w-8 h-8 sm:w-10 sm:h-10 bg-slate-900 border-2 border-slate-700 rounded-full flex items-center justify-center group-hover:border-purple-400 transition-all z-10">
-                                <Calendar size={14} className="text-slate-500 group-hover:text-purple-400 transition-colors sm:w-4 sm:h-4" />
+                            <div className="absolute left-0 top-1 w-8 h-8 sm:w-10 sm:h-10 bg-surface border-2 border-outline-variant dark:border-slate-700 rounded-full flex items-center justify-center group-hover:border-purple-500 transition-all z-10 shadow-2xs">
+                                <Calendar size={14} className="text-on-surface-variant group-hover:text-purple-500 transition-colors sm:w-4 sm:h-4" />
                             </div>
 
-                            <div className="bg-slate-800 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[24px] border border-slate-700 shadow-sm hover:shadow-md transition-all">
+                            <div className="bg-surface-variant/20 dark:bg-slate-800/80 p-3.5 sm:p-5 rounded-[20px] sm:rounded-[24px] border border-outline-variant dark:border-slate-700/80 shadow-2xs hover:shadow-sm transition-all">
                                 <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-slate-400 transition-colors min-w-0">
+                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-on-surface-variant transition-colors min-w-0">
                                         <Clock size={13} className="shrink-0" />
                                         <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider transition-colors">
                                             {format(parseISO(evo.created_at), "dd 'de' MMM, yyyy 'às' HH:mm", { locale: ptBR })}
                                         </span>
-                                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${evo.is_public ? 'bg-green-900/40 text-green-300 border border-green-800/50' : 'bg-slate-900 text-slate-400 border border-slate-700'}`}>
+                                        <span className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${evo.is_public ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800/50' : 'bg-surface-variant text-on-surface-variant border border-outline-variant'}`}>
                                             {evo.is_public ? 'Público' : 'Privado'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-0.5 bg-slate-900/60 border border-slate-700/60 p-1 rounded-xl shrink-0 ml-auto">
+                                    <div className="flex items-center gap-0.5 bg-surface border border-outline-variant/60 p-1 rounded-xl shrink-0 ml-auto shadow-2xs">
                                         <button 
                                             onClick={() => togglePublic(evo.id, evo.is_public)}
-                                            className={`p-1.5 rounded-lg hover:bg-slate-800 transition-colors ${evo.is_public ? 'text-green-400' : 'text-slate-500 hover:text-slate-300'}`}
+                                            className={`p-1.5 rounded-lg hover:bg-surface-variant transition-colors ${evo.is_public ? 'text-green-600 dark:text-green-400' : 'text-on-surface-variant hover:text-on-surface'}`}
                                             title={evo.is_public ? 'Alterar para Privado' : 'Alterar para Público'}
                                         >
                                             {evo.is_public ? <Eye size={16} /> : <EyeOff size={16} />}
                                         </button>
                                         <button 
                                             onClick={() => handleStartEdit(evo)}
-                                            className="p-1.5 text-slate-400 hover:text-purple-400 hover:bg-slate-800 rounded-lg transition-colors"
+                                            className="p-1.5 text-on-surface-variant hover:text-purple-600 dark:hover:text-purple-400 hover:bg-surface-variant rounded-lg transition-colors"
                                             title="Editar Registro"
                                         >
                                             <Edit2 size={16} />
                                         </button>
                                         <button 
                                             onClick={() => handleDelete(evo.id)}
-                                            className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-900/20 rounded-lg transition-colors"
+                                            className="p-1.5 text-on-surface-variant hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                                             title="Excluir Registro"
                                         >
                                             <Trash2 size={16} />
@@ -235,7 +235,7 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
                                         <Textarea
                                             value={editContent}
                                             onChange={(e) => setEditContent(e.target.value)}
-                                            className="min-h-[100px] dark:bg-slate-900 border-slate-700 text-xs sm:text-sm"
+                                            className="min-h-[100px] text-xs sm:text-sm"
                                         />
                                         <div className="flex justify-end gap-2">
                                             <Button size="sm" variant="outline" onClick={() => setEditingId(null)} disabled={updating} className="text-xs">
@@ -247,7 +247,7 @@ const PatientEvolutions: React.FC<PatientEvolutionsProps> = ({ patientId }) => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="text-slate-200 whitespace-pre-wrap leading-relaxed text-xs sm:text-sm transition-colors">
+                                    <div className="text-on-surface whitespace-pre-wrap leading-relaxed text-xs sm:text-sm transition-colors">
                                         {evo.content}
                                     </div>
                                 )}

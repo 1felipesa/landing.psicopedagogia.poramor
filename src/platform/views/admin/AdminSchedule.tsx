@@ -518,12 +518,11 @@ const AdminSchedule: React.FC = () => {
               <ChevronRight size={18} />
             </button>
           </div>
-
           {/* View Mode Toggle (Programação / Semanal) */}
-          <div className="flex items-center bg-slate-900/40 p-1 rounded-full border border-slate-700/60 transition-colors">
+          <div className="flex items-center bg-surface-variant/60 dark:bg-slate-900/40 p-1 rounded-full border border-outline-variant/60 dark:border-slate-700/60 transition-colors">
             <button
               onClick={() => setViewMode('agenda')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${viewMode === 'agenda' ? 'bg-primary text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${viewMode === 'agenda' ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:text-on-surface dark:text-slate-400 dark:hover:text-white'}`}
               title="Visão Programação (Estilo Google Agenda)"
             >
               <List size={14} />
@@ -531,7 +530,7 @@ const AdminSchedule: React.FC = () => {
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${viewMode === 'week' ? 'bg-primary text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all ${viewMode === 'week' ? 'bg-primary text-white shadow-sm' : 'text-on-surface-variant hover:text-on-surface dark:text-slate-400 dark:hover:text-white'}`}
               title="Visão Semanal em Grade"
             >
               <CalendarIcon size={14} />
@@ -544,7 +543,7 @@ const AdminSchedule: React.FC = () => {
             <button
               onClick={handleConnectGoogle}
               disabled={isConnectingGcal}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-blue-500/40 bg-blue-500/10 text-blue-400 text-xs font-bold hover:bg-blue-500/20 transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full border border-blue-300 dark:border-blue-500/40 bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-all shadow-2xs"
               title="Conectar com o Google Calendar"
             >
               <Link2 size={14} />
@@ -552,14 +551,14 @@ const AdminSchedule: React.FC = () => {
             </button>
           ) : (
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 text-xs font-bold">
+              <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-300 dark:border-emerald-500/40 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
                 <CheckCircle size={14} /> Google Conectado
               </span>
               {googleCalendars.length > 0 && (
                 <select
                   value={selectedCalendarId}
                   onChange={(e) => handleCalendarChange(e.target.value)}
-                  className="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-slate-900 border border-slate-700 text-slate-200 outline-none max-w-[200px] truncate"
+                  className="px-2.5 py-1.5 rounded-xl text-xs font-medium bg-surface border border-outline-variant text-on-surface outline-none max-w-[200px] truncate shadow-2xs transition-colors"
                   title="Selecione qual agenda do Google salvar os eventos"
                 >
                   {googleCalendars.map(cal => (
@@ -701,7 +700,7 @@ const AdminSchedule: React.FC = () => {
 
                               {/* Right details: Price & Action hint */}
                               <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/40">
-                                <span className="px-3 py-1 rounded-xl text-xs font-bold bg-slate-900 text-emerald-400 border border-slate-700/60">
+                                <span className="px-3 py-1 rounded-xl text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 shadow-2xs">
                                   R$ {appt.price ? appt.price.toFixed(2).replace('.', ',') : '150,00'}
                                 </span>
                                 <span className="text-xs text-primary font-medium group-hover:underline">

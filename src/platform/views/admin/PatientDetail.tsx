@@ -502,12 +502,12 @@ const PatientDetail: React.FC = () => {
  {/* Profile Card & Objectives column */}
  <div className="lg:col-span-2 space-y-6">
  {/* Profile Summary */}
- <div className="bg-slate-800 p-6 rounded-[24px] border border-slate-700 shadow-sm transition-colors">
+ <div className="bg-surface p-6 rounded-[24px] border border-outline-variant shadow-sm transition-colors">
  <div className="flex flex-col md:flex-row gap-6">
  <Avatar name={patient.full_name} size="xl" />
  <div className="space-y-4 flex-1">
  <div>
- <h3 className="font-bold text-white">Dados do Cadastro</h3>
+ <h3 className="font-bold text-on-surface">Dados do Cadastro</h3>
  {(() => {
    const displayAge = answers.childBirthDate 
      ? calculateAgeString(answers.childBirthDate, answers.childAge)
@@ -523,25 +523,25 @@ const PatientDetail: React.FC = () => {
    };
 
    return (
-     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm text-outline">
-       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Nome da Criança">
-         <User size={16} className="text-primary-400 shrink-0" />
+     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm text-on-surface-variant">
+       <span className="flex items-center gap-2 bg-surface-variant/40 p-2.5 rounded-xl border border-outline-variant/60 text-on-surface transition-colors" title="Nome da Criança">
+         <User size={16} className="text-primary shrink-0" />
          <span className="truncate"><strong>Criança:</strong> {answers.childName || 'Não informada'}</span>
        </span>
-       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Idade / Data de Nascimento">
-         <Calendar size={16} className="text-primary-400 shrink-0" />
+       <span className="flex items-center gap-2 bg-surface-variant/40 p-2.5 rounded-xl border border-outline-variant/60 text-on-surface transition-colors" title="Idade / Data de Nascimento">
+         <Calendar size={16} className="text-primary shrink-0" />
          <span className="truncate"><strong>Idade:</strong> {displayAge}</span>
        </span>
-       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Responsável e Vínculo">
-         <UserCheck size={16} className="text-primary-400 shrink-0" />
+       <span className="flex items-center gap-2 bg-surface-variant/40 p-2.5 rounded-xl border border-outline-variant/60 text-on-surface transition-colors" title="Responsável e Vínculo">
+         <UserCheck size={16} className="text-primary shrink-0" />
          <span className="truncate"><strong>Resp.:</strong> {answers.responsibleName || patient.full_name} {answers.responsibleBond ? `(${answers.responsibleBond})` : ''}</span>
        </span>
-       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Escola e Série">
-         <School size={16} className="text-primary-400 shrink-0" />
+       <span className="flex items-center gap-2 bg-surface-variant/40 p-2.5 rounded-xl border border-outline-variant/60 text-on-surface transition-colors" title="Escola e Série">
+         <School size={16} className="text-primary shrink-0" />
          <span className="truncate"><strong>Escola:</strong> {displaySchoolGrade()}</span>
        </span>
-       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors sm:col-span-2" title="Telefone / WhatsApp">
-         <Phone size={16} className="text-primary-400 shrink-0" />
+       <span className="flex items-center gap-2 bg-surface-variant/40 p-2.5 rounded-xl border border-outline-variant/60 text-on-surface transition-colors sm:col-span-2" title="Telefone / WhatsApp">
+         <Phone size={16} className="text-primary shrink-0" />
          <span className="truncate"><strong>WhatsApp:</strong> {answers.phone || patient.phone || 'Não informado'}</span>
        </span>
      </div>
@@ -553,21 +553,21 @@ const PatientDetail: React.FC = () => {
  </div>
 
  {/* Diário de Bordo (Evolução Clínica) */}
- <div className="bg-slate-800 p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-slate-700 shadow-sm transition-colors">
+ <div className="bg-surface p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-outline-variant shadow-sm transition-colors">
  <PatientEvolutions patientId={id!} />
  </div>
 
  {/* Objectives / Progress Management */}
- <div className="bg-slate-800 p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-slate-700 shadow-sm space-y-4 sm:space-y-6 transition-colors">
+ <div className="bg-surface p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-outline-variant shadow-sm space-y-4 sm:space-y-6 transition-colors">
  <div className="flex items-center justify-between gap-3">
  <div className="flex items-center gap-2.5">
- <div className="p-2 bg-primary-900/40 text-primary-400 rounded-xl transition-colors shrink-0">
+ <div className="p-2 bg-primary/10 text-primary rounded-xl transition-colors shrink-0">
  <Target size={20} className="sm:w-6 sm:h-6" />
  </div>
- <h2 className="text-lg sm:text-xl font-bold text-white transition-colors">Objetivos Terapêuticos</h2>
+ <h2 className="text-lg sm:text-xl font-bold text-on-surface transition-colors">Objetivos Terapêuticos</h2>
  </div>
  <div className="text-right shrink-0">
- <p className="text-xl sm:text-2xl font-bold text-primary-400 transition-colors">{progressPercent}%</p>
+ <p className="text-xl sm:text-2xl font-bold text-primary transition-colors">{progressPercent}%</p>
  <p className="text-[9px] sm:text-[10px] text-on-surface-variant font-bold uppercase transition-colors">Progresso</p>
  </div>
  </div>
