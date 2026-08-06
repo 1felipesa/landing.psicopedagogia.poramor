@@ -17,27 +17,38 @@ export interface UserCalendar {
   primary?: boolean;
 }
 
-// Function to trigger Google OAuth authorization flow
-export const initGoogleOAuth = (clientId: string, onSuccess: (accessToken: string) => void, onError?: (err: any) => void) => {
+// Function to trigger Google OAuth authorization flow (with optional silent refresh)
+export const initGoogleOAuth = (
+  clientId: string,
+  onSuccess: (accessToken: string) => void,
+  onError?: (err: any) => void,
+  silent: boolean = false
+) => {
   if (!(window as any).google?.accounts?.oauth2) {
     const script = document.createElement('script');
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.defer = true;
     script.onload = () => {
-      requestToken(clientId, onSuccess, onError);
+      requestToken(clientId, onSuccess, onError, silent);
     };
     document.body.appendChild(script);
   } else {
-    requestToken(clientId, onSuccess, onError);
+    requestToken(clientId, onSuccess, onError, silent);
   }
 };
 
-const requestToken = (clientId: string, onSuccess: (accessToken: string) => void, onError?: (err: any) => void) => {
+const requestToken = (
+  clientId: string,
+  onSuccess: (accessToken: string) => void,
+  onError?: (err: any) => void,
+  silent: boolean = false
+) => {
   try {
     const client = (window as any).google.accounts.oauth2.initTokenClient({
       client_id: clientId,
       scope: SCOPES,
+      prompt: silent ? '' : 'select_account',
       callback: (response: any) => {
         if (response.access_token) {
           localStorage.setItem('gcal_access_token', response.access_token);
@@ -51,7 +62,7 @@ const requestToken = (clientId: string, onSuccess: (accessToken: string) => void
       },
     });
 
-    client.requestAccessToken();
+    client.requestAccessToken({ prompt: silent ? '' : 'select_account' });
   } catch (err) {
     console.error('Error initializing Google token client:', err);
     if (onError) onError(err);

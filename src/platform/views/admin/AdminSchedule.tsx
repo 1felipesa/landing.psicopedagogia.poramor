@@ -99,6 +99,19 @@ const AdminSchedule: React.FC = () => {
         if (token) {
             setGoogleToken(token);
             loadGoogleCalendars(token);
+        } else {
+            // Attempt silent token refresh seamlessly
+            initGoogleOAuth(
+                DEFAULT_CLIENT_ID,
+                (newToken) => {
+                    setGoogleToken(newToken);
+                    loadGoogleCalendars(newToken);
+                },
+                () => {
+                    // User not logged in or silent refresh unsupported
+                },
+                true // silent = true
+            );
         }
     }, []);
 
