@@ -19,12 +19,15 @@ import {
  ExternalLink,
  ShieldCheck,
  Receipt,
- FileCheck
+ FileCheck,
+ School,
+ UserCheck
 } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, orderBy } from 'firebase/firestore';
 import { uploadDocument, deleteDocument, Document } from '../../lib/documents';
 import PatientEvolutions from '../../components/admin/PatientEvolutions';
+import { calculateAgeString } from '../patient/AnamnesisForm';
 import Button from '../../components/ui/Button';
 import Avatar from '../../components/ui/Avatar';
 import Input from '../../components/ui/Input';
@@ -456,34 +459,67 @@ const PatientDetail: React.FC = () => {
  <div className="space-y-4 flex-1">
  <div>
  <h3 className="font-bold text-white">Dados do Cadastro</h3>
- <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm text-outline">
- <span className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 transition-colors"><User size={16} className="text-primary-400" /> {answers.childName || 'Não inf.'}</span>
- <span className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 transition-colors"><Calendar size={16} className="text-primary-400" /> {answers.childAge || 'Não inf.'} anos</span>
- <span className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 transition-colors"><MapPin size={16} className="text-primary-400" /> {answers.school || 'Não inf.'}</span>
- <span className="flex items-center gap-2 bg-slate-900 p-2 rounded-xl border border-slate-700 transition-colors"><Phone size={16} className="text-primary-400" /> {answers.responsibleName || '-'}</span>
- </div>
+ {(() => {
+   const displayAge = answers.childBirthDate 
+     ? calculateAgeString(answers.childBirthDate, answers.childAge)
+     : (answers.childAge ? (answers.childAge.includes('anos') ? answers.childAge : `${answers.childAge} anos`) : 'Idade não informada');
+
+   const displaySchoolGrade = () => {
+     const school = answers.school || '';
+     const grade = answers.grade || '';
+     if (school && grade) return `${school} • ${grade}`;
+     if (school) return school;
+     if (grade) return grade;
+     return 'Escola não informada';
+   };
+
+   return (
+     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 text-sm text-outline">
+       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Nome da Criança">
+         <User size={16} className="text-primary-400 shrink-0" />
+         <span className="truncate"><strong>Criança:</strong> {answers.childName || 'Não informada'}</span>
+       </span>
+       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Idade / Data de Nascimento">
+         <Calendar size={16} className="text-primary-400 shrink-0" />
+         <span className="truncate"><strong>Idade:</strong> {displayAge}</span>
+       </span>
+       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Responsável e Vínculo">
+         <UserCheck size={16} className="text-primary-400 shrink-0" />
+         <span className="truncate"><strong>Resp.:</strong> {answers.responsibleName || patient.full_name} {answers.responsibleBond ? `(${answers.responsibleBond})` : ''}</span>
+       </span>
+       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors" title="Escola e Série">
+         <School size={16} className="text-primary-400 shrink-0" />
+         <span className="truncate"><strong>Escola:</strong> {displaySchoolGrade()}</span>
+       </span>
+       <span className="flex items-center gap-2 bg-slate-900 p-2.5 rounded-xl border border-slate-700 transition-colors sm:col-span-2" title="Telefone / WhatsApp">
+         <Phone size={16} className="text-primary-400 shrink-0" />
+         <span className="truncate"><strong>WhatsApp:</strong> {answers.phone || patient.phone || 'Não informado'}</span>
+       </span>
+     </div>
+   );
+ })()}
  </div>
  </div>
  </div>
  </div>
 
  {/* Diário de Bordo (Evolução Clínica) */}
- <div className="bg-slate-800 p-6 md:p-8 rounded-[24px] border border-slate-700 shadow-sm transition-colors">
+ <div className="bg-slate-800 p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-slate-700 shadow-sm transition-colors">
  <PatientEvolutions patientId={id!} />
  </div>
 
  {/* Objectives / Progress Management */}
- <div className="bg-slate-800 p-6 md:p-8 rounded-[24px] border border-slate-700 shadow-sm space-y-6 transition-colors">
- <div className="flex items-center justify-between">
- <div className="flex items-center gap-3">
- <div className="p-2 bg-primary-900/40 text-primary-400 rounded-xl transition-colors">
- <Target size={24} />
+ <div className="bg-slate-800 p-4 sm:p-6 md:p-8 rounded-[20px] sm:rounded-[24px] border border-slate-700 shadow-sm space-y-4 sm:space-y-6 transition-colors">
+ <div className="flex items-center justify-between gap-3">
+ <div className="flex items-center gap-2.5">
+ <div className="p-2 bg-primary-900/40 text-primary-400 rounded-xl transition-colors shrink-0">
+ <Target size={20} className="sm:w-6 sm:h-6" />
  </div>
- <h2 className="text-xl font-bold text-white transition-colors">Objetivos Terapêuticos</h2>
+ <h2 className="text-lg sm:text-xl font-bold text-white transition-colors">Objetivos Terapêuticos</h2>
  </div>
- <div className="text-right">
- <p className="text-2xl font-bold text-primary-400 transition-colors">{progressPercent}%</p>
- <p className="text-[10px] text-on-surface-variant font-bold uppercase transition-colors">Progresso Geral</p>
+ <div className="text-right shrink-0">
+ <p className="text-xl sm:text-2xl font-bold text-primary-400 transition-colors">{progressPercent}%</p>
+ <p className="text-[9px] sm:text-[10px] text-on-surface-variant font-bold uppercase transition-colors">Progresso</p>
  </div>
  </div>
 
@@ -502,42 +538,42 @@ const PatientDetail: React.FC = () => {
  placeholder="Novo objetivo (ex: Melhorar leitura)"
  value={newObjective}
  onChange={(e) => setNewObjective(e.target.value)}
- className="!py-2.5"
+ className="!py-2 sm:!py-2.5 text-xs sm:text-sm"
  />
  </div>
  <Button
  type="submit"
  disabled={addingObjective || !newObjective.trim()}
- className="!py-2.5 px-4"
+ className="!py-2 sm:!py-2.5 px-3 sm:px-4 text-xs sm:text-sm shrink-0"
  >
- <Plus size={20} />
+ <Plus size={18} className="sm:w-5 sm:h-5" />
  </Button>
  </form>
 
  {/* Objectives List */}
  <div className="space-y-2">
  {objectives.length === 0 ? (
- <p className="text-center py-6 text-outline dark:text-on-surface-variant text-sm italic">Nenhum objetivo traçado ainda.</p>
+ <p className="text-center py-6 text-outline dark:text-on-surface-variant text-xs sm:text-sm italic">Nenhum objetivo traçado ainda.</p>
  ) : (
  objectives.map(obj => (
  <div
  key={obj.id}
- className={`flex items-center justify-between p-4 rounded-2xl border transition-all ${obj.is_completed ? 'bg-green-50/50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30' : 'bg-background border-outline-variant '}`}
+ className={`flex items-center justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all ${obj.is_completed ? 'bg-green-50/50 dark:bg-green-900/20 border-green-100 dark:border-green-800/30' : 'bg-background border-outline-variant '}`}
  >
- <div className="flex items-center gap-3 flex-1 min-w-0">
+ <div className="flex items-center gap-2.5 sm:gap-3 flex-1 min-w-0">
  <button
  onClick={() => handleToggleObjective(obj.id, obj.is_completed)}
- className={`transition-colors ${obj.is_completed ? 'text-green-600 dark:text-green-400' : 'text-slate-300 dark:text-slate-600 hover:text-primary dark:hover:text-primary-400'}`}
+ className={`transition-colors shrink-0 ${obj.is_completed ? 'text-green-600 dark:text-green-400' : 'text-slate-300 dark:text-slate-600 hover:text-primary dark:hover:text-primary-400'}`}
  >
- {obj.is_completed ? <CheckCircle2 size={22} /> : <Circle size={22} />}
+ {obj.is_completed ? <CheckCircle2 size={20} className="sm:w-5 sm:h-5" /> : <Circle size={20} className="sm:w-5 sm:h-5" />}
  </button>
- <span className={`text-sm font-medium truncate ${obj.is_completed ? 'text-green-800 dark:text-green-300 line-through opacity-70' : 'text-slate-700 '}`}>
+ <span className={`text-xs sm:text-sm font-medium truncate ${obj.is_completed ? 'text-green-800 dark:text-green-300 line-through opacity-70' : 'text-slate-700 '}`}>
  {obj.description}
  </span>
  </div>
  <button
  onClick={() => handleDeleteObjective(obj.id)}
- className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+ className="p-1.5 text-slate-300 dark:text-slate-600 hover:text-red-500 dark:hover:text-red-400 transition-colors shrink-0 ml-2"
  >
  <Trash2 size={16} />
  </button>
@@ -822,11 +858,14 @@ const PatientDetail: React.FC = () => {
   <h3 className="text-sm font-bold uppercase tracking-wider">Identificação & Família</h3>
   </div>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-  <DetailItem label="Criança/Paciente" value={answers.childName} />
-  <DetailItem label="Idade" value={answers.childAge ? `${answers.childAge} anos` : null} />
-  <DetailItem label="Estrutura Familiar" value={answers.familyStructure} fullWidth />
+  <DetailItem label="Nome do Responsável" value={answers.responsibleName || patient.full_name} />
+  <DetailItem label="Telefone / WhatsApp" value={answers.phone} />
   <DetailItem label="Vínculo do Responsável" value={answers.responsibleBond} />
-  <DetailItem label="Escola / Série" value={answers.school} />
+  <DetailItem label="Nome da Criança" value={answers.childName} />
+  <DetailItem label="Data de Nasc. / Idade" value={answers.childBirthDate ? calculateAgeString(answers.childBirthDate, answers.childAge) : (answers.childAge ? (answers.childAge.includes('anos') ? answers.childAge : `${answers.childAge} anos`) : null)} />
+  <DetailItem label="Escola" value={answers.school} />
+  <DetailItem label="Série Escolar" value={answers.grade} />
+  <DetailItem label="Estrutura Familiar" value={answers.familyStructure} fullWidth />
   </div>
   </section>
 

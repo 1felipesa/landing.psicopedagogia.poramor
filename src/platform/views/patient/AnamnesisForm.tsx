@@ -17,7 +17,28 @@ import Button from '../../components/ui/Button';
 import Textarea from '../../components/ui/Textarea';
 import { db } from '../../lib/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { useAuth } from '../../context/AuthContext';
+export const calculateAgeString = (birthDateStr?: string, legacyAge?: string): string => {
+    if (!birthDateStr || !/^\d{2}\/\d{2}\/\d{4}$/.test(birthDateStr.trim())) {
+        return legacyAge || 'Não informada';
+    }
+    const [dayStr, monthStr, yearStr] = birthDateStr.split('/');
+    const day = parseInt(dayStr, 10);
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
+
+    if (isNaN(day) || isNaN(month) || isNaN(year)) return legacyAge || 'Não informada';
+
+    const today = new Date();
+    let age = today.getFullYear() - year;
+    const monthDiff = (today.getMonth() + 1) - month;
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < day)) {
+        age--;
+    }
+
+    if (age < 0 || age > 120) return legacyAge || 'Não informada';
+
+    return `${age} anos (${birthDateStr})`;
+};
 
 const AnamnesisForm: React.FC = () => {
     const navigate = useNavigate();
@@ -27,6 +48,8 @@ const AnamnesisForm: React.FC = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [hasCompleted, setHasCompleted] = useState(false);
     const [loadingCheck, setLoadingCheck] = useState(true);
+
+    const [dateError, setDateError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!user) return;
@@ -38,7 +61,6 @@ const AnamnesisForm: React.FC = () => {
 
                 if (docSnap.exists() && docSnap.data().status === 'completed') {
                     setHasCompleted(true);
-                    // Load existing answers to form state if needed (or just prevent re-fill)
                     if (docSnap.data().step_data) {
                         setFormData(docSnap.data().step_data);
                     }
@@ -61,14 +83,76 @@ const AnamnesisForm: React.FC = () => {
         setFormData((prev: any) => ({ ...prev, [field]: value }));
     };
 
+    // Date Mask & Validation (DD/MM/YYYY)
+    const handleDateChange = (val: string) => {
+        const clean = val.replace(/\D/g, '').slice(0, 8);
+        let formatted = clean;
+        if (clean.length > 2 && clean.length <= 4) {
+            formatted = `${clean.slice(0, 2)}/${clean.slice(2)}`;
+        } else if (clean.length > 4) {
+            formatted = `${clean.slice(0, 2)}/${clean.slice(2, 4)}/${clean.slice(4, 8)}`;
+        }
+        handleChange('childBirthDate', formatted);
+
+        if (formatted.length > 0 && formatted.length < 10) {
+            setDateError('A data deve conter os dígitos completos no formato DD/MM/AAAA (ex: 01/04/2011)');
+        } else if (formatted.length === 10) {
+            const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+            if (!regex.test(formatted)) {
+                setDateError('A data deve conter os dígitos completos no formato DD/MM/AAAA (ex: 01/04/2011)');
+            } else {
+                const [d, m, y] = formatted.split('/').map(Number);
+                if (d < 1 || d > 31 || m < 1 || m > 12 || y < 1900 || y > 2026) {
+                    setDateError('Data inválida. Verifique o dia, mês e ano.');
+                } else {
+                    setDateError(null);
+                }
+            }
+        } else {
+            setDateError(null);
+        }
+    };
+
+    // Phone Mask
+    const handlePhoneChange = (val: string) => {
+        const clean = val.replace(/\D/g, '').slice(0, 11);
+        let formatted = clean;
+        if (clean.length <= 10) {
+            formatted = clean.replace(/^(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3').trim();
+        } else {
+            formatted = clean.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3').trim();
+        }
+        handleChange('phone', formatted);
+    };
+
+    const handleNextStep = () => {
+        if (step === 1 && formData.childBirthDate) {
+            if (formData.childBirthDate.length < 10 || dateError) {
+                setDateError('A data deve conter os dígitos completos no formato DD/MM/AAAA (ex: 01/04/2011)');
+                return;
+            }
+        }
+        if (step < totalSteps) {
+            setStep(s => s + 1);
+        } else {
+            handleFinish();
+        }
+    };
+
     const handleFinish = async () => {
         if (!user) return;
         setIsSubmitting(true);
 
         try {
+            const calculatedAge = calculateAgeString(formData.childBirthDate, formData.childAge);
+            const finalData = {
+                ...formData,
+                childAge: calculatedAge
+            };
+
             await setDoc(doc(db, 'anamnesis', user.id), {
                 patient_id: user.id,
-                step_data: formData,
+                step_data: finalData,
                 status: 'completed',
                 updated_at: new Date().toISOString()
             });
@@ -176,62 +260,88 @@ const AnamnesisForm: React.FC = () => {
  <div className="space-y-8 animate-fadeIn">
  <div>
  <h2 className="text-xl font-medium text-on-surface transition-colors mb-1">Identificação e Dados Básicos</h2>
- <p className="text-sm text-on-surface-variant transition-colors">Vamos começar conhecendo quem é o herói dessa jornada.</p>
+ <p className="text-sm text-on-surface-variant transition-colors">Vamos começar conhecendo quem é o herói dessa jornada e seus responsáveis.</p>
  </div>
 
  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
- <div className="md:col-span-2">
+ <div>
  <Input
- label="1.1 Nome completo da criança"
+ label="1.1 Nome completo do responsável"
  icon={User}
- placeholder=" "
- value={formData.childName || ''}
- onChange={(e) => handleChange('childName', e.target.value)}
- />
- </div>
- <div>
- <Input
- label="Idade / Data de Nascimento"
- type="text"
- placeholder="Ex: 8 anos (12/05/2015)"
- value={formData.childAge || ''}
- onChange={(e) => handleChange('childAge', e.target.value)}
- />
- </div>
- <div className="md:col-span-2">
- <Input
- label="1.2 Série Escolar e Escola"
- placeholder="Ex: 3º ano - Escola Viver"
- value={formData.school || ''}
- onChange={(e) => handleChange('school', e.target.value)}
- />
- </div>
-
- <div className="md:col-span-2 border-t border-outline-variant /50 my-2 transition-colors"></div>
-
- <div>
- <Input
- label="1.3 Nome do Responsável"
- placeholder="Quem está preenchendo?"
+ placeholder="Ex: Felipe Sá"
  value={formData.responsibleName || ''}
  onChange={(e) => handleChange('responsibleName', e.target.value)}
  />
  </div>
  <div>
  <Input
- label="Vínculo com a criança"
- placeholder="Mãe, Pai, Avó..."
+ label="1.2 Número do Telefone / WhatsApp"
+ type="text"
+ placeholder="Ex: (16) 99186-4393"
+ value={formData.phone || ''}
+ onChange={(e) => handlePhoneChange(e.target.value)}
+ />
+ </div>
+ <div className="md:col-span-2">
+ <Input
+ label="1.3 Vínculo com a criança"
+ placeholder="Ex: Pai, Mãe, Avó, Tutor legal..."
  value={formData.responsibleBond || ''}
  onChange={(e) => handleChange('responsibleBond', e.target.value)}
  />
  </div>
 
+ <div className="md:col-span-2 border-t border-outline-variant/50 my-2 transition-colors"></div>
+
+ <div className="md:col-span-2">
+ <Input
+ label="1.4 Nome completo da criança"
+ placeholder="Ex: Davi Sá"
+ value={formData.childName || ''}
+ onChange={(e) => handleChange('childName', e.target.value)}
+ />
+ </div>
+
+ <div className="md:col-span-2">
+ <Input
+ label="1.5 Data de Nascimento da criança"
+ type="text"
+ placeholder="DD/MM/AAAA (ex: 01/04/2011)"
+ value={formData.childBirthDate || ''}
+ onChange={(e) => handleDateChange(e.target.value)}
+ error={dateError || undefined}
+ maxLength={10}
+ />
+ {formData.childBirthDate && !dateError && formData.childBirthDate.length === 10 && (
+ <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-medium">
+    ✓ Idade calculada: {calculateAgeString(formData.childBirthDate)}
+ </p>
+ )}
+ </div>
+
  <div className="md:col-span-2">
  <Textarea
- label="1.4 Com quem a criança reside? (Estrutura Familiar)"
- placeholder="Ex: Mora comigo (mãe), com o pai e um irmão mais novo..."
+ label="1.6 Estrutura Familiar (com quem a criança reside?)"
+ placeholder="Ex: Mora com a mãe, pai e um irmão mais novo..."
  value={formData.familyStructure || ''}
  onChange={(e) => handleChange('familyStructure', e.target.value)}
+ />
+ </div>
+
+ <div>
+ <Input
+ label="1.7 Qual a escola que a criança estuda?"
+ placeholder="Ex: Escola Viver"
+ value={formData.school || ''}
+ onChange={(e) => handleChange('school', e.target.value)}
+ />
+ </div>
+ <div>
+ <Input
+ label="1.8 Qual série escolar ela se encontra?"
+ placeholder="Ex: 5º Ano Fundamental"
+ value={formData.grade || ''}
+ onChange={(e) => handleChange('grade', e.target.value)}
  />
  </div>
  </div>
@@ -443,7 +553,7 @@ const AnamnesisForm: React.FC = () => {
  </Button>
  )}
  <Button
- onClick={() => step < totalSteps ? setStep(s => s + 1) : handleFinish()}
+ onClick={handleNextStep}
  variant="primary"
  className="w-full sm:w-auto px-8"
  type="button"
