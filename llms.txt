@@ -1,0 +1,17 @@
+# Psicopedagogia por Amor — Project Context for LLMs & AI Agents
+
+> Management Platform for Psychopedagogy Clinical Practice & Commercial Landing Page for Dra. Raiane E. Ferreira.
+
+## Core Documentation Files
+- [README.md](./README.md): Project overview, features, quick start guide, and folder structure.
+- [ARCHITECTURE.md](./ARCHITECTURE.md): System architecture, Mermaid diagrams, Firestore NoSQL data schemas, and security rules.
+- [AGENTS.md](./AGENTS.md): Instructions, coding rules, route mapping, and verification protocols for AI models and coding agents.
+
+## Core Tech Stack
+- Frontend: React 18, TypeScript, Vite, TailwindCSS v4, Lucide React
+- Backend: Firebase Authentication, Firestore NoSQL, Firebase Storage
+- Integrations: Google Calendar API (OAuth 2.0), jsPDF + html2canvas (PDF generation)
+
+## Key Entities & Roles
+- Roles: `admin` (Psychopedagogist Dra. Raiane) and `patient` (Parent/Client)
+- Firestore Collections: `profiles`, `appointments`, `documents`, `anamnesis`, `patient_evolutions`, `invoices`
