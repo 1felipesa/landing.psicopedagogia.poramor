@@ -97,6 +97,28 @@ const PatientDetail: React.FC = () => {
   }
  };
 
+ const handleMarkContractAsPhysical = async () => {
+    if (!id) return;
+    if (!window.confirm('Confirmar que o contrato assinado foi recebido impresso em mãos na clínica?')) return;
+
+    try {
+      await addDoc(collection(db, 'documents'), {
+        patient_id: id,
+        title: 'Contrato Assinado (Entregue em Mãos na Clínica)',
+        url: '#',
+        type: 'signed_contract',
+        storage_path: 'physical_received',
+        uploaded_by: 'admin',
+        created_at: new Date().toISOString()
+      });
+
+      showToast('Contrato assinado registrado como entregue em mãos com sucesso!');
+      fetchData();
+    } catch (err: any) {
+      showToast('Erro ao registrar contrato: ' + err.message, 'error');
+    }
+  };
+
  useEffect(() => {
  if (!id) return;
  fetchData();
@@ -656,47 +678,71 @@ const PatientDetail: React.FC = () => {
                >
                  <Upload size={14} /> {latestTemplate ? 'Substituir Contrato Enviado' : 'Enviar Contrato para Paciente'}
                </button>
+                 {/* Status do Contrato Assinado Recebido */}
+          {(() => {
+            const signedContracts = documents.filter(d => d.type === 'signed_contract' || (d.uploaded_by === 'patient' && d.title.toLowerCase().includes('contrato')));
+            const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
+
+            if (latestContract) {
+              const isPhysical = latestContract.url === '#' || latestContract.storage_path === 'physical_received';
+              return (
+                <div className="p-3.5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300">
+                      <CheckCircle2 size={14} /> {isPhysical ? 'Contrato Recebido (Em Mãos)' : 'Contrato Assinado Recebido'}
+                    </span>
+                    <span className="text-[10px] text-green-700 dark:text-green-400 font-medium">
+                      {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestContract.title}</p>
+                  
+                  {isPhysical ? (
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      <span className="text-[11px] text-green-700 dark:text-green-300 font-medium italic">Entregue impresso na clínica</span>
+                      <button
+                        onClick={() => handleDeleteDoc(latestContract.id, latestContract.url, latestContract.storage_path)}
+                        className="px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded text-[11px] font-bold transition-colors"
+                        title="Remover confirmação de recebimento físico"
+                      >
+                        Desfazer
+                      </button>
+                    </div>
+                  ) : (
+                    <a
+                      href={latestContract.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs"
+                    >
+                      <Download size={14} /> Baixar Contrato Assinado
+                    </a>
+                  )}
+                </div>
+              );
+            } else {
+              return (
+                <div className="p-3.5 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40 space-y-2.5">
+                  <div className="flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-medium">
+                    <span className="flex items-center gap-1.5 font-bold">
+                      <ShieldCheck size={14} /> Assinatura do Paciente
+                    </span>
+                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase">Devolução Pendente</span>
+                  </div>
+
+                  <button
+                    onClick={handleMarkContractAsPhysical}
+                    className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold transition-all shadow-2xs cursor-pointer"
+                  >
+                    <CheckCircle2 size={14} />
+                    <span>Marcar como Entregue em Mãos (Impresso)</span>
+                  </button>
+                </div>
+              );
+            }
+          })()}
              </div>
            );
-         })()}
-
-         {/* Status do Contrato Assinado Recebido */}
-         {(() => {
-           const signedContracts = documents.filter(d => d.type === 'signed_contract' || (d.uploaded_by === 'patient' && d.title.toLowerCase().includes('contrato')));
-           const latestContract = signedContracts.length > 0 ? signedContracts[0] : null;
-
-           if (latestContract) {
-             return (
-               <div className="p-3.5 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/40 space-y-2">
-                 <div className="flex items-center justify-between">
-                   <span className="inline-flex items-center gap-1 text-xs font-bold text-green-800 dark:text-green-300">
-                     <CheckCircle2 size={14} /> Contrato Assinado Recebido
-                   </span>
-                   <span className="text-[10px] text-green-700 dark:text-green-400 font-medium">
-                     {new Date(latestContract.created_at).toLocaleDateString('pt-BR')}
-                   </span>
-                 </div>
-                 <p className="text-xs text-slate-700 dark:text-slate-200 font-medium truncate">{latestContract.title}</p>
-                 <a
-                   href={latestContract.url}
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold transition-colors w-full justify-center shadow-2xs"
-                 >
-                   <Download size={14} /> Baixar Contrato Assinado
-                 </a>
-               </div>
-             );
-           } else {
-             return (
-               <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/40 flex items-center justify-between text-xs text-amber-800 dark:text-amber-300 font-medium">
-                 <span className="flex items-center gap-1.5">
-                   <ShieldCheck size={14} /> Assinatura do Paciente
-                 </span>
-                 <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase">Devolução Pendente</span>
-               </div>
-             );
-           }
          })()}
 
         <button

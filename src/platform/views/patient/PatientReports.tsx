@@ -224,45 +224,50 @@ const PatientReports: React.FC = () => {
                             Você pode escolher qualquer uma das duas opções abaixo para assinar seu documento com toda a comodidade:
                         </p>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            {/* Opção 1: Assinatura Física */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                            {/* Opção 1: Assinatura Física com Upload */}
                             <div className="p-4 bg-surface rounded-xl border border-outline-variant/40 space-y-2">
                                 <div className="flex items-center gap-2 font-bold text-on-surface">
                                     <div className="p-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-lg">
                                         <Camera size={18} />
                                     </div>
-                                    Opção 1: Assinatura Física (Caneta)
+                                    Opção 1: Foto / Scan
                                 </div>
                                 <ol className="list-decimal list-inside text-xs text-on-surface-variant space-y-1.5 leading-relaxed pl-1">
-                                    <li>Baixe o modelo do contrato e **imprima**.</li>
-                                    <li>Preencha os dados e assine a **próprio punho**.</li>
-                                    <li>Tire uma **foto bem iluminada** ou escaneie o documento.</li>
-                                    <li>Envie a foto ou arquivo (JPG, PNG ou PDF) pelo botão abaixo.</li>
+                                    <li>Imprima e assine o contrato.</li>
+                                    <li>Tire uma **foto bem iluminada** ou escaneie.</li>
+                                    <li>Envie o arquivo pelo botão abaixo.</li>
                                 </ol>
                             </div>
 
-                            {/* Opção 2: Assinatura Digital Gov.br */}
+                            {/* Opção 2: Digital Gov.br */}
                             <div className="p-4 bg-surface rounded-xl border border-outline-variant/40 space-y-2">
                                 <div className="flex items-center gap-2 font-bold text-on-surface">
                                     <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-lg">
                                         <PenTool size={18} />
                                     </div>
-                                    Opção 2: Digital (Gov.br ou PDF)
+                                    Opção 2: Digital (Gov.br)
                                 </div>
                                 <ol className="list-decimal list-inside text-xs text-on-surface-variant space-y-1.5 leading-relaxed pl-1">
-                                    <li>Abra o PDF do contrato no seu computador ou celular.</li>
-                                    <li>Assine gratuitamente usando a **Assinatura Gov.br**.</li>
-                                    <li>Salve o arquivo PDF assinado.</li>
-                                    <li>Faça o upload do PDF assinado pelo botão abaixo.</li>
+                                    <li>Abra o PDF do contrato.</li>
+                                    <li>Assine com o **Gov.br gratuito**.</li>
+                                    <li>Envie o PDF assinado pelo botão.</li>
                                 </ol>
-                                <a
-                                    href="https://www.gov.br/governodigital/pt-br/assinatura-eletronica"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 text-xs text-primary font-bold hover:underline pt-1"
-                                >
-                                    Acessar Assinador Gov.br gratuito <ExternalLink size={12} />
-                                </a>
+                            </div>
+
+                            {/* Opção 3: Entregar em mãos */}
+                            <div className="p-4 bg-surface rounded-xl border border-outline-variant/40 space-y-2">
+                                <div className="flex items-center gap-2 font-bold text-on-surface">
+                                    <div className="p-1.5 bg-green-100 dark:bg-green-900/30 text-green-600 rounded-lg">
+                                        <CheckCircle2 size={18} />
+                                    </div>
+                                    Opção 3: Entregar em Mãos
+                                </div>
+                                <ol className="list-decimal list-inside text-xs text-on-surface-variant space-y-1.5 leading-relaxed pl-1">
+                                    <li>Imprima e assine a caneta.</li>
+                                    <li>Traga impresso na **1ª sessão**.</li>
+                                    <li>Entregue em mãos para a Dra. Raiane!</li>
+                                </ol>
                             </div>
                         </div>
                     </div>
