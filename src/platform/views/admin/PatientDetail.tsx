@@ -21,7 +21,8 @@ import {
  Receipt,
  FileCheck,
  School,
- UserCheck
+ UserCheck,
+ RotateCcw
 } from 'lucide-react';
 import { db } from '../../lib/firebase';
 import { collection, query, where, getDocs, doc, getDoc, updateDoc, deleteDoc, addDoc, orderBy } from 'firebase/firestore';
@@ -43,6 +44,7 @@ const PatientDetail: React.FC = () => {
  const navigate = useNavigate();
  const [patient, setPatient] = useState<any>(null);
  const [anamnesis, setAnamnesis] = useState<any>(null);
+ const [isResettingAnamnesis, setIsResettingAnamnesis] = useState(false);
  const [documents, setDocuments] = useState<Document[]>([]);
  const [objectives, setObjectives] = useState<any[]>([]);
  const [newObjective, setNewObjective] = useState('');
@@ -192,16 +194,41 @@ const PatientDetail: React.FC = () => {
  }
  };
 
- const handleDeleteObjective = async (objId: string) => {
- if (!confirm('Excluir este objetivo?')) return;
- try {
- await deleteDoc(doc(db, 'patient_objectives', objId));
- fetchObjectives();
- showToast('Objetivo removido.');
- } catch (error: any) {
- showToast('Erro ao excluir: ' + error.message, 'error');
- }
- };
+  const handleDeleteObjective = async (objId: string) => {
+  if (!confirm('Excluir este objetivo?')) return;
+  try {
+  await deleteDoc(doc(db, 'patient_objectives', objId));
+  fetchObjectives();
+  showToast('Objetivo removido.');
+  } catch (error: any) {
+  showToast('Erro ao excluir: ' + error.message, 'error');
+  }
+  };
+
+  const handleResetAnamnesis = async () => {
+    if (!window.confirm('Tem certeza que deseja excluir as respostas desta pré-anamnese? O paciente precisará preencher o formulário novamente.')) {
+      return;
+    }
+
+    try {
+      setIsResettingAnamnesis(true);
+      if (id) {
+        await deleteDoc(doc(db, 'anamnesis', id));
+        await updateDoc(doc(db, 'profiles', id), {
+          anamnesis_completed: false,
+          anamnesis_submitted: false,
+          updated_at: new Date().toISOString()
+        });
+      }
+      setAnamnesis(null);
+      setShowAnamnesisModal(false);
+      showToast('Pré-anamnese excluída com sucesso. O paciente pode responder novamente!');
+    } catch (err: any) {
+      showToast('Erro ao excluir pré-anamnese: ' + err.message, 'error');
+    } finally {
+      setIsResettingAnamnesis(false);
+    }
+  };
 
  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
  if (!event.target.files || event.target.files.length === 0 || !id) return;
@@ -762,10 +789,22 @@ const PatientDetail: React.FC = () => {
         </div>
       </div>
       {anamnesis && (
-        <div className="mt-4 pt-4 border-t border-outline-variant transition-colors">
+        <div className="mt-4 pt-4 border-t border-outline-variant transition-colors space-y-3">
           <p className="text-xs text-on-surface-variant line-clamp-2 italic">
             "{answers.mainReason || 'Sem queixa principal informada.'}"
           </p>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleResetAnamnesis();
+            }}
+            disabled={isResettingAnamnesis}
+            className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition-all shadow-2xs"
+            title="Excluir respostas atuais e solicitar novo preenchimento"
+          >
+            <RotateCcw size={14} />
+            <span>{isResettingAnamnesis ? 'Excluindo...' : 'Excluir e Requisitar Nova'}</span>
+          </button>
         </div>
       )}
     </div>
@@ -835,12 +874,26 @@ const PatientDetail: React.FC = () => {
   <p className="text-sm text-outline">Respondido por {answers.responsibleName || 'Responsável'}</p>
   </div>
   </div>
-  <button
-  onClick={() => setShowAnamnesisModal(false)}
-  className="p-2 hover:bg-slate-700 rounded-full transition-colors"
-  >
-  <X size={24} className="text-on-surface-variant" />
-  </button>
+
+  <div className="flex items-center gap-3">
+    {anamnesis && (
+      <button
+        onClick={handleResetAnamnesis}
+        disabled={isResettingAnamnesis}
+        className="flex items-center gap-2 px-3.5 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-xs font-bold transition-all shadow-2xs"
+        title="Excluir respostas atuais e permitir novo preenchimento"
+      >
+        <RotateCcw size={15} />
+        <span>{isResettingAnamnesis ? 'Excluindo...' : 'Excluir e Requisitar Nova'}</span>
+      </button>
+    )}
+    <button
+      onClick={() => setShowAnamnesisModal(false)}
+      className="p-2 hover:bg-slate-700 rounded-full transition-colors"
+    >
+      <X size={24} className="text-on-surface-variant" />
+    </button>
+  </div>
   </div>
 
   {/* Modal Content */}
