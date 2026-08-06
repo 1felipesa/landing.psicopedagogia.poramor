@@ -16,7 +16,9 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Textarea from '../../components/ui/Textarea';
 import { db } from '../../lib/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../context/AuthContext';
+
 export const calculateAgeString = (birthDateStr?: string, legacyAge?: string): string => {
     if (!birthDateStr || !/^\d{2}\/\d{2}\/\d{4}$/.test(birthDateStr.trim())) {
         return legacyAge || 'Não informada';
@@ -64,9 +66,12 @@ const AnamnesisForm: React.FC = () => {
                     if (docSnap.data().step_data) {
                         setFormData(docSnap.data().step_data);
                     }
+                } else {
+                    setHasCompleted(false);
+                    setFormData({});
                 }
             } catch (error) {
-                // No anamnesis found is fine
+                setHasCompleted(false);
             } finally {
                 setLoadingCheck(false);
             }
@@ -156,6 +161,16 @@ const AnamnesisForm: React.FC = () => {
                 status: 'completed',
                 updated_at: new Date().toISOString()
             });
+
+            try {
+                await updateDoc(doc(db, 'profiles', user.id), {
+                    anamnesis_completed: true,
+                    anamnesis_submitted: true,
+                    updated_at: new Date().toISOString()
+                });
+            } catch (pErr) {
+                console.error('Error updating profile on anamnesis submit:', pErr);
+            }
 
             alert('Anamnese enviada com sucesso! Obrigado.');
             navigate('/area-cliente/patient');
