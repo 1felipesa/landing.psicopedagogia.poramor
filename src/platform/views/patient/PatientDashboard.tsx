@@ -8,7 +8,9 @@ import {
  Circle,
  FileText,
  AlertCircle,
- Wallet
+ Wallet,
+ MapPin,
+ Video
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
@@ -271,6 +273,20 @@ const PatientDashboard: React.FC = () => {
  <p className="text-[9px] text-on-surface-variant dark:text-on-surface-variant font-bold uppercase transition-colors">Horário</p>
  <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100 transition-colors">
  {format(parseISO(nextAppointment.date), "HH:mm")}
+ </p>
+ </div>
+ </div>
+
+ <div className="flex items-center gap-3">
+ <div className={`p-2 rounded-xl transition-colors ${nextAppointment.isPaid ? 'bg-surface text-primary-700 ' : 'bg-slate-200 text-on-surface-variant '}`}>
+ {nextAppointment.type === 'online' ? <Video size={18} /> : <MapPin size={18} />}
+ </div>
+ <div>
+ <p className="text-[9px] text-on-surface-variant font-bold uppercase transition-colors">
+ {nextAppointment.type === 'online' ? 'Modalidade' : 'Local / Endereço'}
+ </p>
+ <p className="text-xs md:text-sm font-medium text-slate-900 dark:text-slate-100 transition-colors">
+ {nextAppointment.location || (nextAppointment.type === 'online' ? 'Atendimento Online' : 'Presencial')}
  </p>
  </div>
  </div>

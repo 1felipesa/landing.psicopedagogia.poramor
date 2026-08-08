@@ -51,6 +51,7 @@ interface Appointment {
     date: string;
     status: 'scheduled' | 'completed' | 'cancelled';
     type: 'online' | 'presencial';
+    location?: string;
     notes?: string;
     price?: number;
     patient_name?: string;
@@ -90,6 +91,10 @@ const AdminSchedule: React.FC = () => {
     const [selectedTime, setSelectedTime] = useState('');
     const [appointmentType, setAppointmentType] = useState<'online' | 'presencial'>('presencial');
     const [appointmentPrice, setAppointmentPrice] = useState('150.00'); // Default price
+    const [appointmentLocation, setAppointmentLocation] = useState(() => 
+        localStorage.getItem('clinic_default_address') || ''
+    );
+    const [saveAsDefaultAddress, setSaveAsDefaultAddress] = useState(false);
     const [isRecurring, setIsRecurring] = useState(false);
     const [recurrenceCount, setRecurrenceCount] = useState('4');
 
@@ -206,6 +211,8 @@ const AdminSchedule: React.FC = () => {
       setSelectedDate(format(d, 'yyyy-MM-dd'));
       setSelectedTime(format(d, 'HH:mm'));
       setAppointmentType(appt.type);
+      setAppointmentLocation(appt.location || (appt.type === 'presencial' ? (localStorage.getItem('clinic_default_address') || '') : ''));
+      setSaveAsDefaultAddress(false);
 
       let currentPrice = appt.price;
       if (currentPrice === undefined || currentPrice === null) {
@@ -236,6 +243,14 @@ const AdminSchedule: React.FC = () => {
         const numericPrice = parseFloat(appointmentPrice) || 0;
         let gcalEventId = editingAppointment?.gcal_event_id;
 
+        const finalLocation = appointmentType === 'presencial'
+          ? (appointmentLocation.trim() || localStorage.getItem('clinic_default_address') || 'Consultório de Psicopedagogia')
+          : (appointmentLocation.trim() || 'Atendimento Online');
+
+        if (saveAsDefaultAddress && appointmentType === 'presencial' && appointmentLocation.trim()) {
+          localStorage.setItem('clinic_default_address', appointmentLocation.trim());
+        }
+
         // Try syncing with Google Calendar if connected
         const token = getStoredAccessToken();
         if (token) {
@@ -244,11 +259,11 @@ const AdminSchedule: React.FC = () => {
             const endISO = new Date(dateTime.getTime() + 50 * 60 * 1000).toISOString();
             const payload = {
               summary: title,
-              description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.\nValor: R$ ${numericPrice.toFixed(2)}`,
+              description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
               startDateTime: startISO,
               endDateTime: endISO,
               patientEmail: patient?.email,
-              location: appointmentType === 'presencial' ? 'Consultório de Psicopedagogia' : 'Atendimento Online'
+              location: finalLocation
             };
 
             if (editingAppointment && gcalEventId) {
@@ -269,6 +284,7 @@ const AdminSchedule: React.FC = () => {
             title: title,
             date: dateTime.toISOString(),
             type: appointmentType,
+            location: finalLocation,
             price: numericPrice,
             ...(gcalEventId ? { gcal_event_id: gcalEventId } : {})
           });
@@ -308,10 +324,11 @@ const AdminSchedule: React.FC = () => {
                 const endISO = new Date(currentDateTime.getTime() + 50 * 60 * 1000).toISOString();
                 const gRes = await createGoogleCalendarEvent(token, {
                   summary: title,
-                  description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.\nValor: R$ ${numericPrice.toFixed(2)}`,
+                  description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
                   startDateTime: startISO,
                   endDateTime: endISO,
-                  patientEmail: patient?.email
+                  patientEmail: patient?.email,
+                  location: finalLocation
                 }, selectedCalendarId);
                 if (gRes?.id) currentGcalId = gRes.id;
               } catch (recGerr) {
@@ -325,6 +342,7 @@ const AdminSchedule: React.FC = () => {
               date: currentDateTime.toISOString(),
               status: 'scheduled',
               type: appointmentType,
+              location: finalLocation,
               price: numericPrice,
               ...(currentGcalId ? { gcal_event_id: currentGcalId } : {}),
               created_at: new Date().toISOString()
@@ -358,6 +376,8 @@ const AdminSchedule: React.FC = () => {
       setSelectedTime('');
       setAppointmentType('presencial');
       setAppointmentPrice('150.00');
+      setAppointmentLocation(localStorage.getItem('clinic_default_address') || '');
+      setSaveAsDefaultAddress(false);
       setIsRecurring(false);
       setRecurrenceCount('4');
     };
@@ -720,6 +740,31 @@ const AdminSchedule: React.FC = () => {
         </div>
       )}
 
+      {/* Filter Chips Bar */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <span className="text-on-surface-variant font-medium mr-1 flex items-center gap-1">
+          <Filter size={14} /> Filtrar:
+        </span>
+        <button
+          onClick={() => setFilterType('all')}
+          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'all' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
+        >
+          Todos ({appointments.length})
+        </button>
+        <button
+          onClick={() => setFilterType('presencial')}
+          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'presencial' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
+        >
+          📍 Presencial
+        </button>
+        <button
+          onClick={() => setFilterType('online')}
+          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'online' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
+        >
+          🎥 Online
+        </button>
+      </div>
+
       {/* RENDER VIEW MODE 2: VISÃO SEMANAL EM GRADE (Desktop) */}
       {viewMode === 'week' && (
         <div className="flex-1 bg-surface rounded-[28px] border border-outline-variant shadow-sm overflow-hidden flex flex-col transition-colors">
@@ -787,8 +832,8 @@ const AdminSchedule: React.FC = () => {
                           {appt.patient_name}
                         </p>
                         <div className="flex items-center gap-2 mt-2">
-                          <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-surface text-primary border border-primary-100 dark:border-slate-700">
-                            {appt.type || 'Presencial'}
+                          <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-surface text-primary border border-primary-100 dark:border-slate-700 truncate max-w-[120px]" title={appt.location}>
+                            {appt.type === 'online' ? 'Online' : (appt.location || 'Presencial')}
                           </span>
                         </div>
                       </div>
@@ -804,7 +849,7 @@ const AdminSchedule: React.FC = () => {
       {/* Modal Reagendar / Novo Agendamento */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-surface rounded-[24px] shadow-2xl w-full max-w-md p-6 animate-scaleIn border border-transparent">
+          <div className="bg-surface rounded-[24px] shadow-2xl w-full max-w-md p-6 animate-scaleIn border border-transparent max-h-[90vh] overflow-y-auto">
             <h3 className="text-xl font-bold text-on-surface mb-6">
               {editingAppointment ? 'Remarcar Sessão' : 'Novo Agendamento'}
             </h3>
@@ -877,6 +922,35 @@ const AdminSchedule: React.FC = () => {
                   </label>
                 </div>
               </div>
+
+              {appointmentType === 'presencial' ? (
+                <div className="space-y-2 animate-fadeIn pt-1">
+                  <Input
+                    label="📍 Endereço do Atendimento Presencial"
+                    placeholder="Ex: Rua dos Coqueiros, 123 - Sala 402, Centro"
+                    value={appointmentLocation}
+                    onChange={e => setAppointmentLocation(e.target.value)}
+                  />
+                  <label className="flex items-center gap-2 text-xs text-on-surface-variant cursor-pointer hover:text-on-surface select-none px-1">
+                    <input
+                      type="checkbox"
+                      className="rounded text-primary focus:ring-primary h-3.5 w-3.5"
+                      checked={saveAsDefaultAddress}
+                      onChange={e => setSaveAsDefaultAddress(e.target.checked)}
+                    />
+                    <span>Salvar este endereço como padrão do consultório</span>
+                  </label>
+                </div>
+              ) : (
+                <div className="space-y-2 animate-fadeIn pt-1">
+                  <Input
+                    label="🎥 Link / Sala do Atendimento Online"
+                    placeholder="Ex: Google Meet / Link da Sala Virtual"
+                    value={appointmentLocation}
+                    onChange={e => setAppointmentLocation(e.target.value)}
+                  />
+                </div>
+              )}
 
               {!editingAppointment && (
                 <div className="p-4 bg-background/50 rounded-2xl border border-outline-variant space-y-3">
