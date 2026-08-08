@@ -740,30 +740,7 @@ const AdminSchedule: React.FC = () => {
         </div>
       )}
 
-      {/* Filter Chips Bar */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-        <span className="text-on-surface-variant font-medium mr-1 flex items-center gap-1">
-          <Filter size={14} /> Filtrar:
-        </span>
-        <button
-          onClick={() => setFilterType('all')}
-          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'all' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
-        >
-          Todos ({appointments.length})
-        </button>
-        <button
-          onClick={() => setFilterType('presencial')}
-          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'presencial' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
-        >
-          📍 Presencial
-        </button>
-        <button
-          onClick={() => setFilterType('online')}
-          className={`px-3 py-1.5 rounded-full border transition-all ${filterType === 'online' ? 'bg-primary-100 dark:bg-primary-900/40 border-primary text-primary font-bold' : 'border-outline-variant text-on-surface-variant hover:bg-surface-variant'}`}
-        >
-          🎥 Online
-        </button>
-      </div>
+
 
       {/* RENDER VIEW MODE 2: VISÃO SEMANAL EM GRADE (Desktop) */}
       {viewMode === 'week' && (
