@@ -45,460 +45,460 @@ import {
 } from '../../lib/googleCalendar';
 
 interface Appointment {
-    id: string;
-    patient_id: string;
-    title: string;
-    date: string;
-    status: 'scheduled' | 'completed' | 'cancelled';
-    type: 'online' | 'presencial';
-    location?: string;
-    notes?: string;
-    price?: number;
-    patient_name?: string;
-    gcal_event_id?: string;
-    patient?: {
-        full_name: string;
-        email?: string;
-    };
+  id: string;
+  patient_id: string;
+  title: string;
+  date: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  type: 'online' | 'presencial';
+  location?: string;
+  notes?: string;
+  price?: number;
+  patient_name?: string;
+  gcal_event_id?: string;
+  patient?: {
+    full_name: string;
+    email?: string;
+  };
 }
 
 const AdminSchedule: React.FC = () => {
-    const [currentDate, setCurrentDate] = useState(new Date());
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
-    const [patients, setPatients] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
-    const { showToast } = useToast();
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [patients, setPatients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<Appointment | null>(null);
+  const { showToast } = useToast();
 
-    // Google Calendar Sync State
-    const [googleToken, setGoogleToken] = useState<string | null>(() => getStoredAccessToken());
-    const [googleCalendars, setGoogleCalendars] = useState<UserCalendar[]>([]);
-    const [selectedCalendarId, setSelectedCalendarId] = useState<string>(() => 
-        localStorage.getItem('selected_gcal_id') || 'primary'
-    );
-    const [isConnectingGcal, setIsConnectingGcal] = useState(false);
+  // Google Calendar Sync State
+  const [googleToken, setGoogleToken] = useState<string | null>(() => getStoredAccessToken());
+  const [googleCalendars, setGoogleCalendars] = useState<UserCalendar[]>([]);
+  const [selectedCalendarId, setSelectedCalendarId] = useState<string>(() =>
+    localStorage.getItem('selected_gcal_id') || 'primary'
+  );
+  const [isConnectingGcal, setIsConnectingGcal] = useState(false);
 
-    // View & Filter States
-    const [viewMode, setViewMode] = useState<'agenda' | 'week'>(() => 
-        window.innerWidth < 768 ? 'agenda' : 'week'
-    );
-    const [filterType, setFilterType] = useState<'all' | 'presencial' | 'online'>('all');
+  // View & Filter States
+  const [viewMode, setViewMode] = useState<'agenda' | 'week'>(() =>
+    window.innerWidth < 768 ? 'agenda' : 'week'
+  );
+  const [filterType, setFilterType] = useState<'all' | 'presencial' | 'online'>('all');
 
-    // Form State
-    const [selectedPatient, setSelectedPatient] = useState('');
-    const [selectedDate, setSelectedDate] = useState('');
-    const [selectedTime, setSelectedTime] = useState('');
-    const [appointmentType, setAppointmentType] = useState<'online' | 'presencial'>('presencial');
-    const [appointmentPrice, setAppointmentPrice] = useState('150.00'); // Default price
-    const [appointmentLocation, setAppointmentLocation] = useState(() => 
-        localStorage.getItem('clinic_default_address') || ''
-    );
-    const [saveAsDefaultAddress, setSaveAsDefaultAddress] = useState(false);
-    const [isRecurring, setIsRecurring] = useState(false);
-    const [recurrenceCount, setRecurrenceCount] = useState('4');
+  // Form State
+  const [selectedPatient, setSelectedPatient] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [appointmentType, setAppointmentType] = useState<'online' | 'presencial'>('presencial');
+  const [appointmentPrice, setAppointmentPrice] = useState('150.00'); // Default price
+  const [appointmentLocation, setAppointmentLocation] = useState(() =>
+    localStorage.getItem('clinic_default_address') || ''
+  );
+  const [saveAsDefaultAddress, setSaveAsDefaultAddress] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(false);
+  const [recurrenceCount, setRecurrenceCount] = useState('4');
 
-    useEffect(() => {
-        fetchData();
-        const token = getStoredAccessToken();
-        if (token) {
-            setGoogleToken(token);
-            loadGoogleCalendars(token);
-        } else {
-            // Attempt silent token refresh seamlessly
-            initGoogleOAuth(
-                DEFAULT_CLIENT_ID,
-                (newToken) => {
-                    setGoogleToken(newToken);
-                    loadGoogleCalendars(newToken);
-                },
-                () => {
-                    // User not logged in or silent refresh unsupported
-                },
-                true // silent = true
-            );
+  useEffect(() => {
+    fetchData();
+    const token = getStoredAccessToken();
+    if (token) {
+      setGoogleToken(token);
+      loadGoogleCalendars(token);
+    } else {
+      // Attempt silent token refresh seamlessly
+      initGoogleOAuth(
+        DEFAULT_CLIENT_ID,
+        (newToken) => {
+          setGoogleToken(newToken);
+          loadGoogleCalendars(newToken);
+        },
+        () => {
+          // User not logged in or silent refresh unsupported
+        },
+        true // silent = true
+      );
+    }
+  }, []);
+
+  const loadGoogleCalendars = async (token: string) => {
+    try {
+      const cals = await listGoogleCalendars(token);
+      setGoogleCalendars(cals);
+      const saved = localStorage.getItem('selected_gcal_id');
+      if (!saved) {
+        const matched = cals.find(c => c.summary.toLowerCase().includes('psicopedagogia'));
+        if (matched) {
+          setSelectedCalendarId(matched.id);
+          localStorage.setItem('selected_gcal_id', matched.id);
         }
-    }, []);
+      }
+    } catch (err) {
+      console.error('Error loading Google Calendars:', err);
+    }
+  };
 
-    const loadGoogleCalendars = async (token: string) => {
-        try {
-            const cals = await listGoogleCalendars(token);
-            setGoogleCalendars(cals);
-            const saved = localStorage.getItem('selected_gcal_id');
-            if (!saved) {
-                const matched = cals.find(c => c.summary.toLowerCase().includes('psicopedagogia'));
-                if (matched) {
-                    setSelectedCalendarId(matched.id);
-                    localStorage.setItem('selected_gcal_id', matched.id);
-                }
-            }
-        } catch (err) {
-            console.error('Error loading Google Calendars:', err);
-        }
-    };
+  const handleConnectGoogle = () => {
+    setIsConnectingGcal(true);
+    initGoogleOAuth(
+      DEFAULT_CLIENT_ID,
+      (token) => {
+        setGoogleToken(token);
+        setIsConnectingGcal(false);
+        showToast('Google Calendar conectado com sucesso!');
+        loadGoogleCalendars(token);
+      },
+      (err) => {
+        setIsConnectingGcal(false);
+        showToast('Erro ao conectar com Google Calendar.', 'error');
+      }
+    );
+  };
 
-    const handleConnectGoogle = () => {
-        setIsConnectingGcal(true);
-        initGoogleOAuth(
-            DEFAULT_CLIENT_ID,
-            (token) => {
-                setGoogleToken(token);
-                setIsConnectingGcal(false);
-                showToast('Google Calendar conectado com sucesso!');
-                loadGoogleCalendars(token);
-            },
-            (err) => {
-                setIsConnectingGcal(false);
-                showToast('Erro ao conectar com Google Calendar.', 'error');
-            }
+  const handleCalendarChange = (calId: string) => {
+    setSelectedCalendarId(calId);
+    localStorage.setItem('selected_gcal_id', calId);
+    showToast('Agenda do Google selecionada para salvamento!');
+  };
+
+  const fetchData = async () => {
+    try {
+      const patientsQuery = query(
+        collection(db, 'profiles'),
+        where('role', '==', 'patient')
+      );
+      const patientsSnap = await getDocs(patientsQuery);
+      const profiles = patientsSnap.docs
+        .map(docSnap => ({
+          id: docSnap.id,
+          full_name: docSnap.data().full_name,
+          email: docSnap.data().email,
+          status: docSnap.data().status
+        }))
+        .filter(p => p.status !== 'inactive');
+      setPatients(profiles);
+
+      const apptsSnap = await getDocs(collection(db, 'appointments'));
+      const rawAppts = apptsSnap.docs.map(docSnap => ({
+        id: docSnap.id,
+        ...docSnap.data()
+      })) as any[];
+
+      const patientsMap = new Map<string, any>();
+      profiles.forEach(p => patientsMap.set(p.id, p));
+
+      const formatted = rawAppts.map(a => {
+        const patientProfile = patientsMap.get(a.patient_id);
+        return {
+          ...a,
+          patient_name: patientProfile?.full_name || 'Paciente',
+          patient: patientProfile ? { full_name: patientProfile.full_name, email: patientProfile.email } : undefined
+        };
+      });
+
+      formatted.sort((a, b) => a.date.localeCompare(b.date));
+      setAppointments(formatted);
+    } catch (error) {
+      console.error('Error fetching schedule data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenEdit = async (appt: Appointment) => {
+    setEditingAppointment(appt);
+    setSelectedPatient(appt.patient_id);
+    const d = parseISO(appt.date);
+    setSelectedDate(format(d, 'yyyy-MM-dd'));
+    setSelectedTime(format(d, 'HH:mm'));
+    setAppointmentType(appt.type);
+    setAppointmentLocation(appt.location || (appt.type === 'presencial' ? (localStorage.getItem('clinic_default_address') || '') : ''));
+    setSaveAsDefaultAddress(false);
+
+    let currentPrice = appt.price;
+    if (currentPrice === undefined || currentPrice === null) {
+      try {
+        const invoiceQuery = query(
+          collection(db, 'invoices'),
+          where('appointment_id', '==', appt.id)
         );
-    };
-
-    const handleCalendarChange = (calId: string) => {
-        setSelectedCalendarId(calId);
-        localStorage.setItem('selected_gcal_id', calId);
-        showToast('Agenda do Google selecionada para salvamento!');
-    };
-
-    const fetchData = async () => {
-        try {
-            const patientsQuery = query(
-                collection(db, 'profiles'),
-                where('role', '==', 'patient')
-            );
-            const patientsSnap = await getDocs(patientsQuery);
-            const profiles = patientsSnap.docs
-                .map(docSnap => ({
-                    id: docSnap.id,
-                    full_name: docSnap.data().full_name,
-                    email: docSnap.data().email,
-                    status: docSnap.data().status
-                }))
-                .filter(p => p.status !== 'inactive');
-            setPatients(profiles);
-
-            const apptsSnap = await getDocs(collection(db, 'appointments'));
-            const rawAppts = apptsSnap.docs.map(docSnap => ({
-                id: docSnap.id,
-                ...docSnap.data()
-            })) as any[];
-
-            const patientsMap = new Map<string, any>();
-            profiles.forEach(p => patientsMap.set(p.id, p));
-
-            const formatted = rawAppts.map(a => {
-                const patientProfile = patientsMap.get(a.patient_id);
-                return {
-                    ...a,
-                    patient_name: patientProfile?.full_name || 'Paciente',
-                    patient: patientProfile ? { full_name: patientProfile.full_name, email: patientProfile.email } : undefined
-                };
-            });
-
-            formatted.sort((a, b) => a.date.localeCompare(b.date));
-            setAppointments(formatted);
-        } catch (error) {
-            console.error('Error fetching schedule data:', error);
-        } finally {
-            setLoading(false);
+        const invoiceSnap = await getDocs(invoiceQuery);
+        if (!invoiceSnap.empty) {
+          currentPrice = invoiceSnap.docs[0].data().amount;
         }
-    };
+      } catch (err) {
+        console.error('Error fetching invoice price:', err);
+      }
+    }
 
-    const handleOpenEdit = async (appt: Appointment) => {
-      setEditingAppointment(appt);
-      setSelectedPatient(appt.patient_id);
-      const d = parseISO(appt.date);
-      setSelectedDate(format(d, 'yyyy-MM-dd'));
-      setSelectedTime(format(d, 'HH:mm'));
-      setAppointmentType(appt.type);
-      setAppointmentLocation(appt.location || (appt.type === 'presencial' ? (localStorage.getItem('clinic_default_address') || '') : ''));
-      setSaveAsDefaultAddress(false);
+    setAppointmentPrice(currentPrice !== undefined && currentPrice !== null ? currentPrice.toString() : '150.00');
+    setIsModalOpen(true);
+  };
 
-      let currentPrice = appt.price;
-      if (currentPrice === undefined || currentPrice === null) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const dateTime = new Date(`${selectedDate}T${selectedTime}`);
+      const patient = patients.find(p => p.id === selectedPatient);
+      const title = `Sessão com ${patient?.full_name?.split(' ')[0] || 'Paciente'}`;
+      const numericPrice = parseFloat(appointmentPrice) || 0;
+      let gcalEventId = editingAppointment?.gcal_event_id;
+
+      const finalLocation = appointmentType === 'presencial'
+        ? (appointmentLocation.trim() || localStorage.getItem('clinic_default_address') || 'Consultório de Psicopedagogia')
+        : (appointmentLocation.trim() || 'Atendimento Online');
+
+      if (saveAsDefaultAddress && appointmentType === 'presencial' && appointmentLocation.trim()) {
+        localStorage.setItem('clinic_default_address', appointmentLocation.trim());
+      }
+
+      // Try syncing with Google Calendar if connected
+      const token = getStoredAccessToken();
+      if (token) {
+        try {
+          const startISO = dateTime.toISOString();
+          const endISO = new Date(dateTime.getTime() + 50 * 60 * 1000).toISOString();
+          const payload = {
+            summary: title,
+            description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
+            startDateTime: startISO,
+            endDateTime: endISO,
+            patientEmail: patient?.email,
+            location: finalLocation
+          };
+
+          if (editingAppointment && gcalEventId) {
+            await updateGoogleCalendarEvent(token, gcalEventId, payload, selectedCalendarId);
+          } else {
+            const gRes = await createGoogleCalendarEvent(token, payload, selectedCalendarId);
+            if (gRes?.id) gcalEventId = gRes.id;
+          }
+        } catch (gErr: any) {
+          console.error('Google Calendar sync warning:', gErr);
+        }
+      }
+
+      if (editingAppointment) {
+        const apptRef = doc(db, 'appointments', editingAppointment.id);
+        await updateDoc(apptRef, {
+          patient_id: selectedPatient,
+          title: title,
+          date: dateTime.toISOString(),
+          type: appointmentType,
+          location: finalLocation,
+          price: numericPrice,
+          ...(gcalEventId ? { gcal_event_id: gcalEventId } : {})
+        });
+
         try {
           const invoiceQuery = query(
             collection(db, 'invoices'),
-            where('appointment_id', '==', appt.id)
+            where('appointment_id', '==', editingAppointment.id)
           );
           const invoiceSnap = await getDocs(invoiceQuery);
           if (!invoiceSnap.empty) {
-            currentPrice = invoiceSnap.docs[0].data().amount;
-          }
-        } catch (err) {
-          console.error('Error fetching invoice price:', err);
-        }
-      }
-
-      setAppointmentPrice(currentPrice !== undefined && currentPrice !== null ? currentPrice.toString() : '150.00');
-      setIsModalOpen(true);
-    };
-
-    const handleSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      try {
-        const dateTime = new Date(`${selectedDate}T${selectedTime}`);
-        const patient = patients.find(p => p.id === selectedPatient);
-        const title = `Sessão com ${patient?.full_name?.split(' ')[0] || 'Paciente'}`;
-        const numericPrice = parseFloat(appointmentPrice) || 0;
-        let gcalEventId = editingAppointment?.gcal_event_id;
-
-        const finalLocation = appointmentType === 'presencial'
-          ? (appointmentLocation.trim() || localStorage.getItem('clinic_default_address') || 'Consultório de Psicopedagogia')
-          : (appointmentLocation.trim() || 'Atendimento Online');
-
-        if (saveAsDefaultAddress && appointmentType === 'presencial' && appointmentLocation.trim()) {
-          localStorage.setItem('clinic_default_address', appointmentLocation.trim());
-        }
-
-        // Try syncing with Google Calendar if connected
-        const token = getStoredAccessToken();
-        if (token) {
-          try {
-            const startISO = dateTime.toISOString();
-            const endISO = new Date(dateTime.getTime() + 50 * 60 * 1000).toISOString();
-            const payload = {
-              summary: title,
-              description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
-              startDateTime: startISO,
-              endDateTime: endISO,
-              patientEmail: patient?.email,
-              location: finalLocation
-            };
-
-            if (editingAppointment && gcalEventId) {
-              await updateGoogleCalendarEvent(token, gcalEventId, payload, selectedCalendarId);
-            } else {
-              const gRes = await createGoogleCalendarEvent(token, payload, selectedCalendarId);
-              if (gRes?.id) gcalEventId = gRes.id;
-            }
-          } catch (gErr: any) {
-            console.error('Google Calendar sync warning:', gErr);
-          }
-        }
-
-        if (editingAppointment) {
-          const apptRef = doc(db, 'appointments', editingAppointment.id);
-          await updateDoc(apptRef, {
-            patient_id: selectedPatient,
-            title: title,
-            date: dateTime.toISOString(),
-            type: appointmentType,
-            location: finalLocation,
-            price: numericPrice,
-            ...(gcalEventId ? { gcal_event_id: gcalEventId } : {})
-          });
-
-          try {
-            const invoiceQuery = query(
-              collection(db, 'invoices'),
-              where('appointment_id', '==', editingAppointment.id)
-            );
-            const invoiceSnap = await getDocs(invoiceQuery);
-            if (!invoiceSnap.empty) {
-              const invDoc = invoiceSnap.docs[0];
-              if (invDoc.data().status === 'pending') {
-                await updateDoc(doc(db, 'invoices', invDoc.id), {
-                  amount: numericPrice,
-                  patient_id: selectedPatient,
-                  due_date: format(dateTime, 'yyyy-MM-dd'),
-                  description: `Sessão dia ${format(dateTime, 'dd/MM')}`
-                });
-              }
-            }
-          } catch (invErr) {
-            console.error('Error syncing invoice on edit:', invErr);
-          }
-        } else {
-          const iterations = isRecurring ? parseInt(recurrenceCount) || 1 : 1;
-
-          for (let i = 0; i < iterations; i++) {
-            const currentDateTime = addWeeks(dateTime, i);
-            let currentGcalId = undefined;
-
-            if (token && i === 0 && gcalEventId) {
-              currentGcalId = gcalEventId;
-            } else if (token) {
-              try {
-                const startISO = currentDateTime.toISOString();
-                const endISO = new Date(currentDateTime.getTime() + 50 * 60 * 1000).toISOString();
-                const gRes = await createGoogleCalendarEvent(token, {
-                  summary: title,
-                  description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
-                  startDateTime: startISO,
-                  endDateTime: endISO,
-                  patientEmail: patient?.email,
-                  location: finalLocation
-                }, selectedCalendarId);
-                if (gRes?.id) currentGcalId = gRes.id;
-              } catch (recGerr) {
-                console.error('Recurrence gcal sync err:', recGerr);
-              }
-            }
-
-            const newApptRef = await addDoc(collection(db, 'appointments'), {
-              patient_id: selectedPatient,
-              title: title,
-              date: currentDateTime.toISOString(),
-              status: 'scheduled',
-              type: appointmentType,
-              location: finalLocation,
-              price: numericPrice,
-              ...(currentGcalId ? { gcal_event_id: currentGcalId } : {}),
-              created_at: new Date().toISOString()
-            });
-
-            await addDoc(collection(db, 'invoices'), {
-              patient_id: selectedPatient,
-              appointment_id: newApptRef.id,
-              description: `Sessão dia ${format(currentDateTime, 'dd/MM')}`,
-              amount: numericPrice,
-              due_date: format(currentDateTime, 'yyyy-MM-dd'),
-              status: 'pending',
-              created_at: new Date().toISOString()
-            });
-          }
-        }
-
-        fetchData();
-        closeAndReset();
-        showToast(token ? 'Agendamento salvo e sincronizado com o Google Calendar!' : 'Agendamento salvo com sucesso!');
-      } catch (err: any) {
-        showToast('Erro ao salvar agendamento: ' + err.message, 'error');
-      }
-    };
-
-    const closeAndReset = () => {
-      setIsModalOpen(false);
-      setEditingAppointment(null);
-      setSelectedPatient('');
-      setSelectedDate('');
-      setSelectedTime('');
-      setAppointmentType('presencial');
-      setAppointmentPrice('150.00');
-      setAppointmentLocation(localStorage.getItem('clinic_default_address') || '');
-      setSaveAsDefaultAddress(false);
-      setIsRecurring(false);
-      setRecurrenceCount('4');
-    };
-
-    const handleDelete = async (id: string) => {
-      if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
-
-      try {
-        const apptToDelete = appointments.find(a => a.id === id);
-        
-        // Remove from Google Calendar if connected & gcal_event_id exists
-        const token = getStoredAccessToken();
-        if (token && apptToDelete?.gcal_event_id) {
-          try {
-            await deleteGoogleCalendarEvent(token, apptToDelete.gcal_event_id, selectedCalendarId);
-          } catch (gErr) {
-            console.error('Error deleting event from Google Calendar:', gErr);
-          }
-        }
-
-        await deleteDoc(doc(db, 'appointments', id));
-
-        try {
-          const invoiceQuery = query(
-            collection(db, 'invoices'),
-            where('appointment_id', '==', id)
-          );
-          const invoiceSnap = await getDocs(invoiceQuery);
-          for (const invDoc of invoiceSnap.docs) {
+            const invDoc = invoiceSnap.docs[0];
             if (invDoc.data().status === 'pending') {
-              await deleteDoc(doc(db, 'invoices', invDoc.id));
+              await updateDoc(doc(db, 'invoices', invDoc.id), {
+                amount: numericPrice,
+                patient_id: selectedPatient,
+                due_date: format(dateTime, 'yyyy-MM-dd'),
+                description: `Sessão dia ${format(dateTime, 'dd/MM')}`
+              });
             }
           }
         } catch (invErr) {
-          console.error('Error removing associated invoice:', invErr);
+          console.error('Error syncing invoice on edit:', invErr);
         }
+      } else {
+        const iterations = isRecurring ? parseInt(recurrenceCount) || 1 : 1;
 
-        fetchData();
-        closeAndReset();
-        showToast('Agendamento cancelado com sucesso.');
-      } catch (error: any) {
-        showToast('Erro ao cancelar: ' + error.message, 'error');
+        for (let i = 0; i < iterations; i++) {
+          const currentDateTime = addWeeks(dateTime, i);
+          let currentGcalId = undefined;
+
+          if (token && i === 0 && gcalEventId) {
+            currentGcalId = gcalEventId;
+          } else if (token) {
+            try {
+              const startISO = currentDateTime.toISOString();
+              const endISO = new Date(currentDateTime.getTime() + 50 * 60 * 1000).toISOString();
+              const gRes = await createGoogleCalendarEvent(token, {
+                summary: title,
+                description: `Atendimento Psicopedagógico com ${patient?.full_name || 'Paciente'}.\nModalidade: ${appointmentType.toUpperCase()}.${finalLocation ? `\nEndereço / Local: ${finalLocation}` : ''}\nValor: R$ ${numericPrice.toFixed(2)}`,
+                startDateTime: startISO,
+                endDateTime: endISO,
+                patientEmail: patient?.email,
+                location: finalLocation
+              }, selectedCalendarId);
+              if (gRes?.id) currentGcalId = gRes.id;
+            } catch (recGerr) {
+              console.error('Recurrence gcal sync err:', recGerr);
+            }
+          }
+
+          const newApptRef = await addDoc(collection(db, 'appointments'), {
+            patient_id: selectedPatient,
+            title: title,
+            date: currentDateTime.toISOString(),
+            status: 'scheduled',
+            type: appointmentType,
+            location: finalLocation,
+            price: numericPrice,
+            ...(currentGcalId ? { gcal_event_id: currentGcalId } : {}),
+            created_at: new Date().toISOString()
+          });
+
+          await addDoc(collection(db, 'invoices'), {
+            patient_id: selectedPatient,
+            appointment_id: newApptRef.id,
+            description: `Sessão dia ${format(currentDateTime, 'dd/MM')}`,
+            amount: numericPrice,
+            due_date: format(currentDateTime, 'yyyy-MM-dd'),
+            status: 'pending',
+            created_at: new Date().toISOString()
+          });
+        }
       }
-    };
 
-    const handleCompleteSession = async (appt: Appointment) => {
-      const summary = prompt(`Resumo da sessão de ${appt.patient_name}:`, appt.notes || '');
-      if (summary === null) return;
+      fetchData();
+      closeAndReset();
+      showToast(token ? 'Agendamento salvo e sincronizado com o Google Calendar!' : 'Agendamento salvo com sucesso!');
+    } catch (err: any) {
+      showToast('Erro ao salvar agendamento: ' + err.message, 'error');
+    }
+  };
+
+  const closeAndReset = () => {
+    setIsModalOpen(false);
+    setEditingAppointment(null);
+    setSelectedPatient('');
+    setSelectedDate('');
+    setSelectedTime('');
+    setAppointmentType('presencial');
+    setAppointmentPrice('150.00');
+    setAppointmentLocation(localStorage.getItem('clinic_default_address') || '');
+    setSaveAsDefaultAddress(false);
+    setIsRecurring(false);
+    setRecurrenceCount('4');
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Tem certeza que deseja cancelar este agendamento?')) return;
+
+    try {
+      const apptToDelete = appointments.find(a => a.id === id);
+
+      // Remove from Google Calendar if connected & gcal_event_id exists
+      const token = getStoredAccessToken();
+      if (token && apptToDelete?.gcal_event_id) {
+        try {
+          await deleteGoogleCalendarEvent(token, apptToDelete.gcal_event_id, selectedCalendarId);
+        } catch (gErr) {
+          console.error('Error deleting event from Google Calendar:', gErr);
+        }
+      }
+
+      await deleteDoc(doc(db, 'appointments', id));
 
       try {
-        const apptRef = doc(db, 'appointments', appt.id);
-        await updateDoc(apptRef, {
-          status: 'completed',
-          notes: summary
-        });
-
-        fetchData();
-        closeAndReset();
-        showToast('Sessão concluída com sucesso!');
-      } catch (err: any) {
-        showToast('Erro ao concluir sessão: ' + err.message, 'error');
+        const invoiceQuery = query(
+          collection(db, 'invoices'),
+          where('appointment_id', '==', id)
+        );
+        const invoiceSnap = await getDocs(invoiceQuery);
+        for (const invDoc of invoiceSnap.docs) {
+          if (invDoc.data().status === 'pending') {
+            await deleteDoc(doc(db, 'invoices', invDoc.id));
+          }
+        }
+      } catch (invErr) {
+        console.error('Error removing associated invoice:', invErr);
       }
-    };
 
-    const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
-    const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startDate, i));
+      fetchData();
+      closeAndReset();
+      showToast('Agendamento cancelado com sucesso.');
+    } catch (error: any) {
+      showToast('Erro ao cancelar: ' + error.message, 'error');
+    }
+  };
 
-    const getAppointmentsForDay = (day: Date) => {
-      return appointments.filter(a => {
-        const matchesDay = isSameDay(parseISO(a.date), day);
-        if (!matchesDay) return false;
-        if (filterType !== 'all' && a.type !== filterType) return false;
-        return true;
+  const handleCompleteSession = async (appt: Appointment) => {
+    const summary = prompt(`Resumo da sessão de ${appt.patient_name}:`, appt.notes || '');
+    if (summary === null) return;
+
+    try {
+      const apptRef = doc(db, 'appointments', appt.id);
+      await updateDoc(apptRef, {
+        status: 'completed',
+        notes: summary
       });
-    };
 
-    const [draggedApptId, setDraggedApptId] = useState<string | null>(null);
-    const [dragOverDay, setDragOverDay] = useState<string | null>(null);
+      fetchData();
+      closeAndReset();
+      showToast('Sessão concluída com sucesso!');
+    } catch (err: any) {
+      showToast('Erro ao concluir sessão: ' + err.message, 'error');
+    }
+  };
 
-    const handleDragStart = (e: React.DragEvent, apptId: string) => {
-      setDraggedApptId(apptId);
-      e.dataTransfer.setData('apptId', apptId);
-      e.dataTransfer.effectAllowed = 'move';
-      const target = e.target as HTMLElement;
-      setTimeout(() => target.classList.add('opacity-40'), 0);
-    };
+  const startDate = startOfWeek(currentDate, { weekStartsOn: 0 });
+  const weekDays = Array.from({ length: 7 }).map((_, i) => addDays(startDate, i));
 
-    const handleDragEnd = (e: React.DragEvent) => {
-      const target = e.target as HTMLElement;
-      target.classList.remove('opacity-40');
-      setDraggedApptId(null);
-      setDragOverDay(null);
-    };
+  const getAppointmentsForDay = (day: Date) => {
+    return appointments.filter(a => {
+      const matchesDay = isSameDay(parseISO(a.date), day);
+      if (!matchesDay) return false;
+      if (filterType !== 'all' && a.type !== filterType) return false;
+      return true;
+    });
+  };
 
-    const handleDragOver = (e: React.DragEvent, dayStr: string) => {
-      e.preventDefault();
-      setDragOverDay(dayStr);
-    };
+  const [draggedApptId, setDraggedApptId] = useState<string | null>(null);
+  const [dragOverDay, setDragOverDay] = useState<string | null>(null);
 
-    const handleDrop = async (e: React.DragEvent, targetDay: Date) => {
-      e.preventDefault();
-      const apptId = e.dataTransfer.getData('apptId');
-      setDragOverDay(null);
+  const handleDragStart = (e: React.DragEvent, apptId: string) => {
+    setDraggedApptId(apptId);
+    e.dataTransfer.setData('apptId', apptId);
+    e.dataTransfer.effectAllowed = 'move';
+    const target = e.target as HTMLElement;
+    setTimeout(() => target.classList.add('opacity-40'), 0);
+  };
 
-      if (!apptId) return;
-      const appt = appointments.find(a => a.id === apptId);
-      if (!appt) return;
+  const handleDragEnd = (e: React.DragEvent) => {
+    const target = e.target as HTMLElement;
+    target.classList.remove('opacity-40');
+    setDraggedApptId(null);
+    setDragOverDay(null);
+  };
 
-      const oldDate = parseISO(appt.date);
-      const newDate = new Date(targetDay);
-      newDate.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
+  const handleDragOver = (e: React.DragEvent, dayStr: string) => {
+    e.preventDefault();
+    setDragOverDay(dayStr);
+  };
 
-      try {
-        const apptRef = doc(db, 'appointments', apptId);
-        await updateDoc(apptRef, { date: newDate.toISOString() });
-        fetchData();
-        showToast('Posição atualizada.');
-      } catch (err: any) {
-        showToast('Erro ao mover agendamento: ' + err.message, 'error');
-      }
-    };
+  const handleDrop = async (e: React.DragEvent, targetDay: Date) => {
+    e.preventDefault();
+    const apptId = e.dataTransfer.getData('apptId');
+    setDragOverDay(null);
+
+    if (!apptId) return;
+    const appt = appointments.find(a => a.id === apptId);
+    if (!appt) return;
+
+    const oldDate = parseISO(appt.date);
+    const newDate = new Date(targetDay);
+    newDate.setHours(oldDate.getHours(), oldDate.getMinutes(), 0, 0);
+
+    try {
+      const apptRef = doc(db, 'appointments', apptId);
+      await updateDoc(apptRef, { date: newDate.toISOString() });
+      fetchData();
+      showToast('Posição atualizada.');
+    } catch (err: any) {
+      showToast('Erro ao mover agendamento: ' + err.message, 'error');
+    }
+  };
 
   return (
     <div className="space-y-6 animate-fadeIn min-h-[calc(100vh-140px)] flex flex-col px-4 md:px-0 pb-12">
@@ -664,7 +664,7 @@ const AdminSchedule: React.FC = () => {
                   {/* Right Column: Events List */}
                   <div className="flex-1 space-y-3">
                     {dayAppts.length === 0 ? (
-                      <div 
+                      <div
                         onClick={() => {
                           setSelectedDate(format(day, 'yyyy-MM-dd'));
                           setIsModalOpen(true);
@@ -685,11 +685,10 @@ const AdminSchedule: React.FC = () => {
                           <div
                             key={appt.id}
                             onClick={() => handleOpenEdit(appt)}
-                            className={`p-4 rounded-2xl border transition-all cursor-pointer group relative shadow-sm hover:shadow-md active:scale-[0.99] ${
-                              isCompleted 
-                                ? 'bg-slate-900/30 border-slate-700/60 opacity-80' 
+                            className={`p-4 rounded-2xl border transition-all cursor-pointer group relative shadow-sm hover:shadow-md active:scale-[0.99] ${isCompleted
+                                ? 'bg-slate-900/30 border-slate-700/60 opacity-80'
                                 : 'bg-surface hover:bg-primary-50/40 dark:hover:bg-primary-900/20 border-outline-variant hover:border-primary/50'
-                            }`}
+                              }`}
                           >
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                               {/* Left details */}

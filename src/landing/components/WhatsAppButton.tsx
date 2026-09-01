@@ -2,13 +2,25 @@ import React from 'react';
 import WhatsAppIcon from './WhatsAppIcon';
 import { trackConversion } from '../../utils/analytics';
 
-const WhatsAppButton: React.FC = () => {
+interface WhatsAppButtonProps {
+  message?: string;
+  eventLabel?: string;
+}
+
+const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({ 
+  message = '', 
+  eventLabel = 'BotaoFlutuanteWhatsApp' 
+}) => {
+    const url = message 
+      ? `https://wa.me/5516991864393?text=${encodeURIComponent(message)}`
+      : 'https://wa.me/5516991864393';
+
     return (
         <a
-            href="https://wa.me/5516991864393"
+            href={url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => trackConversion('Contact', 'BotaoFlutuanteWhatsApp')}
+            onClick={() => trackConversion('Contact', eventLabel)}
             className="fixed bottom-8 right-8 z-[60] bg-[#25D366] text-white p-5 rounded-pill shadow-premium hover:shadow-ambient hover:-translate-y-2 active:scale-95 transition-all duration-500 group cursor-pointer"
             aria-label="Falar no WhatsApp"
         >

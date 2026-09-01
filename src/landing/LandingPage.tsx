@@ -9,7 +9,7 @@ import About from './components/About';
 
 import ClientArea from './components/ClientArea';
 import Methodology from './components/Methodology';
-import Pricing from './components/Pricing';
+import PricingTeaser from './components/PricingTeaser';
 import EbooksSection from './components/EbooksSection';
 import YouTubeSection from './components/YouTubeSection';
 
@@ -77,7 +77,7 @@ const App: React.FC = () => {
 
         <About />
         <ClientArea />
-        <Pricing />
+        <PricingTeaser />
         <EbooksSection />
         <YouTubeSection />
 

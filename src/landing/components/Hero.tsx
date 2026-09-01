@@ -1,5 +1,6 @@
 import React from 'react';
-import { Download } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import WhatsAppIcon from './WhatsAppIcon';
 import heroImg from '../../assets/images/hero.png';
 import { trackConversion } from '../../utils/analytics';
@@ -15,7 +16,6 @@ const Hero: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           <div className="flex-1 text-center lg:text-left z-10">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 text-primary rounded-pill text-[11px] font-bold uppercase tracking-[0.2em] mb-8 border border-primary/10">
-
               Psicopedagogia Clínica & Institucional
             </div>
 
@@ -28,18 +28,26 @@ const Hero: React.FC = () => {
               <span className="block mt-4 text-primary font-bold text-xs uppercase tracking-widest">🗓️ Agenda aberta para 2026 • Ribeirão Preto e Online</span>
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <a
                 href="https://wa.me/5516991864393"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => trackConversion('Contact', 'HeroPrincipalAgendar')}
-                className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-white font-bold py-5 px-10 rounded-pill shadow-premium transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 text-lg group cursor-pointer"
+                className="w-full sm:w-auto bg-accent hover:bg-accent/90 text-white font-bold py-4 px-8 rounded-pill shadow-premium transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-3 text-base sm:text-lg group cursor-pointer"
               >
                 <WhatsAppIcon size={22} className="group-hover:rotate-12 transition-transform" />
                 Destravar o Aprendizado do meu Filho
               </a>
 
+              <Link
+                to="/planos"
+                onClick={() => trackConversion('Lead', 'Hero_VerPlanos')}
+                className="w-full sm:w-auto bg-white hover:bg-primary/5 text-primary border-2 border-primary/20 hover:border-primary font-bold py-4 px-7 rounded-pill shadow-ambient transition-all duration-300 hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 text-base group cursor-pointer"
+              >
+                <span>Ver Planos de Atendimento</span>
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform text-accent" />
+              </Link>
             </div>
           </div>
 

@@ -1,6 +1,8 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './landing/LandingPage';
+import PricingPage from './landing/PricingPage';
+import SocialLandingPage from './landing/SocialLandingPage';
 import EbooksPage from './landing/EbooksPage';
 import PrivacyPage from './landing/PrivacyPage';
 import CookieBanner from './landing/components/CookieBanner';
@@ -48,6 +50,8 @@ const App: React.FC = () => {
           </Suspense>
         } 
       />
+      <Route path="/planos" element={<PricingPage />} />
+      <Route path="/atendimento-social" element={<SocialLandingPage />} />
       <Route path="/ebooks" element={<EbooksPage />} />
       <Route path="/privacidade" element={<PrivacyPage />} />
       

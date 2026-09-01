@@ -9,7 +9,7 @@ const Header: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
-    setIsMobileMenuOpen(false); // Close menu on navigation
+    setIsMobileMenuOpen(false);
     if (location.pathname !== '/') {
       navigate(`/#${id}`);
       return;
@@ -35,6 +35,27 @@ const Header: React.FC = () => {
           behavior: 'smooth'
         });
       }
+    }
+  };
+
+  const navItems = [
+    { label: 'Metodologia', id: 'metodologia', path: '/#metodologia' },
+    { label: 'Sobre', id: 'sobre', path: '/#sobre' },
+    { label: 'Dúvidas', id: 'faq', path: '/#faq' },
+    { label: 'Planos', path: '/planos', isRoute: true },
+    { label: 'E-books', path: '/ebooks', isRoute: true },
+  ];
+
+  const handleNavClick = (item: { label: string; id?: string; path: string; isRoute?: boolean }) => {
+    setIsMobileMenuOpen(false);
+
+    if (item.isRoute) {
+      navigate(item.path);
+      return;
+    }
+
+    if (item.id) {
+      scrollToSection(item.id);
     }
   };
 
@@ -70,15 +91,17 @@ const Header: React.FC = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden lg:flex flex-1 items-center justify-center gap-6 xl:gap-8 px-4">
-          {[
-
-          ].map((link) => (
+          {navItems.map((item, idx) => (
             <button
-              key={link.id}
-              onClick={() => scrollToSection(link.id)}
-              className="text-[12px] font-body font-bold text-text/70 hover:text-primary transition-colors uppercase tracking-widest whitespace-nowrap cursor-pointer"
+              key={idx}
+              onClick={() => handleNavClick(item)}
+              className={`text-[12px] font-body font-bold transition-colors uppercase tracking-widest whitespace-nowrap cursor-pointer ${
+                item.isRoute && location.pathname === item.path
+                  ? 'text-accent border-b-2 border-accent pb-0.5'
+                  : 'text-text/70 hover:text-primary'
+              }`}
             >
-              {link.label}
+              {item.label}
             </button>
           ))}
         </div>
@@ -124,15 +147,16 @@ const Header: React.FC = () => {
             {/* Links */}
             <div className="flex flex-col gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary/40 mb-2">Navegação Principal</span>
-                {[
-
-                ].map((link: any) => (
+                {navItems.map((item, idx) => (
                   <button
-                    key={link.id}
-                    onClick={() => scrollToSection(link.id)}
+                    key={idx}
+                    onClick={() => handleNavClick(item)}
                     className="text-left font-display font-bold text-2xl text-primary py-4 border-b border-muted/30 hover:text-accent transition-colors flex items-center justify-between cursor-pointer"
                   >
-                    {link.label}
+                    <span>{item.label}</span>
+                    {item.isRoute && location.pathname === item.path && (
+                      <span className="text-xs uppercase bg-accent/10 text-accent font-bold px-2 py-1 rounded-pill">Ativo</span>
+                    )}
                   </button>
                 ))}
             </div>
